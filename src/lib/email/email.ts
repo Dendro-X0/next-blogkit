@@ -8,7 +8,15 @@ import { PasswordResetEmail } from "@/emails/password-reset-email";
 import { VerificationEmail } from "@/emails/verification-email";
 import { env } from "~/env";
 
-const resend: Resend = new Resend(env.RESEND_API_KEY);
+function getResend(): Resend | null {
+  try {
+    if (env.MAIL_PROVIDER === "smtp") return null;
+    if (!env.RESEND_API_KEY) return null;
+    return new Resend(env.RESEND_API_KEY);
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Normalize a Better Auth action URL to use the origin (scheme + host + port)
@@ -93,7 +101,12 @@ export async function sendPasswordResetEmail({ email, name, url }: EmailParams):
         text: `${name}, reset your password: ${normalizedUrl}`,
       });
     } else {
-      await resend.emails.send({ from: env.EMAIL_FROM, to: email, subject, react: element });
+      const resend = getResend();
+      if (!resend) {
+        console.warn("[email] Resend not configured. Skipping password reset email.");
+        return;
+      }
+      await resend.emails.send({ from: env.EMAIL_FROM as string, to: email, subject, react: element });
     }
   } catch (error) {
     console.error(error);
@@ -126,7 +139,12 @@ export async function sendVerificationEmail({ email, name, url }: EmailParams): 
         text: `${name}, verify your email: ${normalizedUrl}`,
       });
     } else {
-      await resend.emails.send({ from: env.EMAIL_FROM, to: email, subject, react: element });
+      const resend = getResend();
+      if (!resend) {
+        console.warn("[email] Resend not configured. Skipping verification email.");
+        return;
+      }
+      await resend.emails.send({ from: env.EMAIL_FROM as string, to: email, subject, react: element });
     }
   } catch (error) {
     console.error(error);

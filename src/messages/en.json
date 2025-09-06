@@ -1,0 +1,35 @@
+{
+  "Common": {
+    "appName": "BlogKit",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "all": "All",
+    "none": "None",
+    "error": "Something went wrong"
+  },
+  "HomePage": {
+    "title": "Build Your Next Blog in Hours, Not Weeks",
+    "subtitle": "A production-ready Next.js 15 starter kit with everything you need: Auth, Admin, MDX, Analytics, and more. Launch faster, focus on content.",
+    "feature1Title": "i18n Ready",
+    "feature1Description": "Pre-configured for multiple languages.",
+    "feature2Title": "MDX Support",
+    "feature2Description": "Write content using Markdown with components.",
+    "feature3Title": "Secure Auth",
+    "feature3Description": "Email login/signup, OAuth, password reset, 2FA, user profile and settings.",
+    "feature4Title": "Theming",
+    "feature4Description": "Light and dark mode support out of the box.",
+    "feature5Title": "SEO Optimized",
+    "feature5Description": "Internationalization and localization features.",
+    "feature6Title": "Extensible and Customizable",
+    "feature6Description": "Easily extend and customize the boilerplate to fit your needs.",
+    "feature7Title": "Analytics",
+    "feature7Description": "Track page views, referrers, and user engagement.",
+    "feature8Title": "Advertising",
+    "feature8Description": "Components for ad placements and affiliate links.",
+    "feature9Title": "Email Templates",
+    "feature9Description": "Customizable email templates for notifications.",
+    "githubButton": "View on GitHub",
+    "demoButton": "Live Demo"
+  }
+}

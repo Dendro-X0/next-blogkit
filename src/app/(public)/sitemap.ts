@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { type Post, posts } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import type { MetadataRoute } from "next";
-import { env } from "../../env";
+import { env } from "~/env";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const allPosts = await db.select().from(posts).orderBy(desc(posts.createdAt));

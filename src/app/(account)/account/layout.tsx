@@ -22,10 +22,10 @@ export default function AccountLayout({ children }: { children: ReactNode }): Re
             <Link className="hover:underline" href="/account/subscriptions">Subscriptions</Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/profile">Profile</Link>
+            <Link className="hover:underline" href="/account/profile">Profile</Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/settings">Settings</Link>
+            <Link className="hover:underline" href="/account/settings">Settings</Link>
           </li>
         </ul>
       </nav>

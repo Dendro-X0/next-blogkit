@@ -8,11 +8,12 @@ import { and, desc, eq, isNull, sql } from "drizzle-orm";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const postId = searchParams.get("postId");
+  const mine = searchParams.get("mine") === "1" || searchParams.get("mine") === "true";
   const pageParam = Number(searchParams.get("page") ?? "1");
   const pageSizeParam = Number(searchParams.get("pageSize") ?? "10");
 
-  if (!postId) {
-    return NextResponse.json({ error: "postId is required" }, { status: 400 });
+  if (!postId && !mine) {
+    return NextResponse.json({ error: "postId or mine=1 is required" }, { status: 400 });
   }
 
   try {
@@ -26,7 +27,9 @@ export async function GET(request: Request) {
     const session = await auth.api.getSession({ headers });
     const me = session?.user?.id ?? null;
 
-    const baseWhere = and(eq(comments.postId, parseInt(postId, 10)), isNull(comments.deletedAt));
+    const baseWhere = mine
+      ? and(eq(comments.authorId, me ?? ""), isNull(comments.deletedAt))
+      : and(eq(comments.postId, parseInt(postId as string, 10)), isNull(comments.deletedAt));
 
     const [{ total }] = await db
       .select({ total: sql<number>`count(*)` })

@@ -52,4 +52,35 @@ export class ResendNewsletterProvider implements NewsletterProvider {
       return false;
     }
   }
+
+  async unsubscribe(email: string): Promise<boolean> {
+    try {
+      if (!this.audienceId) return false;
+      const existing = await this.resend.contacts.get({ audienceId: this.audienceId, email });
+      if (!existing.data) {
+        return true; // already not present
+      }
+      await this.resend.contacts.update({
+        id: existing.data.id,
+        audienceId: this.audienceId,
+        unsubscribed: true,
+      });
+      return true;
+    } catch (error) {
+      console.error("Error unsubscribing from newsletter:", error);
+      return false;
+    }
+  }
+
+  async getStatus(email: string): Promise<"subscribed" | "unsubscribed" | "unknown"> {
+    try {
+      if (!this.audienceId) return "unknown";
+      const existing = await this.resend.contacts.get({ audienceId: this.audienceId, email });
+      if (!existing.data) return "unknown";
+      return existing.data.unsubscribed ? "unsubscribed" : "subscribed";
+    } catch (error) {
+      console.error("Error getting newsletter status:", error);
+      return "unknown";
+    }
+  }
 }

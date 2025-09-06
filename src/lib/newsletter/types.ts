@@ -6,4 +6,6 @@ export interface SubscribeNewsletterParams {
 
 export interface NewsletterProvider {
   subscribe(params: SubscribeNewsletterParams): Promise<boolean>;
+  unsubscribe(email: string): Promise<boolean>;
+  getStatus(email: string): Promise<"subscribed" | "unsubscribed" | "unknown">;
 }

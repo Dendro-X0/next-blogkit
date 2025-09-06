@@ -5,6 +5,7 @@ import {
   protectedRoutes,
   routesNotAllowedByLoggedInUsers,
 } from "@/routes";
+import { env } from "~/env";
 import { type NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest): Promise<NextResponse> {
@@ -12,6 +13,13 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
   const session = await auth.api.getSession({ headers: req.headers });
   const isLoggedIn = !!session?.user;
   const pathname = nextUrl.pathname;
+  const isAdminPath: boolean = pathname.startsWith("/admin");
+  const isAccountPath: boolean = pathname.startsWith("/account");
+  const allowlist: readonly string[] = (env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+
   if (isLoggedIn) {
     const isNotAllowedRoute = routesNotAllowedByLoggedInUsers.some((route: string) =>
       new RegExp(`^${route}$`).test(pathname),
@@ -19,11 +27,18 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
     if (isNotAllowedRoute) {
       return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
+    // Optional admin allowlist gate: if ADMIN_EMAILS is set, only allow listed emails to /admin
+    if (isAdminPath && allowlist.length > 0) {
+      const email = session.user.email?.toLowerCase();
+      if (!email || !allowlist.includes(email)) {
+        return NextResponse.redirect(new URL(Routes.Login, nextUrl));
+      }
+    }
   }
   const isProtectedRoute = protectedRoutes.some((route: string) =>
     new RegExp(`^${route}$`).test(pathname),
   );
-  if (!isLoggedIn && isProtectedRoute) {
+  if (!isLoggedIn && (isProtectedRoute || isAccountPath || isAdminPath)) {
     let callbackUrl = nextUrl.pathname;
     if (nextUrl.search) {
       callbackUrl += nextUrl.search;
@@ -38,5 +53,5 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
 
 export const config = {
   runtime: "nodejs",
-  matcher: ["/admin/:path*", "/auth/:path*"],
+  matcher: ["/admin/:path*", "/auth/:path*", "/account/:path*"],
 };

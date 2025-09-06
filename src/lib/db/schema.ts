@@ -170,6 +170,26 @@ export const advertisements = pgTable("advertisements", {
 export type Advertisement = typeof advertisements.$inferSelect;
 export type NewAdvertisement = typeof advertisements.$inferInsert;
 
+// --- USER FEATURES ---
+export const bookmarks = pgTable(
+  "bookmarks",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    postId: integer("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.postId] }),
+  }),
+);
+
+export type Bookmark = typeof bookmarks.$inferSelect;
+export type NewBookmark = typeof bookmarks.$inferInsert;
+
 // --- RELATIONS ---
 export const userRelations = relations(user, ({ one, many }) => ({
   profile: one(userProfile, {
@@ -179,6 +199,7 @@ export const userRelations = relations(user, ({ one, many }) => ({
   posts: many(posts),
   comments: many(comments),
   postReactions: many(postReactions),
+  bookmarks: many(bookmarks),
   accounts: many(account),
   sessions: many(session),
 }));
@@ -213,6 +234,7 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
   comments: many(comments),
   postsToTags: many(postsToTags),
   postReactions: many(postReactions),
+  bookmarks: many(bookmarks),
 }));
 
 export const tagsRelations = relations(tags, ({ many }) => ({
@@ -238,6 +260,17 @@ export const commentsRelations = relations(comments, ({ one }) => ({
   author: one(user, {
     fields: [comments.authorId],
     references: [user.id],
+  }),
+}));
+
+export const bookmarksRelations = relations(bookmarks, ({ one }) => ({
+  user: one(user, {
+    fields: [bookmarks.userId],
+    references: [user.id],
+  }),
+  post: one(posts, {
+    fields: [bookmarks.postId],
+    references: [posts.id],
   }),
 }));
 

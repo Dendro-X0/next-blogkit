@@ -15,3 +15,13 @@ export async function subscribeToNewsletter(params: SubscribeNewsletterParams): 
   const provider = getNewsletterProvider();
   return provider.subscribe(params);
 }
+
+export async function unsubscribeFromNewsletter(email: string): Promise<boolean> {
+  const provider = getNewsletterProvider();
+  return provider.unsubscribe(email);
+}
+
+export async function getNewsletterStatus(email: string): Promise<"subscribed" | "unsubscribed" | "unknown"> {
+  const provider = getNewsletterProvider();
+  return provider.getStatus(email);
+}

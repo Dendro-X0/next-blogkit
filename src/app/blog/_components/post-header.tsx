@@ -14,13 +14,14 @@ interface PostHeaderProps {
   };
   readonly onLike?: () => void;
   readonly onBookmark?: () => void;
+  readonly bookmarked?: boolean;
 }
 
 /**
  * Blog post header with tags, title, meta, and quick actions.
  * Uses semantic color tokens for accessibility in light/dark themes.
  */
-export function PostHeader({ post, onLike, onBookmark }: PostHeaderProps) {
+export function PostHeader({ post, onLike, onBookmark, bookmarked }: PostHeaderProps) {
   return (
     <header className="mb-8">
       <div className="flex flex-wrap gap-2 mb-4">
@@ -54,9 +55,15 @@ export function PostHeader({ post, onLike, onBookmark }: PostHeaderProps) {
             <Heart className="h-4 w-4 mr-1" />
             Like
           </Button>
-          <Button variant="ghost" size="sm" onClick={onBookmark}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBookmark}
+            aria-pressed={bookmarked}
+            aria-label={bookmarked ? "Remove bookmark" : "Save post"}
+          >
             <Bookmark className="h-4 w-4 mr-1" />
-            Save
+            {bookmarked ? "Saved" : "Save"}
           </Button>
         </div>
       </div>

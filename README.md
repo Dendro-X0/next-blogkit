@@ -66,6 +66,11 @@ DATABASE_URL="postgresql://user:password@host:port/db"
 GITHUB_CLIENT_ID="..."
 GITHUB_CLIENT_SECRET="..."
 
+# Admin (optional quick allowlist for /admin)
+# Comma-separated list of emails allowed to access the admin dashboard.
+# Leave unset to allow any authenticated user (default behavior pre-RBAC).
+ADMIN_EMAILS="admin@example.com,owner@example.com"
+
 # Email Provider (choose one)
 # Resend
 MAIL_PROVIDER="resend"
@@ -87,6 +92,8 @@ S3_SECRET_ACCESS_KEY="..."
 S3_BUCKET_NAME="..."
 NEXT_PUBLIC_S3_PUBLIC_URL="..."
 ```
+
+The optional `ADMIN_EMAILS` guard lets you restrict `/admin` access only to listed emails until full role-based access control (RBAC) is introduced. If `ADMIN_EMAILS` is not set, any authenticated user can open the admin dashboard (current baseline behavior).
 
 ### 4. Database Setup
 

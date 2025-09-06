@@ -61,8 +61,19 @@ async function getPosts(): Promise<
       slug: post.slug,
     }));
   } catch (error) {
-    console.error("Error fetching posts (db):", error);
-    return [];
+    console.warn("[blog] DB unavailable. Rendering placeholder posts.", error);
+    return [
+      {
+        id: "placeholder-1",
+        title: "Welcome to the Blog Starter",
+        excerpt: "Your database isn’t connected yet. This is placeholder content.",
+        author: "System",
+        publishedAt: new Date().toISOString(),
+        readTime: "2 min read",
+        tags: ["setup"],
+        slug: "getting-started",
+      },
+    ];
   }
 }
 

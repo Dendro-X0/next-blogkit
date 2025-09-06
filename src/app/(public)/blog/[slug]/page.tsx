@@ -13,6 +13,7 @@ import { notFound } from "next/navigation";
 import type { ReactElement } from "react";
 import type { BlogPosting, WithContext } from "schema-dts";
 import { env } from "~/env";
+import { getAbsoluteUrl } from "@/lib/url";
 import { PostHeaderActions } from "../_components/post-header-actions";
 
 // Define the shape of the detailed post data from our API
@@ -114,7 +115,7 @@ export default async function BlogPostPage({
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${env.NEXT_PUBLIC_APP_URL}/blog/${(await params).slug}`,
+      "@id": getAbsoluteUrl(`/blog/${(await params).slug}`),
     },
   };
 

@@ -7,6 +7,7 @@ import { Resend } from "resend";
 import { PasswordResetEmail } from "@/emails/password-reset-email";
 import { VerificationEmail } from "@/emails/verification-email";
 import { env } from "~/env";
+import { getSiteUrl } from "@/lib/url";
 
 function getResend(): Resend | null {
   try {
@@ -24,7 +25,7 @@ function getResend(): Resend | null {
  */
 function normalizeUrl(toUrl: string): string {
   try {
-    const base: URL = new URL(env.NEXT_PUBLIC_APP_URL);
+    const base: URL = new URL(getSiteUrl());
     const u: URL = new URL(toUrl);
     u.protocol = base.protocol;
     u.host = base.host;

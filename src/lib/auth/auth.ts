@@ -6,13 +6,14 @@ import { username } from "better-auth/plugins";
 import { twoFactor } from "better-auth/plugins";
 import * as schema from "../../../auth-schema";
 import { env } from "../../../env";
+import { getSiteUrl } from "@/lib/url";
 import { db } from "../db";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../email/email";
 
 export const authOptions = {
   appName: "Next.js Blog Boilerplate",
-  baseURL: env.NEXT_PUBLIC_APP_URL,
-  trustedOrigins: [env.NEXT_PUBLIC_APP_URL],
+  baseURL: getSiteUrl(),
+  trustedOrigins: [getSiteUrl()],
   database: drizzleAdapter(db, { schema, provider: "pg" }),
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days

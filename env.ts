@@ -40,7 +40,7 @@ export const env = createEnv({
     S3_PUBLIC_URL: z.string().url().optional(),
   },
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url(),
+    NEXT_PUBLIC_APP_URL: z.string().url().optional(),
     NEXT_PUBLIC_S3_PUBLIC_URL: z.string().url().optional(),
   },
   runtimeEnv: {
@@ -78,7 +78,7 @@ export const env = createEnv({
 // Production-only verification for critical environment variables
 if (process.env.NODE_ENV === "production") {
   // Hard requirements for a working build/runtime
-  const baseRequired = ["DATABASE_URL", "NEXT_PUBLIC_APP_URL"] as const;
+  const baseRequired = ["DATABASE_URL"] as const;
   const missingHard: string[] = [];
   for (const key of baseRequired) {
     if (!process.env[key]) missingHard.push(key);

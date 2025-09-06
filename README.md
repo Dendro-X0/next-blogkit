@@ -138,7 +138,7 @@ export const websiteConfig = {
 };
 ```
 
-### 7. Deploy to Vercel
+### 8. Deploy to Vercel
 
 Click the "Deploy with Vercel" button above or deploy manually:
 
@@ -168,25 +168,50 @@ The project follows a feature-first organization inside the `src` directory. Her
 - `src/lib`: Includes utility functions and library initializations (e.g., `auth.ts`, `db.ts`).
 - `middleware.ts`: Handles authentication checks and route protection.
 
+```text
+src/
+├─ app/
+│  ├─ (public)/
+│  │  ├─ page.tsx               # Home
+│  │  ├─ blog/                  # Public blog pages
+│  │  ├─ search/                # Site search
+│  │  ├─ contact/               # Contact page & API
+│  │  ├─ auth/                  # Login/Register/2FA/etc.
+│  │  ├─ rss.xml/               # RSS route
+│  │  └─ sitemap.ts             # Sitemaps
+│  ├─ (account)/
+│  │  └─ account/               # User area, auth-protected
+│  │     ├─ layout.tsx
+│  │     ├─ page.tsx            # Dashboard
+│  │     ├─ bookmarks/
+│  │     ├─ comments/
+│  │     ├─ profile/
+│  │     ├─ settings/
+│  │     └─ subscriptions/
+│  ├─ (admin)/
+│  │  └─ admin/                 # Admin-only area
+│  │     ├─ page.tsx
+│  │     ├─ advertisements/
+│  │     ├─ affiliate-links/
+│  │     ├─ analytics/
+│  │     └─ posts/
+│  └─ api/                      # REST/route handlers
+├─ components/                  # Reusable UI (shadcn/ui)
+├─ analytics/                   # Vercel + first‑party analytics
+├─ config/                      # website.ts and app config
+├─ lib/                         # db, auth, newsletter, storage
+├─ emails/                      # react-email templates
+├─ actions/                     # server actions
+├─ hooks/                       # shared hooks
+├─ i18n/                        # next-intl (optional)
+└─ messages/                    # translations (optional)
+```
+
 ## Build & Rendering Notes (Next.js 15)
 
 - Suspense requirements: Any page/component using `useSearchParams`, `usePathname`, or other client routing hooks must be wrapped in a React `Suspense` boundary. The root `layout.tsx` also wraps `Header`, `children`, `Footer`, and analytics blocks in `Suspense` to satisfy this during prerender.
 - ISR on blog index: The `/blog` page uses `export const revalidate = 60` and queries the database directly via Drizzle for prerender stability and performance.
-
-```tsx
-import { headers } from "next/headers";
-
-async function getAbsolute(url: string): Promise<string> {
-  const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host");
-  const proto = (h.get("x-forwarded-proto") ?? "https").split(",")[0];
-  return `${proto}://${host}${url}`;
-}
-
-const res = await fetch(await getAbsolute("/api/posts"), {
-  next: { revalidate: 60 },
-});
-```
+- If you must call API routes during prerender, construct an absolute URL using `headers()` to read the current host and protocol to avoid `ERR_INVALID_URL`.
 
 ## Optional Extras
 

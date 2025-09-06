@@ -1,6 +1,8 @@
 # Modern Blog Starter Kit
 
 ![CI](https://github.com/Dendro-X0/next-blog-starterkit/actions/workflows/ci.yml/badge.svg)
+ 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDendro-X0%2Fnext-blog-starterkit&project-name=next-blog-starterkit&repository-name=next-blog-starterkit&env=NEXT_PUBLIC_APP_URL,DATABASE_URL,BETTER_AUTH_SECRET,MAIL_PROVIDER,RESEND_API_KEY,EMAIL_FROM&envDescription=Required%20variables%20for%20production%20build.%20Use%20MAIL_PROVIDER%3Dresend%20with%20RESEND_API_KEY%20and%20EMAIL_FROM%2C%20or%20set%20MAIL_PROVIDER%3Dsmtp%20and%20fill%20SMTP_*.&envLink=https%3A%2F%2Fgithub.com%2FDendro-X0%2Fnext-blog-starterkit%23-3-environment-variables)
 
 Production-ready blog starter built with Next.js 15, TypeScript, Tailwind, and Drizzle. Clean architecture, fast by default, and easy to extend.
 
@@ -133,11 +135,8 @@ export const websiteConfig = {
     enableSpeedInsights: true,
     enableFirstPartyAnalytics: true,
   },
-} as const;
+};
 ```
-
-- In production, `AutoPageview` is mounted automatically when enabled.
-- In development, a floating toggle appears to enable/disable auto‑pageviews without affecting production.
 
 ### 7. Deploy to Vercel
 
@@ -154,8 +153,6 @@ Click the "Deploy with Vercel" button above or deploy manually:
    - Optional OAuth providers (auto-disabled if unset): `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 3. Trigger a redeploy.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDendro-X0%2Fnext-blog-starterkit&project-name=next-blog-starterkit&repository-name=next-blog-starterkit&env=NEXT_PUBLIC_APP_URL,DATABASE_URL,BETTER_AUTH_SECRET,MAIL_PROVIDER,RESEND_API_KEY,EMAIL_FROM&envDescription=Required%20variables%20for%20production%20build.%20Use%20MAIL_PROVIDER%3Dresend%20with%20RESEND_API_KEY%20and%20EMAIL_FROM%2C%20or%20set%20MAIL_PROVIDER%3Dsmtp%20and%20fill%20SMTP_*.&envLink=https%3A%2F%2Fgithub.com%2FDendro-X0%2Fnext-blog-starterkit%23-3-environment-variables)
-
 ## Project Structure
 
 The project follows a feature-first organization inside the `src` directory. Here's an overview of the key directories:
@@ -171,76 +168,10 @@ The project follows a feature-first organization inside the `src` directory. Her
 - `src/lib`: Includes utility functions and library initializations (e.g., `auth.ts`, `db.ts`).
 - `middleware.ts`: Handles authentication checks and route protection.
 
-## Internationalization (i18n)
-
-This starter ships with next-intl configured without i18n routing. UI copy is translatable; URLs remain unchanged. You can enable full routed i18n later with a small, documented change.
-
-Default (no routing)
-
-- Provider is wired in `src/app/layout.tsx` using `NextIntlClientProvider`.
-- Request-scoped config in `src/i18n/request.ts` reads a `LOCALE` cookie and falls back to `en`.
-- Messages live in `src/messages/<locale>.json` (TypeScript JSON imports enabled).
-
-Language switcher (cookie-based)
-
-- A compact switcher is provided and placed in the header:
-  - `src/components/i18n/language-switcher.tsx`
-  - Server action: `src/i18n/set-locale.ts` (sets `LOCALE` cookie)
-  - Shared config: `src/i18n/config.ts`
-
-Using translations
-
-```tsx
-// Client component
-"use client";
-import { useTranslations } from "next-intl";
-
-export default function Example() {
-  const t = useTranslations("Common");
-  return <button>{t("submit")}</button>;
-}
-```
-
-```tsx
-// Server component
-import { getTranslations } from "next-intl/server";
-
-export default async function Page() {
-  const t = await getTranslations("Common");
-  return <p>{t("loading")}</p>;
-}
-```
-
-Add a new locale
-
-1. Create `src/messages/<locale>.json` (e.g., `es.json`).
-2. Add the locale to `src/i18n/config.ts` in the `locales` list.
-3. The cookie-based switcher and request config will start serving messages for that locale.
-
-Upgrade to i18n routing (optional)
-If you need locale-prefixed URLs and SEO (hreflang), switch to routed i18n:
-
-- Add `src/i18n/routing.ts` exporting `locales` and `defaultLocale`.
-- Add a `middleware.ts` to handle locale prefixes or domain routing (per next-intl docs).
-- Replace Next.js navigation imports with next-intl helpers (e.g., `createNavigation`).
-- Emit localized metadata and `hreflang` where appropriate.
-
-This keeps the default simple while offering a clean path to full multilingual sites.
-
-Removing i18n
-
-Because the i18n setup is modular, you can remove it completely with these steps:
-
-1.  **Delete i18n files**: Remove `src/i18n`, `src/messages`, and `src/components/i18n/language-switcher.tsx`.
-2.  **Uninstall `next-intl`**: Run `npm uninstall next-intl`.
-3.  **Update `layout.tsx`**: Remove the `NextIntlClientProvider` and related imports from `src/app/layout.tsx`.
-4.  **Update `page.tsx`**: In `src/app/page.tsx`, remove `getTranslations` and replace the `t('key')` calls with static text.
-
 ## Build & Rendering Notes (Next.js 15)
 
 - Suspense requirements: Any page/component using `useSearchParams`, `usePathname`, or other client routing hooks must be wrapped in a React `Suspense` boundary. The root `layout.tsx` also wraps `Header`, `children`, `Footer`, and analytics blocks in `Suspense` to satisfy this during prerender.
 - ISR on blog index: The `/blog` page uses `export const revalidate = 60` and queries the database directly via Drizzle for prerender stability and performance.
-- Prefer direct server data access in app routes. If you choose to fetch from API routes during prerender, construct an absolute URL instead of a relative one to avoid `ERR_INVALID_URL`:
 
 ```tsx
 import { headers } from "next/headers";
@@ -280,6 +211,12 @@ Configure email using either Resend or SMTP.
   - Set `MAIL_PROVIDER=smtp`, `SMTP_HOST=127.0.0.1`, `SMTP_PORT=1025`, `SMTP_SECURE=false`, `EMAIL_FROM`.
 
 In production, the app validates required vars based on your provider selection. See `env.ts` for details.
+
+## Notes
+
+- OAuth providers are optional; if not configured, the app builds and runs without them.
+- Email sending is optional; if not configured, newsletter and transactional mails are disabled.
+- Admin access is gated by `ADMIN_EMAILS` (interim allowlist) until RBAC is introduced.
 
 ## License
 

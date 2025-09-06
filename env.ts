@@ -77,22 +77,36 @@ export const env = createEnv({
 
 // Production-only verification for critical environment variables
 if (process.env.NODE_ENV === "production") {
-  const baseRequired = ["DATABASE_URL", "NEXT_PUBLIC_APP_URL", "BETTER_AUTH_SECRET"] as const;
-  const missing: string[] = [];
+  // Hard requirements for a working build/runtime
+  const baseRequired = ["DATABASE_URL", "NEXT_PUBLIC_APP_URL"] as const;
+  const missingHard: string[] = [];
   for (const key of baseRequired) {
-    if (!process.env[key]) missing.push(key);
+    if (!process.env[key]) missingHard.push(key);
+  }
+  if (missingHard.length) {
+    throw new Error(
+      `Missing required environment variables in production: ${missingHard.join(", ")}`,
+    );
+  }
+
+  // Soft checks: warn if auth/email are not configured; app will degrade gracefully
+  if (!process.env.BETTER_AUTH_SECRET) {
+    console.warn(
+      "[env] BETTER_AUTH_SECRET is not set. Authentication features may be limited in production.",
+    );
   }
   const provider = process.env.MAIL_PROVIDER ?? "resend";
   if (provider === "resend") {
-    if (!process.env.RESEND_API_KEY) missing.push("RESEND_API_KEY");
-    if (!process.env.EMAIL_FROM) missing.push("EMAIL_FROM");
+    if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) {
+      console.warn(
+        "[env] Resend is selected but RESEND_API_KEY and/or EMAIL_FROM are missing. Email sending will be disabled.",
+      );
+    }
   } else if (provider === "smtp") {
-    if (!process.env.SMTP_HOST) missing.push("SMTP_HOST");
-    if (!process.env.SMTP_PORT) missing.push("SMTP_PORT");
-    if (!process.env.EMAIL_FROM) missing.push("EMAIL_FROM");
-    // SMTP_USER and SMTP_PASS are optional for local MailHog but required for authenticated SMTP
-  }
-  if (missing.length) {
-    throw new Error(`Missing required environment variables in production: ${missing.join(", ")}`);
+    if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.EMAIL_FROM) {
+      console.warn(
+        "[env] SMTP is selected but SMTP_HOST/SMTP_PORT/EMAIL_FROM are missing. Email sending will be disabled.",
+      );
+    }
   }
 }

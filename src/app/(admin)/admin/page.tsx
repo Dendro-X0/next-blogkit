@@ -6,7 +6,11 @@ import { analyticsEvents, comments, posts, user } from "@/lib/db/schema";
 import { and, count, desc, eq, gte, sql } from "drizzle-orm";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import type { ReactElement } from "react";
+import { getSessionWithRoles } from "@/lib/auth/session";
+import { headers } from "next/headers";
+import { env } from "~/env";
 import { DashboardStats } from "./_components/dashboard-stats";
 import { QuickActions } from "./_components/quick-actions";
 import { RecentPosts } from "./_components/recent-posts";
@@ -136,6 +140,18 @@ async function getSystemStatus(): Promise<SystemStatusValues> {
 }
 
 export default async function AdminDashboard(): Promise<ReactElement> {
+  const hdrs = new Headers(await headers());
+  const { user: me } = await getSessionWithRoles(hdrs);
+  const allowlist: string[] = (env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  const email = me?.email?.toLowerCase() ?? null;
+  const isAllowlisted = allowlist.length > 0 && !!email && allowlist.includes(email);
+  const isAdmin = Boolean(me && me.roles.includes("admin")) || isAllowlisted;
+  if (!isAdmin) {
+    redirect("/");
+  }
   const [recentPosts, stats, status] = await Promise.all([
     getRecentPosts(),
     getDashboardStats(),

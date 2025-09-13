@@ -91,6 +91,9 @@ export async function sendPasswordResetEmail({ email, name, url }: EmailParams):
       name,
       url: normalizedUrl,
     });
+    if (env.NODE_ENV !== "production") {
+      console.info("[email] (dev) Password reset link:", normalizedUrl);
+    }
     if (env.MAIL_PROVIDER === "smtp") {
       const transporter: Transporter = getSmtpTransporter();
       const html: string = await render(element);
@@ -103,11 +106,20 @@ export async function sendPasswordResetEmail({ email, name, url }: EmailParams):
       });
     } else {
       const resend = getResend();
-      if (!resend) {
-        console.warn("[email] Resend not configured. Skipping password reset email.");
-        return;
+      if (resend) {
+        await resend.emails.send({ from: env.EMAIL_FROM as string, to: email, subject, react: element });
+      } else {
+        // Fallback to SMTP (useful in development with MailHog)
+        const transporter: Transporter = getSmtpTransporter();
+        const html: string = await render(element);
+        await transporter.sendMail({
+          from: env.EMAIL_FROM,
+          to: email,
+          subject,
+          html,
+          text: `${name}, reset your password: ${normalizedUrl}`,
+        });
       }
-      await resend.emails.send({ from: env.EMAIL_FROM as string, to: email, subject, react: element });
     }
   } catch (error) {
     console.error(error);
@@ -129,6 +141,9 @@ export async function sendVerificationEmail({ email, name, url }: EmailParams): 
       name,
       url: normalizedUrl,
     });
+    if (env.NODE_ENV !== "production") {
+      console.info("[email] (dev) Verification link:", normalizedUrl);
+    }
     if (env.MAIL_PROVIDER === "smtp") {
       const transporter: Transporter = getSmtpTransporter();
       const html: string = await render(element);
@@ -141,14 +156,30 @@ export async function sendVerificationEmail({ email, name, url }: EmailParams): 
       });
     } else {
       const resend = getResend();
-      if (!resend) {
-        console.warn("[email] Resend not configured. Skipping verification email.");
-        return;
+      if (resend) {
+        await resend.emails.send({ from: env.EMAIL_FROM as string, to: email, subject, react: element });
+      } else {
+        // Fallback to SMTP (useful in development with MailHog). Do not throw to avoid signup deadlocks.
+        try {
+          const transporter: Transporter = getSmtpTransporter();
+          const html: string = await render(element);
+          await transporter.sendMail({
+            from: env.EMAIL_FROM,
+            to: email,
+            subject,
+            html,
+            text: `${name}, verify your email: ${normalizedUrl}`,
+          });
+        } catch (e) {
+          console.error("[email] Fallback SMTP verification send failed:", e);
+          // As a last resort in development, the link is already logged above.
+          // Avoid throwing here to prevent a sign-up hard failure; follow-up attempts can resend.
+        }
       }
-      await resend.emails.send({ from: env.EMAIL_FROM as string, to: email, subject, react: element });
     }
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to send verification email");
+    // Avoid aborting sign-up flows; email can be resent on sign-in due to emailVerification.sendOnSignIn.
+    // Still surface the error in logs for visibility.
   }
 }

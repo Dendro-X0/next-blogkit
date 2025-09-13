@@ -4,6 +4,7 @@ import { loginAction } from "@/actions/login";
 import { AuthCard } from "@/components/auth/auth-card";
 import { LoginForm } from "@/components/auth/login-form";
 import { SocialLogin } from "@/components/auth/social-login";
+import { ResendVerificationForm } from "@/components/auth/resend-verification-form";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useActionState, useEffect } from "react";
@@ -30,6 +31,7 @@ export default function LoginPage() {
         <LoginForm formState={formState} />
       </form>
       <SocialLogin separatorText="Or sign in with your email" />
+      <ResendVerificationForm />
       <div className="text-center text-sm">
         <span className="text-muted-foreground">Don&apos;t have an account? </span>
         <Link href="/auth/register" className="text-primary hover:underline">

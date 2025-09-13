@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { db } from "@/lib/db";
 import { posts } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
+import Link from "next/link";
 import { type ReactElement, Suspense } from "react";
 import { PostsGrid } from "./_components/posts-grid";
 
@@ -20,7 +21,7 @@ type DbPost = {
 export const revalidate = 60;
 
 // This function fetches and transforms the data directly from the DB
-async function getPosts(): Promise<
+async function getPosts({ page, limit }: { page: number; limit: number }): Promise<
   {
     id: string;
     title: string;
@@ -47,9 +48,11 @@ async function getPosts(): Promise<
         postsToTags: { with: { tag: { columns: { name: true } } } },
       },
       orderBy: [desc(posts.createdAt)],
+      limit: limit + 1, // fetch one extra to determine if next page exists
+      offset: (page - 1) * limit,
     });
-
-    return rows.map((post) => ({
+    const sliced: DbPost[] = rows.slice(0, limit);
+    return sliced.map((post) => ({
       id: post.id.toString(),
       title: post.title,
       excerpt: post.excerpt ?? "No excerpt available.",
@@ -61,30 +64,31 @@ async function getPosts(): Promise<
       slug: post.slug,
     }));
   } catch (error) {
-    console.warn("[blog] DB unavailable. Rendering placeholder posts.", error);
-    return [
-      {
-        id: "placeholder-1",
-        title: "Welcome to the Blog Starter",
-        excerpt: "Your database isn’t connected yet. This is placeholder content.",
-        author: "System",
-        publishedAt: new Date().toISOString(),
-        readTime: "2 min read",
-        tags: ["setup"],
-        slug: "getting-started",
-      },
-    ];
+    console.error("[blog] Failed to load posts:", error);
+    return [];
   }
 }
 
-export default async function BlogPage(): Promise<ReactElement> {
-  const posts = await getPosts();
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}): Promise<ReactElement> {
+  const sp = await searchParams;
+  const page: number = Math.max(1, Number(sp.page ?? 1));
+  const LIMIT = 10;
+  const rows = await db.query.posts.findMany({
+    where: eq(posts.published, true),
+    columns: { id: true },
+    orderBy: [desc(posts.createdAt)],
+    limit: LIMIT + 1,
+    offset: (page - 1) * LIMIT,
+  });
+  const hasNext: boolean = rows.length > LIMIT;
+  const pageItems = await getPosts({ page, limit: LIMIT });
 
   return (
-    <main
-      className="container mx-auto px-4 py-8 h-[calc(100vh-4rem)]"
-      aria-labelledby="blog-page-title"
-    >
+    <main className="container mx-auto px-4 py-8" aria-labelledby="blog-page-title">
       <div className="max-w-4xl mx-auto">
         <h1 id="blog-page-title" className="sr-only">
           Latest Blog Posts
@@ -96,18 +100,27 @@ export default async function BlogPage(): Promise<ReactElement> {
 
         <div className="space-y-8">
           <Suspense fallback={<p>Loading posts...</p>}>
-            {posts.length > 0 ? (
-              <PostsGrid posts={posts} />
+            {pageItems.length > 0 ? (
+              <PostsGrid posts={pageItems} />
             ) : (
               <p>No posts found. Check back later!</p>
             )}
           </Suspense>
 
-          <div className="text-center">
-            <Button variant="outline" size="lg" type="button" aria-label="Load more posts">
-              Load More Posts
-            </Button>
-          </div>
+          <nav className="flex items-center justify-between">
+            {page > 1 ? (
+              <Button asChild variant="outline">
+                <Link href={`/blog?page=${page - 1}`}>Previous</Link>
+              </Button>
+            ) : (
+              <span />
+            )}
+            {hasNext && (
+              <Button asChild variant="outline">
+                <Link href={`/blog?page=${page + 1}`}>Next</Link>
+              </Button>
+            )}
+          </nav>
         </div>
       </div>
     </main>

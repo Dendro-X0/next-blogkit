@@ -7,6 +7,7 @@ import {
   Megaphone,
   MessageSquare,
   Plus,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -34,6 +35,12 @@ export function QuickActions() {
           <Link href="/admin/affiliate-links">
             <LucideLink className="h-4 w-4 mr-2" />
             Manage Affiliate Links
+          </Link>
+        </Button>
+        <Button variant="outline" className="w-full justify-start" asChild>
+          <Link href="/admin/users">
+            <Users className="h-4 w-4 mr-2" />
+            Manage Users & Roles
           </Link>
         </Button>
         <Button variant="outline" className="w-full justify-start" asChild>

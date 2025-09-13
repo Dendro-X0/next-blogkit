@@ -26,7 +26,7 @@ export default async function RootLayout({
   const messages: AbstractIntlMessages = await getMessages();
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>
+      <body className="min-h-screen">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -35,17 +35,21 @@ export default async function RootLayout({
         >
           <NextIntlClientProvider locale={locale} messages={messages}>
             <Suspense fallback={<div className="container mx-auto px-4 py-8">Loading...</div>}>
-              <Header />
-              {children}
-              <Footer />
-              {process.env.NODE_ENV === "production" && (
-                <>
-                  <Analytics />
-                  {websiteConfig.analytics.enableFirstPartyAnalytics && <AutoPageview />}
-                </>
-              )}
-              {process.env.NODE_ENV !== "production" &&
-                websiteConfig.analytics.enableFirstPartyAnalytics && <DevPageviewToggle />}
+              <div className="min-h-screen flex flex-col">
+                <Header />
+                <div className="flex-1">
+                  {children}
+                </div>
+                <Footer />
+                {process.env.NODE_ENV === "production" && (
+                  <>
+                    <Analytics />
+                    {websiteConfig.analytics.enableFirstPartyAnalytics && <AutoPageview />}
+                  </>
+                )}
+                {process.env.NODE_ENV !== "production" &&
+                  websiteConfig.analytics.enableFirstPartyAnalytics && <DevPageviewToggle />}
+              </div>
             </Suspense>
             <Toaster richColors closeButton />
           </NextIntlClientProvider>

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar, Clock, Filter, Search, User, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { type ReactElement, useEffect, useMemo, useState } from "react";
 
 // Types
@@ -62,6 +63,12 @@ function mapApiPost(item: ApiPostItem): Post {
 }
 
 export default function SearchPage(): ReactElement {
+  const router = useRouter();
+  const sp = useSearchParams();
+  const page: number = Math.max(1, Number(sp.get("page") ?? 1));
+  const LIMIT = 10;
+  const FETCH_LIMIT = LIMIT + 1; // fetch one extra to know if next exists
+  const [inputQuery, setInputQuery] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -69,20 +76,31 @@ export default function SearchPage(): ReactElement {
   const [sortBy, setSortBy] = useState<SortBy>("newest");
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [postsData, setPostsData] = useState<Post[]>([]);
+  const [hasNext, setHasNext] = useState<boolean>(false);
+
+  // Debounce the search input to reduce re-renders while typing
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setSearchQuery(inputQuery);
+    }, 150);
+    return () => clearTimeout(t);
+  }, [inputQuery]);
 
   useEffect(() => {
     const load = async (): Promise<void> => {
       try {
-        const res = await fetch("/api/posts", { cache: "no-store" });
+        const res = await fetch(`/api/posts?limit=${FETCH_LIMIT}&page=${page}`, { cache: "no-store" });
         if (!res.ok) return;
         const items: ApiPostItem[] = await res.json();
-        setPostsData(items.map(mapApiPost));
+        setHasNext(items.length > LIMIT);
+        const pageItems = items.slice(0, LIMIT);
+        setPostsData(pageItems.map(mapApiPost));
       } catch (err) {
         console.error("Error loading posts for search:", err);
       }
     };
     void load();
-  }, []);
+  }, [page, FETCH_LIMIT, LIMIT]);
 
   const allTags: string[] = useMemo<string[]>(
     () => Array.from(new Set(postsData.flatMap((post) => post.tags))),
@@ -171,8 +189,8 @@ export default function SearchPage(): ReactElement {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Search posts, tags, or topics..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={inputQuery}
+            onChange={(e) => setInputQuery(e.target.value)}
             className="pl-10 h-12 text-lg"
             name="q"
             autoComplete="search"
@@ -369,6 +387,28 @@ export default function SearchPage(): ReactElement {
             </div>
           </div>
         </div>
+
+        {/* Pagination */}
+        <nav className="mt-8 flex items-center justify-between">
+          {page > 1 ? (
+            <Button
+              variant="outline"
+              onClick={() => router.push(`/search?page=${page - 1}`)}
+            >
+              Previous
+            </Button>
+          ) : (
+            <span />
+          )}
+          {hasNext && (
+            <Button
+              variant="outline"
+              onClick={() => router.push(`/search?page=${page + 1}`)}
+            >
+              Next
+            </Button>
+          )}
+        </nav>
       </div>
     </main>
   );

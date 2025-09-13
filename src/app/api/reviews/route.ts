@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/db";
-import { comments, user } from "@/lib/db/schema";
+import { reviews, reviewStatusEnum, user } from "@/lib/db/schema";
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
 
 export async function GET(request: Request) {
@@ -28,38 +28,44 @@ export async function GET(request: Request) {
     const me = session?.user?.id ?? null;
 
     const baseWhere = mine
-      ? and(eq(comments.authorId, me ?? ""), isNull(comments.deletedAt))
-      : and(eq(comments.postId, parseInt(postId as string, 10)), isNull(comments.deletedAt));
+      ? and(eq(reviews.authorId, me ?? ""), isNull(reviews.deletedAt))
+      : and(
+          eq(reviews.postId, parseInt(postId as string, 10)),
+          isNull(reviews.deletedAt),
+          eq(reviews.status, "approved" as typeof reviewStatusEnum.enumValues[number]),
+        );
 
-    const [{ total }] = await db
-      .select({ total: sql<number>`count(*)` })
-      .from(comments)
-      .where(baseWhere);
+    const [{ total }] = await db.select({ total: sql<number>`count(*)` }).from(reviews).where(baseWhere);
 
     const rows = await db
       .select({
-        id: comments.id,
-        content: comments.content,
-        rating: comments.rating,
-        createdAt: comments.createdAt,
-        authorId: comments.authorId,
+        id: reviews.id,
+        title: reviews.title,
+        body: reviews.body,
+        rating: reviews.rating,
+        status: reviews.status,
+        createdAt: reviews.createdAt,
+        authorId: reviews.authorId,
         author: {
           id: user.id,
           name: user.name,
           image: user.image,
         },
       })
-      .from(comments)
-      .leftJoin(user, eq(comments.authorId, user.id))
+      .from(reviews)
+      .leftJoin(user, eq(reviews.authorId, user.id))
       .where(baseWhere)
-      .orderBy(desc(comments.createdAt))
+      .orderBy(desc(reviews.createdAt))
       .limit(pageSize)
       .offset((page - 1) * pageSize);
 
     const items = rows.map((r) => ({
       id: r.id,
-      content: r.content,
+      // Keep backward compatibility for existing UI expecting `content`
+      content: r.body ?? "",
+      title: r.title ?? undefined,
       rating: r.rating,
+      status: r.status,
       createdAt: r.createdAt,
       author: r.author,
       isOwner: me ? r.authorId === me : false,
@@ -82,7 +88,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { postId, content, rating, hp } = await request.json();
+    const { postId, content, title, rating, hp } = await request.json();
 
     if (!postId || !content) {
       return NextResponse.json({ error: "postId and content are required" }, { status: 400 });
@@ -112,13 +118,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Simple per-user per-post rate limit: 30s between comments
+    // Simple per-user per-post rate limit: 30s between reviews
     const MIN_INTERVAL_MS = 30_000;
     const [last] = await db
-      .select({ createdAt: comments.createdAt })
-      .from(comments)
-      .where(and(eq(comments.postId, parseInt(postId, 10)), eq(comments.authorId, session.user.id)))
-      .orderBy(desc(comments.createdAt))
+      .select({ createdAt: reviews.createdAt })
+      .from(reviews)
+      .where(and(eq(reviews.postId, parseInt(postId, 10)), eq(reviews.authorId, session.user.id)))
+      .orderBy(desc(reviews.createdAt))
       .limit(1);
     if (last) {
       const now = Date.now();
@@ -131,13 +137,25 @@ export async function POST(request: Request) {
       }
     }
 
+    // Enforce one review per user per post (soft check; add a unique index in migration for hard guarantee)
+    const [existing] = await db
+      .select({ id: reviews.id })
+      .from(reviews)
+      .where(and(eq(reviews.postId, parseInt(postId, 10)), eq(reviews.authorId, session.user.id), isNull(reviews.deletedAt)))
+      .limit(1);
+    if (existing) {
+      return NextResponse.json({ error: "You have already submitted a review for this post." }, { status: 409 });
+    }
+
     const [newReview] = await db
-      .insert(comments)
+      .insert(reviews)
       .values({
         postId: parseInt(postId, 10),
         authorId: session.user.id,
-        content: contentStr,
+        title: typeof title === "string" ? title.trim().slice(0, 120) : null,
+        body: contentStr,
         rating: rating ?? null,
+        status: "pending",
       })
       .returning();
 

@@ -12,7 +12,7 @@ The Admin area lives at `/admin` under `src/app/(admin)/admin/`.
 
 - Posts: create, edit, schedule, publish, archive
 - Categories & Tags: organize content
-- Media: upload images to S3 and reuse across posts
+- Media: upload images (Cloudinary by default; S3 optional) and reuse across posts
 - Ads & Affiliates: manage placements and partner links
 - Analytics: view KPIs and recent activity
 

@@ -1,6 +1,6 @@
 {
-  "name": "blog-boilerplate",
-  "version": "0.1.0",
+  "name": "blogkit",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

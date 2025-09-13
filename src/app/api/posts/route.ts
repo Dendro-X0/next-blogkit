@@ -97,10 +97,15 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const includeDrafts = searchParams.get("include_drafts") === "true";
+    const pageParam = Number(searchParams.get("page") ?? 1);
+    const limitParam = Number(searchParams.get("limit") ?? 10);
+    const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
+    const limit = Number.isFinite(limitParam) ? Math.min(Math.max(limitParam, 1), 50) : 10;
+    const offset = (page - 1) * limit;
 
     const whereConditions = includeDrafts ? undefined : eq(posts.published, true);
 
-    const cacheKey = `posts:all:${includeDrafts ? "with-drafts" : "published-only"}`;
+    const cacheKey = `posts:all:${includeDrafts ? "with-drafts" : "published-only"}:p=${page}:l=${limit}`;
 
     const fetchedPosts = await cache(
       { key: cacheKey, ttl: 60 * 5 }, // Cache for 5 minutes
@@ -141,6 +146,8 @@ export async function GET(request: Request) {
             },
           },
           orderBy: [desc(posts.createdAt)],
+          limit,
+          offset,
         }),
     );
 

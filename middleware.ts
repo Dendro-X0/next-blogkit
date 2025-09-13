@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth/auth";
+import { getUserRoles } from "@/lib/rbac/queries";
 import {
   DEFAULT_LOGIN_REDIRECT,
   Routes,
@@ -27,11 +28,20 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
     if (isNotAllowedRoute) {
       return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
-    // Optional admin allowlist gate: if ADMIN_EMAILS is set, only allow listed emails to /admin
-    if (isAdminPath && allowlist.length > 0) {
-      const email = session.user.email?.toLowerCase();
-      if (!email || !allowlist.includes(email)) {
-        return NextResponse.redirect(new URL(Routes.Login, nextUrl));
+    // Admin access control
+    if (isAdminPath) {
+      // If allowlist is configured, honor it first for compatibility.
+      if (allowlist.length > 0) {
+        const email = session.user.email?.toLowerCase();
+        if (!email || !allowlist.includes(email)) {
+          return NextResponse.redirect(new URL(Routes.Login, nextUrl));
+        }
+      } else {
+        // Otherwise require the 'admin' role.
+        const roles = await getUserRoles(session.user.id);
+        if (!roles.includes("admin")) {
+          return NextResponse.redirect(new URL(Routes.Login, nextUrl));
+        }
       }
     }
   }

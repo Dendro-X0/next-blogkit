@@ -4,6 +4,7 @@ import { RelatedPosts } from "@/components/blog/related-posts";
 import { SocialShare } from "@/components/blog/social-share";
 import { Callout } from "@/components/mdx/callout";
 import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
 import { db } from "@/lib/db";
 import { posts } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -11,8 +12,8 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { ReactElement } from "react";
+import { Suspense } from "react";
 import type { BlogPosting, WithContext } from "schema-dts";
-import { env } from "~/env";
 import { getAbsoluteUrl } from "@/lib/url";
 import { PostHeaderActions } from "../_components/post-header-actions";
 
@@ -98,7 +99,12 @@ export default async function BlogPostPage({
     title: post.title,
     author: post.author.name || "Unknown Author",
     publishedAt: post.createdAt,
-    readTime: "5 min read", // Placeholder
+    readTime: (() => {
+      const text = (post.content || "").replace(/<[^>]+>/g, " ");
+      const words = text.trim().split(/\s+/).filter(Boolean).length;
+      const minutes = Math.max(1, Math.round(words / 200));
+      return `${minutes} min read`;
+    })(),
     tags: post.tags,
   };
 
@@ -186,10 +192,20 @@ export default async function BlogPostPage({
 
         <Separator className="mb-8" />
 
-        <CommentSection postId={post.id} />
+        <Suspense
+          fallback=
+            {<div className="my-8 flex items-center gap-2 text-muted-foreground"><Spinner size={18} /> Loading comments…</div>}
+        >
+          <CommentSection postId={post.id} />
+        </Suspense>
 
         <div className="mt-16">
-          <RelatedPosts currentPostId={post.id.toString()} tags={post.tags} />
+          <Suspense
+            fallback=
+              {<div className="text-sm text-muted-foreground"><Spinner size={18} className="mr-2 inline" /> Loading related posts…</div>}
+          >
+            <RelatedPosts currentPostId={post.id.toString()} tags={post.tags} />
+          </Suspense>
         </div>
       </article>
     </div>

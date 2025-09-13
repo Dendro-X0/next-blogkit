@@ -1,7 +1,15 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { categories, posts, postsToTags, tags, user, userProfile } from "./schema";
-import "dotenv/config";
+import { categories, posts, postsToTags, tags, user, userProfile, roles, userRoles } from "./schema";
+import { config as loadEnv } from "dotenv";
+import { existsSync } from "node:fs";
+
+// Load env for seeding: prefer .env.local, fallback to .env
+if (existsSync(".env.local")) {
+  loadEnv({ path: ".env.local" });
+} else {
+  loadEnv();
+}
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set in .env or .env.local");
@@ -38,6 +46,8 @@ MDX opens up a world of possibilities for rich, dynamic content.
 
   // Clear existing data
   console.log("🗑️  Clearing existing data...");
+  await db.delete(userRoles);
+  await db.delete(roles);
   await db.delete(postsToTags);
   await db.delete(tags);
   await db.delete(posts);
@@ -66,6 +76,20 @@ MDX opens up a world of possibilities for rich, dynamic content.
     createdAt: new Date(),
     updatedAt: new Date(),
   });
+
+  // Seed RBAC roles and assign admin to sample user
+  console.log("🔐 Seeding roles and assigning admin role to sample user...");
+  const [rAdmin] = await db
+    .insert(roles)
+    .values([
+      { slug: "admin", name: "Administrator", description: "Full access" },
+      { slug: "editor", name: "Editor", description: "Manage and publish content" },
+      { slug: "author", name: "Author", description: "Manage own content" },
+      { slug: "moderator", name: "Moderator", description: "Moderate comments/reviews" },
+      { slug: "user", name: "User", description: "Default role" },
+    ])
+    .returning();
+  await db.insert(userRoles).values({ userId, roleId: rAdmin.id });
 
   // Create a sample category
   console.log("📚 Creating sample category...");

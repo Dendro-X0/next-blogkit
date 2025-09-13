@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { posts, postsToTags, tags } from "@/lib/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { env } from "~/env";
+import { getUserRoles } from "@/lib/rbac/queries";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ postId: string }> }) {
   try {
@@ -29,10 +31,21 @@ export async function PUT(request: Request, { params }: { params: Promise<{ post
       return NextResponse.json({ message: "Post not found" }, { status: 404 });
     }
 
-    // Add role-based access control later if needed
-    if (postToUpdate.authorId !== session.user.id) {
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    // Authorization: owner OR allowlisted admin OR role-based admin/editor
+    const owns = postToUpdate.authorId === session.user.id;
+    let allowed = owns;
+    if (!allowed) {
+      const allowlist: string[] = (env.ADMIN_EMAILS ?? "")
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
+      const email = session.user.email?.toLowerCase();
+      const isAllowlisted = !!email && allowlist.length > 0 && allowlist.includes(email);
+      const roleSlugs = await getUserRoles(session.user.id);
+      const hasRole = roleSlugs.includes("admin") || roleSlugs.includes("editor");
+      allowed = isAllowlisted || hasRole;
     }
+    if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
     const updatedPost = await db.transaction(async (tx) => {
       const updateData: Partial<typeof posts.$inferInsert> = { ...postData };
@@ -122,9 +135,21 @@ export async function DELETE(
       return NextResponse.json({ message: "Post not found" }, { status: 404 });
     }
 
-    if (postToDelete.authorId !== session.user.id) {
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    // Authorization: owner OR allowlisted admin OR role-based admin/editor
+    const owns = postToDelete.authorId === session.user.id;
+    let allowed = owns;
+    if (!allowed) {
+      const allowlist: string[] = (env.ADMIN_EMAILS ?? "")
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
+      const email = session.user.email?.toLowerCase();
+      const isAllowlisted = !!email && allowlist.length > 0 && allowlist.includes(email);
+      const roleSlugs = await getUserRoles(session.user.id);
+      const hasRole = roleSlugs.includes("admin") || roleSlugs.includes("editor");
+      allowed = isAllowlisted || hasRole;
     }
+    if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
     await db.delete(posts).where(eq(posts.id, parseInt(postId)));
 

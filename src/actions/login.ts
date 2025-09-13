@@ -41,9 +41,13 @@ export async function loginAction(
       throw error;
     }
     if (isAuthError(error)) {
+      const base = error.body.message || "Unable to sign in.";
       return {
         error: {
-          message: error.body.message,
+          // If the account is unverified, Better Auth (with sendOnSignIn enabled) will
+          // automatically resend a verification email when the user attempts to sign in.
+          // Provide a helpful unified message so users know what to expect.
+          message: `${base} If your email is not verified yet, a new verification link has been sent. Please check your inbox (and spam folder).`,
         },
       };
     }

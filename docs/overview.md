@@ -11,7 +11,7 @@ Use this guide to understand what’s included and how the parts fit together. F
 - Content: MDX rendering, automated Table of Contents, audio posts
 - Admin: Posts, categories, tags, affiliate links, ads
 - Auth: Better Auth with optional OAuth providers (GitHub, Google)
-- Storage: S3 compatible uploads (e.g., AWS S3, Cloudflare R2). Cloudinary supported for optimization
+- Storage: Cloudinary uploads by default; S3‑compatible storage optional (AWS S3, R2, MinIO)
 - Email: Resend or SMTP (local MailHog) for newsletters/transactional mail
 - Analytics: Vercel Analytics, Speed Insights, + first‑party events and KPIs dashboard
 - SEO: Optimized images, dynamic sitemap, RSS

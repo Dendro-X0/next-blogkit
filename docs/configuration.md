@@ -30,6 +30,16 @@ Choose one provider:
 
 ## File Storage
 
+Uploads default to Cloudinary. An S3‑compatible provider is available but not enabled by default.
+
+### Cloudinary (default)
+
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+
+### S3 (optional)
+
 - `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_BUCKET_NAME`
 - `NEXT_PUBLIC_S3_PUBLIC_URL` — public CDN/base URL for serving files
 

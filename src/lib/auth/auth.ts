@@ -64,6 +64,10 @@ export const authOptions = {
   },
   emailVerification: {
     sendOnSignUp: true,
+    // If the first verification email fails (e.g., SMTP misconfig), try again on next sign-in.
+    sendOnSignIn: true,
+    // Improve UX once verified.
+    autoSignInAfterVerification: true,
     sendVerificationEmail: async ({
       user,
       url,

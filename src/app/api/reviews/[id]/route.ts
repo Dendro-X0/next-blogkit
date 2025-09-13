@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/db";
-import { comments } from "@/lib/db/schema";
+import { reviews } from "@/lib/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -21,9 +21,16 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
 
     const body = (await request.json().catch(() => ({}))) as {
       content?: string;
+      title?: string | null;
       rating?: number | null;
     };
     const content = typeof body.content === "string" ? body.content.trim() : undefined;
+    const title =
+      typeof body.title === "string"
+        ? body.title.trim().slice(0, 120)
+        : body.title === null
+        ? null
+        : undefined;
     const rating = body.rating ?? undefined;
 
     if (content !== undefined) {
@@ -41,30 +48,31 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     }
 
     const [existing] = await db
-      .select({ id: comments.id })
-      .from(comments)
+      .select({ id: reviews.id })
+      .from(reviews)
       .where(
         and(
-          eq(comments.id, id),
-          eq(comments.authorId, session.user.id),
-          isNull(comments.deletedAt),
+          eq(reviews.id, id),
+          eq(reviews.authorId, session.user.id),
+          isNull(reviews.deletedAt),
         ),
       )
       .limit(1);
 
     if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-    const updateValues: Partial<typeof comments.$inferInsert> = {};
-    if (content !== undefined) updateValues.content = content;
+    const updateValues: Partial<typeof reviews.$inferInsert> = {};
+    if (content !== undefined) updateValues.body = content;
+    if (title !== undefined) updateValues.title = title;
     if (rating !== undefined) updateValues.rating = rating;
 
     if (Object.keys(updateValues).length === 0)
       return NextResponse.json({ error: "Nothing to update" }, { status: 400 });
 
     const [updated] = await db
-      .update(comments)
+      .update(reviews)
       .set(updateValues)
-      .where(eq(comments.id, id))
+      .where(eq(reviews.id, id))
       .returning();
     return NextResponse.json(updated);
   } catch (error) {
@@ -84,13 +92,13 @@ export async function DELETE(_request: Request, context: { params: Promise<{ id:
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const [existing] = await db
-      .select({ id: comments.id })
-      .from(comments)
+      .select({ id: reviews.id })
+      .from(reviews)
       .where(
         and(
-          eq(comments.id, id),
-          eq(comments.authorId, session.user.id),
-          isNull(comments.deletedAt),
+          eq(reviews.id, id),
+          eq(reviews.authorId, session.user.id),
+          isNull(reviews.deletedAt),
         ),
       )
       .limit(1);
@@ -98,9 +106,9 @@ export async function DELETE(_request: Request, context: { params: Promise<{ id:
     if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     const [deleted] = await db
-      .update(comments)
+      .update(reviews)
       .set({ deletedAt: new Date() })
-      .where(eq(comments.id, id))
+      .where(eq(reviews.id, id))
       .returning();
 
     return NextResponse.json(deleted);

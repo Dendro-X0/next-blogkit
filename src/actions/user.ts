@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { user } from "../../auth-schema";
+import { userPreferences } from "@/lib/db/schema";
 
 // Profile schema removed as it's only used as a type
 
@@ -76,14 +77,61 @@ export async function updateNotificationSettings(data: {
   emailLikes: boolean;
   emailFollows: boolean;
   emailNewsletter: boolean;
+  pushComments: boolean;
+  pushLikes: boolean;
+  pushFollows: boolean;
+  pushNewPosts: boolean;
 }) {
   const session = await auth.api.getSession({ headers: new Headers(await headers()) });
   if (!session?.user) {
     return { error: "Not authenticated" };
   }
-  // TODO: Implement actual logic to save notification settings
-  console.log("Updating notification settings:", data);
-  return { success: "Notification settings updated (mock)" };
+  // Validation: ensure all fields are booleans
+  const keys: Array<keyof typeof data> = [
+    "emailComments",
+    "emailLikes",
+    "emailFollows",
+    "emailNewsletter",
+    "pushComments",
+    "pushLikes",
+    "pushFollows",
+    "pushNewPosts",
+  ];
+  for (const k of keys) {
+    if (typeof data[k] !== "boolean") {
+      return { error: `Invalid value for ${String(k)}` } as const;
+    }
+  }
+  const now = new Date();
+  await db
+    .insert(userPreferences)
+    .values({
+      userId: session.user.id,
+      emailComments: data.emailComments,
+      emailLikes: data.emailLikes,
+      emailFollows: data.emailFollows,
+      emailNewsletter: data.emailNewsletter,
+      pushComments: data.pushComments,
+      pushLikes: data.pushLikes,
+      pushFollows: data.pushFollows,
+      pushNewPosts: data.pushNewPosts,
+      updatedAt: now,
+    })
+    .onConflictDoUpdate({
+      target: userPreferences.userId,
+      set: {
+        emailComments: data.emailComments,
+        emailLikes: data.emailLikes,
+        emailFollows: data.emailFollows,
+        emailNewsletter: data.emailNewsletter,
+        pushComments: data.pushComments,
+        pushLikes: data.pushLikes,
+        pushFollows: data.pushFollows,
+        pushNewPosts: data.pushNewPosts,
+        updatedAt: now,
+      },
+    });
+  return { success: "Notification settings updated" } as const;
 }
 
 // Security settings schema removed as it's only used as a type
@@ -96,9 +144,35 @@ export async function updateSecuritySettings(data: {
   if (!session?.user) {
     return { error: "Not authenticated" };
   }
-  // TODO: Implement actual logic to save security settings
-  console.log("Updating security settings:", data);
-  return { success: "Security settings updated (mock)" };
+  // Validate
+  const allowed: Record<string, number> = {
+    "1h": 60,
+    "8h": 480,
+    "24h": 1440,
+    "7d": 10080,
+    "30d": 43200,
+  } as const;
+  if (typeof data.loginAlerts !== "boolean") {
+    return { error: "Invalid loginAlerts" } as const;
+  }
+  if (!Object.prototype.hasOwnProperty.call(allowed, data.sessionTimeout)) {
+    return { error: "Invalid sessionTimeout" } as const;
+  }
+  const sessionTimeoutMinutes: number = allowed[data.sessionTimeout];
+  const now = new Date();
+  await db
+    .insert(userPreferences)
+    .values({
+      userId: session.user.id,
+      loginAlerts: data.loginAlerts,
+      sessionTimeoutMinutes,
+      updatedAt: now,
+    })
+    .onConflictDoUpdate({
+      target: userPreferences.userId,
+      set: { loginAlerts: data.loginAlerts, sessionTimeoutMinutes, updatedAt: now },
+    });
+  return { success: "Security settings updated" } as const;
 }
 
 /**

@@ -25,7 +25,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaLanguage,
       name: t("feature1Title"),
       description: t("feature1Description"),
-      href: "#",
+      href: "/blog/i18n-ready",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />
@@ -36,7 +36,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaFileLines,
       name: t("feature2Title"),
       description: t("feature2Description"),
-      href: "#",
+      href: "/blog/mdx-support",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />
@@ -47,7 +47,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaLock,
       name: t("feature3Title"),
       description: t("feature3Description"),
-      href: "#",
+      href: "/blog/secure-auth",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />
@@ -58,7 +58,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaPalette,
       name: t("feature4Title"),
       description: t("feature4Description"),
-      href: "#",
+      href: "/blog/theming",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />
@@ -69,7 +69,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaGlobe,
       name: t("feature5Title"),
       description: t("feature5Description"),
-      href: "#",
+      href: "/blog/seo-optimized",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />
@@ -80,7 +80,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaGear,
       name: t("feature6Title"),
       description: t("feature6Description"),
-      href: "#",
+      href: "/blog/extensible-and-customizable",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />
@@ -91,7 +91,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaChartLine,
       name: t("feature7Title"),
       description: t("feature7Description"),
-      href: "#",
+      href: "/blog/analytics",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />
@@ -102,7 +102,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaBullhorn,
       name: t("feature8Title"),
       description: t("feature8Description"),
-      href: "#",
+      href: "/blog/advertising",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />
@@ -113,7 +113,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       Icon: FaEnvelopeOpenText,
       name: t("feature9Title"),
       description: t("feature9Description"),
-      href: "#",
+      href: "/blog/email-templates",
       cta: "Learn more",
       background: (
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_60%_at_0%_0%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(120%_60%_at_100%_100%,hsl(var(--secondary)/0.08),transparent_60%)]" />

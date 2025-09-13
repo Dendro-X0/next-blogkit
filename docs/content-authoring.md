@@ -15,7 +15,7 @@ This project renders blog posts with MDX and provides an Admin UI to manage post
 ## Admin Workflow
 
 1. Go to `/admin` (ensure your email is allowed via `ADMIN_EMAILS`).
-2. Create or edit a post, upload images (S3), and compose with MDX.
+2. Create or edit a post, upload images (Cloudinary by default; S3 optional), and compose with MDX.
 3. Save as draft or publish.
 
 ## MDX Shortcodes & Components
@@ -34,8 +34,9 @@ A ToC is generated using `remark-toc` with heading anchors created by `rehype-sl
 
 ## Media
 
-- Images are uploaded to S3 and referenced in MDX by their public URL.
-- Cloudinary optimization can be applied on the front‑end (via `next-cloudinary`) for fast delivery.
+- Images are uploaded to Cloudinary by default and referenced by their delivery URL.
+- An S3 provider exists but is not wired by default; see `docs/storage.md` to enable.
+- Cloudinary (or CDN) transformations can be applied for fast delivery.
 
 ## Search & Indexing
 

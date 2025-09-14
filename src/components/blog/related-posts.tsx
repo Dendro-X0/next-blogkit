@@ -45,7 +45,11 @@ export async function RelatedPosts({ currentPostId, tags }: RelatedPostsProps) {
     .leftJoin(tagsTable, eq(postsToTags.tagId, tagsTable.id))
     .where(
       tagFilter.length > 0
-        ? and(eq(posts.published, true), ne(posts.id, currentIdNum), inArray(tagsTable.name, tagFilter))
+        ? and(
+            eq(posts.published, true),
+            ne(posts.id, currentIdNum),
+            inArray(tagsTable.name, tagFilter),
+          )
         : and(eq(posts.published, true), ne(posts.id, currentIdNum)),
     )
     .orderBy(desc(posts.createdAt))
@@ -59,7 +63,10 @@ export async function RelatedPosts({ currentPostId, tags }: RelatedPostsProps) {
         title: r.title,
         excerpt: r.excerpt ?? "",
         slug: r.slug,
-        publishedAt: (r.createdAt instanceof Date ? r.createdAt : new Date(r.createdAt as unknown as string)).toISOString(),
+        publishedAt: (r.createdAt instanceof Date
+          ? r.createdAt
+          : new Date(r.createdAt as unknown as string)
+        ).toISOString(),
         readTime: "5 min read",
         tags: r.tagName ? [r.tagName] : [],
       });
@@ -90,7 +97,10 @@ export async function RelatedPosts({ currentPostId, tags }: RelatedPostsProps) {
       title: r.title,
       excerpt: r.excerpt ?? "",
       slug: r.slug,
-      publishedAt: (r.createdAt instanceof Date ? r.createdAt : new Date(r.createdAt as unknown as string)).toISOString(),
+      publishedAt: (r.createdAt instanceof Date
+        ? r.createdAt
+        : new Date(r.createdAt as unknown as string)
+      ).toISOString(),
       readTime: "5 min read",
       tags: [],
     }));

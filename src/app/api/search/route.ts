@@ -27,9 +27,24 @@ export async function GET(request: Request): Promise<NextResponse> {
     const limit = Number.isFinite(limitParam) ? Math.min(Math.max(limitParam, 1), 50) : 10;
     const offset = (page - 1) * limit;
 
-    const tagsList = tagsRaw ? tagsRaw.split(",").map((s) => s.trim()).filter(Boolean) : [];
-    const categoriesList = categoriesRaw ? categoriesRaw.split(",").map((s) => s.trim()).filter(Boolean) : [];
-    const authorsList = authorsRaw ? authorsRaw.split(",").map((s) => s.trim()).filter(Boolean) : [];
+    const tagsList = tagsRaw
+      ? tagsRaw
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+    const categoriesList = categoriesRaw
+      ? categoriesRaw
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+    const authorsList = authorsRaw
+      ? authorsRaw
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
 
     const whereClauses: SQL<unknown>[] = [eq(posts.published, true)];
 
@@ -51,7 +66,11 @@ export async function GET(request: Request): Promise<NextResponse> {
     }
 
     const orderBy =
-      sort === "oldest" ? asc(posts.createdAt) : sort === "title" ? asc(posts.title) : desc(posts.createdAt);
+      sort === "oldest"
+        ? asc(posts.createdAt)
+        : sort === "title"
+          ? asc(posts.title)
+          : desc(posts.createdAt);
 
     // We fetch limit+1 to determine if there is a next page. We'll group rows by post id.
     const rows = await db
@@ -76,16 +95,19 @@ export async function GET(request: Request): Promise<NextResponse> {
       .offset(offset);
 
     // Group by post id and aggregate tags
-    const map = new Map<number, {
-      id: number;
-      title: string;
-      slug: string;
-      excerpt: string | null;
-      createdAt: Date | string;
-      authorName: string | null;
-      categoryName: string | null;
-      tags: string[];
-    }>();
+    const map = new Map<
+      number,
+      {
+        id: number;
+        title: string;
+        slug: string;
+        excerpt: string | null;
+        createdAt: Date | string;
+        authorName: string | null;
+        categoryName: string | null;
+        tags: string[];
+      }
+    >();
     for (const r of rows) {
       const key = r.id;
       if (!map.has(key)) {

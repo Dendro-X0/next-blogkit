@@ -21,7 +21,9 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-}: { children: React.ReactNode }): Promise<ReactElement> {
+}: {
+  children: React.ReactNode;
+}): Promise<ReactElement> {
   const locale: string = await getLocale();
   const messages: AbstractIntlMessages = await getMessages();
   return (
@@ -37,9 +39,7 @@ export default async function RootLayout({
             <Suspense fallback={<div className="container mx-auto px-4 py-8">Loading...</div>}>
               <div className="min-h-screen flex flex-col">
                 <Header />
-                <div className="flex-1">
-                  {children}
-                </div>
+                <div className="flex-1">{children}</div>
                 <Footer />
                 {process.env.NODE_ENV === "production" && (
                   <>

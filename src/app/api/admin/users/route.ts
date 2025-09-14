@@ -30,16 +30,15 @@ export async function GET(request: Request): Promise<NextResponse> {
       }
     } else {
       const rolesArr = await getUserRoles(session.user.id);
-      if (!rolesArr.includes("admin")) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      if (!rolesArr.includes("admin"))
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
     const q = (searchParams.get("q") ?? "").trim();
     const limit = Math.min(Math.max(Number(searchParams.get("limit") ?? 50), 1), 100);
 
-    const where = q
-      ? or(ilike(user.name, `%${q}%`), ilike(user.email, `%${q}%`))
-      : undefined;
+    const where = q ? or(ilike(user.name, `%${q}%`), ilike(user.email, `%${q}%`)) : undefined;
 
     const rows = await db
       .select({

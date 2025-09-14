@@ -32,10 +32,13 @@ export async function GET(request: Request) {
       : and(
           eq(reviews.postId, parseInt(postId as string, 10)),
           isNull(reviews.deletedAt),
-          eq(reviews.status, "approved" as typeof reviewStatusEnum.enumValues[number]),
+          eq(reviews.status, "approved" as (typeof reviewStatusEnum.enumValues)[number]),
         );
 
-    const [{ total }] = await db.select({ total: sql<number>`count(*)` }).from(reviews).where(baseWhere);
+    const [{ total }] = await db
+      .select({ total: sql<number>`count(*)` })
+      .from(reviews)
+      .where(baseWhere);
 
     const rows = await db
       .select({
@@ -141,10 +144,19 @@ export async function POST(request: Request) {
     const [existing] = await db
       .select({ id: reviews.id })
       .from(reviews)
-      .where(and(eq(reviews.postId, parseInt(postId, 10)), eq(reviews.authorId, session.user.id), isNull(reviews.deletedAt)))
+      .where(
+        and(
+          eq(reviews.postId, parseInt(postId, 10)),
+          eq(reviews.authorId, session.user.id),
+          isNull(reviews.deletedAt),
+        ),
+      )
       .limit(1);
     if (existing) {
-      return NextResponse.json({ error: "You have already submitted a review for this post." }, { status: 409 });
+      return NextResponse.json(
+        { error: "You have already submitted a review for this post." },
+        { status: 409 },
+      );
     }
 
     const [newReview] = await db

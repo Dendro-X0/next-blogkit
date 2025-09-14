@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
 import type { ReactElement } from "react";
 
-export function SubscriptionControls({ email, status }: { email: string; status: "subscribed" | "unsubscribed" | "unknown" }): ReactElement {
+export function SubscriptionControls({
+  email,
+  status,
+}: {
+  email: string;
+  status: "subscribed" | "unsubscribed" | "unknown";
+}): ReactElement {
   const [isPending, startTransition] = useTransition();
 
   const onSubscribe = (): void => {
@@ -33,7 +39,12 @@ export function SubscriptionControls({ email, status }: { email: string; status:
       <Button type="button" onClick={onSubscribe} disabled={isPending || status === "subscribed"}>
         {isPending && status !== "subscribed" ? "Saving..." : "Subscribe"}
       </Button>
-      <Button type="button" variant="outline" onClick={onUnsubscribe} disabled={isPending || status === "unsubscribed"}>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={onUnsubscribe}
+        disabled={isPending || status === "unsubscribed"}
+      >
         {isPending && status !== "unsubscribed" ? "Saving..." : "Unsubscribe"}
       </Button>
     </div>

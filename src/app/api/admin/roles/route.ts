@@ -21,7 +21,8 @@ export async function GET(): Promise<NextResponse> {
       }
     } else {
       const roleSlugs = await getUserRoles(session.user.id);
-      if (!roleSlugs.includes("admin")) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      if (!roleSlugs.includes("admin"))
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const rows = await db.select().from(roles).orderBy(asc(roles.slug));

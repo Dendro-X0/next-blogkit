@@ -1,12 +1,12 @@
-import type { CSSProperties, ReactElement } from "react"
+import type { CSSProperties, ReactElement } from "react";
 
-export type SpinnerProps = { readonly size?: number; readonly className?: string }
+export type SpinnerProps = { readonly size?: number; readonly className?: string };
 
-const DEFAULT_SIZE = 24 as const
+const DEFAULT_SIZE = 24 as const;
 
 export function Spinner({ size = DEFAULT_SIZE, className = "" }: SpinnerProps): ReactElement {
-  const dimension: number = size
-  const style: CSSProperties = { width: `${dimension}px`, height: `${dimension}px` }
+  const dimension: number = size;
+  const style: CSSProperties = { width: `${dimension}px`, height: `${dimension}px` };
   return (
     <svg
       className={`animate-spin text-muted-foreground ${className}`}
@@ -26,5 +26,5 @@ export function Spinner({ size = DEFAULT_SIZE, className = "" }: SpinnerProps): 
       />
       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
     </svg>
-  )
+  );
 }

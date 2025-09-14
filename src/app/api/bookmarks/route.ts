@@ -59,7 +59,8 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => ({}))) as JsonBody;
   const postId: number | undefined = body.postId;
-  if (!Number.isFinite(postId)) return NextResponse.json({ error: "Invalid postId" }, { status: 400 });
+  if (!Number.isFinite(postId))
+    return NextResponse.json({ error: "Invalid postId" }, { status: 400 });
 
   const exists = await db
     .select({ postId: bookmarks.postId })
@@ -84,7 +85,8 @@ export async function DELETE(request: Request) {
 
   const body = (await request.json().catch(() => ({}))) as JsonBody;
   const postId: number | undefined = body.postId;
-  if (!Number.isFinite(postId)) return NextResponse.json({ error: "Invalid postId" }, { status: 400 });
+  if (!Number.isFinite(postId))
+    return NextResponse.json({ error: "Invalid postId" }, { status: 400 });
 
   const res = await db
     .delete(bookmarks)

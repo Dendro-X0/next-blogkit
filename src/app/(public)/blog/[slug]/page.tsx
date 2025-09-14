@@ -88,7 +88,9 @@ async function getPost(slug: string): Promise<ApiPostDetail | null> {
 
 export default async function BlogPostPage({
   params,
-}: { params: Promise<{ slug: string }> }): Promise<ReactElement> {
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<ReactElement> {
   const post = await getPost((await params).slug);
 
   if (!post) {
@@ -193,16 +195,22 @@ export default async function BlogPostPage({
         <Separator className="mb-8" />
 
         <Suspense
-          fallback=
-            {<div className="my-8 flex items-center gap-2 text-muted-foreground"><Spinner size={18} /> Loading comments…</div>}
+          fallback={
+            <div className="my-8 flex items-center gap-2 text-muted-foreground">
+              <Spinner size={18} /> Loading comments…
+            </div>
+          }
         >
           <CommentSection postId={post.id} />
         </Suspense>
 
         <div className="mt-16">
           <Suspense
-            fallback=
-              {<div className="text-sm text-muted-foreground"><Spinner size={18} className="mr-2 inline" /> Loading related posts…</div>}
+            fallback={
+              <div className="text-sm text-muted-foreground">
+                <Spinner size={18} className="mr-2 inline" /> Loading related posts…
+              </div>
+            }
           >
             <RelatedPosts currentPostId={post.id.toString()} tags={post.tags} />
           </Suspense>

@@ -21,7 +21,9 @@ export async function unsubscribeFromNewsletter(email: string): Promise<boolean>
   return provider.unsubscribe(email);
 }
 
-export async function getNewsletterStatus(email: string): Promise<"subscribed" | "unsubscribed" | "unknown"> {
+export async function getNewsletterStatus(
+  email: string,
+): Promise<"subscribed" | "unsubscribed" | "unknown"> {
   const provider = getNewsletterProvider();
   return provider.getStatus(email);
 }

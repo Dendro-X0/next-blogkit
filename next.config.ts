@@ -38,5 +38,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-const withNextIntl = createNextIntlPlugin();
+// Link next-intl App Router request configuration
+// See: https://next-intl.dev/docs/getting-started/app-router
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 export default withNextIntl(withMDX(nextConfig));

@@ -89,7 +89,9 @@ export default function SearchPage(): ReactElement {
   useEffect(() => {
     const load = async (): Promise<void> => {
       try {
-        const res = await fetch(`/api/posts?limit=${FETCH_LIMIT}&page=${page}`, { cache: "no-store" });
+        const res = await fetch(`/api/posts?limit=${FETCH_LIMIT}&page=${page}`, {
+          cache: "no-store",
+        });
         if (!res.ok) return;
         const items: ApiPostItem[] = await res.json();
         setHasNext(items.length > LIMIT);
@@ -391,20 +393,14 @@ export default function SearchPage(): ReactElement {
         {/* Pagination */}
         <nav className="mt-8 flex items-center justify-between">
           {page > 1 ? (
-            <Button
-              variant="outline"
-              onClick={() => router.push(`/search?page=${page - 1}`)}
-            >
+            <Button variant="outline" onClick={() => router.push(`/search?page=${page - 1}`)}>
               Previous
             </Button>
           ) : (
             <span />
           )}
           {hasNext && (
-            <Button
-              variant="outline"
-              onClick={() => router.push(`/search?page=${page + 1}`)}
-            >
+            <Button variant="outline" onClick={() => router.push(`/search?page=${page + 1}`)}>
               Next
             </Button>
           )}

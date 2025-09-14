@@ -107,7 +107,12 @@ export async function sendPasswordResetEmail({ email, name, url }: EmailParams):
     } else {
       const resend = getResend();
       if (resend) {
-        await resend.emails.send({ from: env.EMAIL_FROM as string, to: email, subject, react: element });
+        await resend.emails.send({
+          from: env.EMAIL_FROM as string,
+          to: email,
+          subject,
+          react: element,
+        });
       } else {
         // Fallback to SMTP (useful in development with MailHog)
         const transporter: Transporter = getSmtpTransporter();
@@ -157,7 +162,12 @@ export async function sendVerificationEmail({ email, name, url }: EmailParams): 
     } else {
       const resend = getResend();
       if (resend) {
-        await resend.emails.send({ from: env.EMAIL_FROM as string, to: email, subject, react: element });
+        await resend.emails.send({
+          from: env.EMAIL_FROM as string,
+          to: email,
+          subject,
+          react: element,
+        });
       } else {
         // Fallback to SMTP (useful in development with MailHog). Do not throw to avoid signup deadlocks.
         try {

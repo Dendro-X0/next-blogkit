@@ -15,7 +15,10 @@ import { useFormStatus } from "react-dom";
  * missed or failed initial verification emails.
  */
 export function ResendVerificationForm(): React.ReactElement {
-  const [formState, action] = useActionState(resendVerificationAction, {} as ResendVerificationFormState);
+  const [formState, action] = useActionState(
+    resendVerificationAction,
+    {} as ResendVerificationFormState,
+  );
   return (
     <div className="mt-6 border-t pt-6">
       <h3 className="text-sm font-medium">Didn&apos;t receive the verification email?</h3>
@@ -39,10 +42,14 @@ export function ResendVerificationForm(): React.ReactElement {
           </div>
         </div>
         {formState?.error && (
-          <p className="text-xs text-destructive" role="alert">{formState.error}</p>
+          <p className="text-xs text-destructive" role="alert">
+            {formState.error}
+          </p>
         )}
         {formState?.message && (
-          <p className="text-xs text-emerald-600" role="status">{formState.message}</p>
+          <p className="text-xs text-emerald-600" role="status">
+            {formState.message}
+          </p>
         )}
         <div className="flex justify-end">
           <SubmitButton />

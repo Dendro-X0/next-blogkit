@@ -13,10 +13,7 @@ export async function getUserRoles(userId: string): Promise<readonly RoleSlug[]>
   return Array.from(new Set(list)) as readonly RoleSlug[];
 }
 
-export async function hasAnyRole(
-  userId: string,
-  required: readonly RoleSlug[],
-): Promise<boolean> {
+export async function hasAnyRole(userId: string, required: readonly RoleSlug[]): Promise<boolean> {
   const userRoleSlugs = await getUserRoles(userId);
   return required.some((r) => userRoleSlugs.includes(r));
 }

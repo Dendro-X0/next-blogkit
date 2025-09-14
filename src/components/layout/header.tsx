@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import type { ReactElement } from "react";
-import { env } from "~/env";
 import { getSessionWithRoles } from "@/lib/auth/session";
 import { HeaderClient } from "./header-client";
+import { env } from "~/env";
 
 export async function Header(): Promise<ReactElement> {
   const hdrs = new Headers(await headers());

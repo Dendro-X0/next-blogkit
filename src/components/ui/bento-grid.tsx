@@ -3,13 +3,7 @@ import { ArrowRightIcon } from "@radix-ui/react-icons";
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
-const BentoGrid = ({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) => {
+const BentoGrid = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
     <div
       className={cn(

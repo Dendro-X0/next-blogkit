@@ -54,7 +54,10 @@ export const authOptions = {
     sendResetPassword: async ({
       user,
       url,
-    }: { user: { email: string; name?: string | null }; url: string }) => {
+    }: {
+      user: { email: string; name?: string | null };
+      url: string;
+    }) => {
       await sendPasswordResetEmail({
         email: user.email,
         name: user.name || user.email,
@@ -71,7 +74,10 @@ export const authOptions = {
     sendVerificationEmail: async ({
       user,
       url,
-    }: { user: { email: string; name: string | null }; url: string }) => {
+    }: {
+      user: { email: string; name: string | null };
+      url: string;
+    }) => {
       await sendVerificationEmail({ email: user.email, url, name: user.name as string });
     },
   },

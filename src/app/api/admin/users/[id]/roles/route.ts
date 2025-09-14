@@ -34,17 +34,26 @@ export async function POST(
       }
     } else {
       const rolesArr = await getUserRoles(session.user.id);
-      if (!rolesArr.includes("admin")) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      if (!rolesArr.includes("admin"))
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const body = (await request.json().catch(() => ({}))) as { role?: string };
     const roleSlug = typeof body.role === "string" ? body.role.trim() : "";
     if (!roleSlug) return NextResponse.json({ error: "role is required" }, { status: 400 });
 
-    const [targetUser] = await db.select({ id: user.id }).from(user).where(eq(user.id, targetUserId)).limit(1);
+    const [targetUser] = await db
+      .select({ id: user.id })
+      .from(user)
+      .where(eq(user.id, targetUserId))
+      .limit(1);
     if (!targetUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    const [roleRow] = await db.select({ id: roles.id }).from(roles).where(eq(roles.slug, roleSlug)).limit(1);
+    const [roleRow] = await db
+      .select({ id: roles.id })
+      .from(roles)
+      .where(eq(roles.slug, roleSlug))
+      .limit(1);
     if (!roleRow) return NextResponse.json({ error: "Role not found" }, { status: 404 });
 
     // Upsert assignment (avoid duplicate by composite PK)
@@ -83,17 +92,24 @@ export async function DELETE(
       }
     } else {
       const rolesArr = await getUserRoles(session.user.id);
-      if (!rolesArr.includes("admin")) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      if (!rolesArr.includes("admin"))
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const body = (await request.json().catch(() => ({}))) as { role?: string };
     const roleSlug = typeof body.role === "string" ? body.role.trim() : "";
     if (!roleSlug) return NextResponse.json({ error: "role is required" }, { status: 400 });
 
-    const [roleRow] = await db.select({ id: roles.id }).from(roles).where(eq(roles.slug, roleSlug)).limit(1);
+    const [roleRow] = await db
+      .select({ id: roles.id })
+      .from(roles)
+      .where(eq(roles.slug, roleSlug))
+      .limit(1);
     if (!roleRow) return NextResponse.json({ error: "Role not found" }, { status: 404 });
 
-    await db.delete(userRoles).where(and(eq(userRoles.userId, targetUserId), eq(userRoles.roleId, roleRow.id)));
+    await db
+      .delete(userRoles)
+      .where(and(eq(userRoles.userId, targetUserId), eq(userRoles.roleId, roleRow.id)));
 
     return NextResponse.json({ ok: true });
   } catch (error) {

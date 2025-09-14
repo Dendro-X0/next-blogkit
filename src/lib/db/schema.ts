@@ -261,19 +261,16 @@ export type UserPreferencesRow = typeof userPreferences.$inferSelect;
 export type NewUserPreferencesRow = typeof userPreferences.$inferInsert;
 
 // --- RBAC TABLES ---
-export const roles = pgTable(
-  "roles",
-  {
-    id: serial("id").primaryKey(),
-    slug: varchar("slug", { length: 64 }).notNull().unique(),
-    name: varchar("name", { length: 128 }).notNull(),
-    description: text("description"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => new Date()),
-  },
-);
+export const roles = pgTable("roles", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 64 }).notNull().unique(),
+  name: varchar("name", { length: 128 }).notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
 
 export type Role = typeof roles.$inferSelect;
 export type NewRole = typeof roles.$inferInsert;

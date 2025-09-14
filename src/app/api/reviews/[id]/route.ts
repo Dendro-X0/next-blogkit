@@ -29,8 +29,8 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       typeof body.title === "string"
         ? body.title.trim().slice(0, 120)
         : body.title === null
-        ? null
-        : undefined;
+          ? null
+          : undefined;
     const rating = body.rating ?? undefined;
 
     if (content !== undefined) {
@@ -51,11 +51,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       .select({ id: reviews.id })
       .from(reviews)
       .where(
-        and(
-          eq(reviews.id, id),
-          eq(reviews.authorId, session.user.id),
-          isNull(reviews.deletedAt),
-        ),
+        and(eq(reviews.id, id), eq(reviews.authorId, session.user.id), isNull(reviews.deletedAt)),
       )
       .limit(1);
 
@@ -95,11 +91,7 @@ export async function DELETE(_request: Request, context: { params: Promise<{ id:
       .select({ id: reviews.id })
       .from(reviews)
       .where(
-        and(
-          eq(reviews.id, id),
-          eq(reviews.authorId, session.user.id),
-          isNull(reviews.deletedAt),
-        ),
+        and(eq(reviews.id, id), eq(reviews.authorId, session.user.id), isNull(reviews.deletedAt)),
       )
       .limit(1);
 

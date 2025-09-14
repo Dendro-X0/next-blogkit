@@ -57,7 +57,9 @@ export async function signupAction(
   }
 
   try {
-    const { email, password, username } = validatedFields.data as SignupInput & { username: string };
+    const { email, password, username } = validatedFields.data as SignupInput & {
+      username: string;
+    };
 
     // Enforce username uniqueness
     const existing = await db.query.user.findFirst({ where: eq(user.username, username) });
@@ -69,7 +71,14 @@ export async function signupAction(
     }
 
     await auth.api.signUpEmail({
-      body: { email, password, name, username, displayUsername: username, onboardingComplete: false },
+      body: {
+        email,
+        password,
+        name,
+        username,
+        displayUsername: username,
+        onboardingComplete: false,
+      },
     });
   } catch (error: unknown) {
     if (isAuthError(error)) {

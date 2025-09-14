@@ -25,10 +25,17 @@ import {
 
 import LanguageSwitcher from "@/components/i18n/language-switcher";
 import { ThemeToggleSwitch } from "@/components/theme/theme-toggle-switch";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth/auth-client";
 
-export type HeaderClientProps = Readonly<{ isAdmin: boolean }>; 
+export type HeaderClientProps = Readonly<{ isAdmin: boolean }>;
 
 export function HeaderClient({ isAdmin }: HeaderClientProps) {
   const pathname = usePathname();
@@ -94,7 +101,10 @@ export function HeaderClient({ isAdmin }: HeaderClientProps) {
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.image || "/placeholder.svg"} alt={user.name || ""} />
                       <AvatarFallback>
-                        {user.name?.split(" ").map((n) => n[0]).join("")}
+                        {user.name
+                          ?.split(" ")
+                          .map((n) => n[0])
+                          .join("")}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -103,7 +113,9 @@ export function HeaderClient({ isAdmin }: HeaderClientProps) {
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1 leading-none">
                       <p className="font-medium">{user.name}</p>
-                      <p className="w-[200px] truncate text-sm text-muted-foreground">{user.email}</p>
+                      <p className="w-[200px] truncate text-sm text-muted-foreground">
+                        {user.email}
+                      </p>
                     </div>
                   </div>
                   <DropdownMenuSeparator />
@@ -155,7 +167,13 @@ export function HeaderClient({ isAdmin }: HeaderClientProps) {
 
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu" title="Open menu">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                  aria-label="Open menu"
+                  title="Open menu"
+                >
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
@@ -203,10 +221,22 @@ export function HeaderClient({ isAdmin }: HeaderClientProps) {
                     </div>
                   ) : user ? (
                     <div className="flex flex-col gap-4">
-                      <Link href="/profile" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+                      <Link
+                        href="/profile"
+                        className="flex items-center gap-2"
+                        onClick={() => setIsOpen(false)}
+                      >
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={user.image || "/placeholder.svg"} alt={user.name || ""} />
-                          <AvatarFallback>{user.name?.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
+                          <AvatarImage
+                            src={user.image || "/placeholder.svg"}
+                            alt={user.name || ""}
+                          />
+                          <AvatarFallback>
+                            {user.name
+                              ?.split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
                           <span className="font-medium">{user.name}</span>

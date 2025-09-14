@@ -1,6 +1,15 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { categories, posts, postsToTags, tags, user, userProfile, roles, userRoles } from "./schema";
+import {
+  categories,
+  posts,
+  postsToTags,
+  tags,
+  user,
+  userProfile,
+  roles,
+  userRoles,
+} from "./schema";
 import { config as loadEnv } from "dotenv";
 import { existsSync } from "node:fs";
 

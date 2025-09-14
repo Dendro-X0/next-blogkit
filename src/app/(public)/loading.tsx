@@ -1,5 +1,5 @@
-import { Spinner } from "@/components/ui/spinner"
-import type { ReactElement } from "react"
+import { Spinner } from "@/components/ui/spinner";
+import type { ReactElement } from "react";
 
 export default function Loading(): ReactElement {
   return (
@@ -9,5 +9,5 @@ export default function Loading(): ReactElement {
         <span>Loading...</span>
       </div>
     </div>
-  )
+  );
 }

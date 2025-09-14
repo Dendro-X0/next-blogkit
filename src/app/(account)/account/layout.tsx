@@ -10,22 +10,34 @@ export default function AccountLayout({ children }: { children: ReactNode }): Re
       <nav aria-label="Account sections" className="mb-8 border-b pb-4">
         <ul className="flex flex-wrap gap-4 text-sm">
           <li>
-            <Link className="hover:underline" href="/account">Dashboard</Link>
+            <Link className="hover:underline" href="/account">
+              Dashboard
+            </Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/account/comments">My Comments</Link>
+            <Link className="hover:underline" href="/account/comments">
+              My Comments
+            </Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/account/bookmarks">Bookmarks</Link>
+            <Link className="hover:underline" href="/account/bookmarks">
+              Bookmarks
+            </Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/account/subscriptions">Subscriptions</Link>
+            <Link className="hover:underline" href="/account/subscriptions">
+              Subscriptions
+            </Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/account/profile">Profile</Link>
+            <Link className="hover:underline" href="/account/profile">
+              Profile
+            </Link>
           </li>
           <li>
-            <Link className="hover:underline" href="/account/settings">Settings</Link>
+            <Link className="hover:underline" href="/account/settings">
+              Settings
+            </Link>
           </li>
         </ul>
       </nav>

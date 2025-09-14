@@ -53,7 +53,9 @@ export async function updateProfileAction(data: {
     if (typeof username === "string" && username.length > 0) {
       const valid = /^[a-zA-Z0-9._-]{3,30}$/.test(username);
       if (!valid) {
-        return { error: "Invalid username. Use 3-30 letters, numbers, dots, underscores, or hyphens." } as const;
+        return {
+          error: "Invalid username. Use 3-30 letters, numbers, dots, underscores, or hyphens.",
+        } as const;
       }
       // Enforce uniqueness
       const existing = await db.query.user.findFirst({ where: eq(user.username, username) });

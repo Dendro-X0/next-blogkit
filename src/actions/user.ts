@@ -32,6 +32,7 @@ export async function getUserProfile() {
 
 export async function updateProfileAction(data: {
   name: string;
+  username?: string;
   bio?: string;
   location?: string;
   image?: string;
@@ -46,9 +47,22 @@ export async function updateProfileAction(data: {
   // Validation removed as schema is no longer defined
 
   try {
-    const { name, image } = data;
+    const { name, username, image } = data;
 
-    await db.update(user).set({ name, image }).where(eq(user.id, session.user.id));
+    // Optional: validate username format if provided
+    if (typeof username === "string" && username.length > 0) {
+      const valid = /^[a-zA-Z0-9._-]{3,30}$/.test(username);
+      if (!valid) {
+        return { error: "Invalid username. Use 3-30 letters, numbers, dots, underscores, or hyphens." } as const;
+      }
+      // Enforce uniqueness
+      const existing = await db.query.user.findFirst({ where: eq(user.username, username) });
+      if (existing && existing.id !== session.user.id) {
+        return { error: "Username is already taken." } as const;
+      }
+    }
+
+    await db.update(user).set({ name, image, username }).where(eq(user.id, session.user.id));
 
     // This part seems to be for a separate userProfile table which is not fully implemented in the settings form.
     // We will focus on updating the main user table for now.
@@ -63,6 +77,7 @@ export async function updateProfileAction(data: {
 // Create separate async functions for each export to comply with "use server" rules
 export async function updateProfile(data: {
   name: string;
+  username?: string;
   bio?: string;
   location?: string;
   image?: string;

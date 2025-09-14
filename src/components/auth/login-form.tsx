@@ -37,21 +37,21 @@ export function LoginForm({ formState }: LoginFormProps): React.ReactElement {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="identifier">Email or Username</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
+            id="identifier"
+            name="identifier"
+            type="text"
+            placeholder="email@example.com or johndoe"
             className="pl-10"
             autoComplete="username"
             required
           />
         </div>
-        {formState.error?.fields?.email && (
-          <p className="text-sm text-destructive">{formState.error.fields.email.join(", ")}</p>
+        {formState.error?.fields?.identifier && (
+          <p className="text-sm text-destructive">{formState.error.fields.identifier.join(", ")}</p>
         )}
       </div>
 

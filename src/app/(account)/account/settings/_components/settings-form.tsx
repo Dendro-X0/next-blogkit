@@ -95,6 +95,7 @@ export function SettingsForm({ user, avatarUrl, isTwoFactorEnabled }: SettingsFo
           onSave={handleProfileSave}
           initialData={{
             name: user.name || "",
+            username: (user as { username?: string }).username || "",
             email: user.email,
             bio: "", // This field can be populated from a separate profile table if it exists
             location: "",

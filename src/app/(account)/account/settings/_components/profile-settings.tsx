@@ -14,6 +14,7 @@ import { useState } from "react";
 // This interface should align with the fields managed in the profile form
 export interface ProfileData {
   name: string;
+  username?: string;
   bio?: string;
   location?: string;
   image?: string; // This will now be the S3 key
@@ -21,13 +22,14 @@ export interface ProfileData {
 
 interface ProfileSettingsProps {
   isPending: boolean;
-  initialData: ProfileData & { email: string; avatarUrl: string | null };
+  initialData: ProfileData & { email: string; avatarUrl: string | null; username?: string };
   onSave: (data: ProfileData) => Promise<void>;
 }
 
 export function ProfileSettings({ isPending, initialData, onSave }: ProfileSettingsProps) {
   const [profileData, setProfileData] = useState<ProfileData>({
     name: initialData.name || "",
+    username: initialData.username || "",
     bio: initialData.bio || undefined,
     location: initialData.location || undefined,
     image: initialData.image || undefined,
@@ -75,6 +77,17 @@ export function ProfileSettings({ isPending, initialData, onSave }: ProfileSetti
             id="name"
             value={profileData.name}
             onChange={(e) => setProfileData((prev) => ({ ...prev, name: e.target.value }))}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            value={profileData.username || ""}
+            onChange={(e) => setProfileData((prev) => ({ ...prev, username: e.target.value }))}
+            placeholder="johndoe"
+            autoComplete="username"
           />
         </div>
 

@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2025-09-14
+
+### Added
+- Username support for authentication and profile:
+  - Users can sign in using either email or username plus password.
+  - Signup now collects a unique `username` with validation.
+  - Profile settings allow editing `username` with format and uniqueness checks.
+
+### Changed
+- `LoginSchema` now accepts `identifier` (email or username) instead of `email`.
+- `src/components/auth/login-form.tsx` updated to display an "Email or Username" field.
+- `src/actions/login.ts` routes to `auth.api.signInEmail` or `auth.api.signInUsername` based on the identifier.
+- `SignupSchema` extended with `username` rules.
+- `src/actions/signup.ts` enforces username uniqueness (Drizzle) and passes `username`/`displayUsername` to Better Auth.
+- `src/app/(account)/account/settings/_components/profile-settings.tsx` adds a `Username` field.
+- `src/actions/user.ts` supports updating `username` with validation and uniqueness guard.
+
+### Notes
+- No DB migration required. `auth-schema.ts` already contains `user.username` (unique) and `displayUsername`.
+
 ## [1.1.0] - 2025-09-13
 
 ### Added

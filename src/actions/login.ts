@@ -10,7 +10,7 @@ export type LoginFormState = {
   error?: {
     message?: string;
     fields?: {
-      email?: string[];
+      identifier?: string[];
       password?: string[];
     };
   };
@@ -32,9 +32,17 @@ export async function loginAction(
       };
     }
 
-    const { email, password } = validatedFields.data;
+    const { identifier, password } = validatedFields.data as {
+      identifier: string;
+      password: string;
+    };
+    const isEmail = /.+@.+\..+/.test(identifier);
 
-    await auth.api.signInEmail({ body: { email, password } });
+    if (isEmail) {
+      await auth.api.signInEmail({ body: { email: identifier, password } });
+    } else {
+      await auth.api.signInUsername({ body: { username: identifier, password } });
+    }
     redirect("/profile?message=Logged%20in%20successfully");
   } catch (error: unknown) {
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {

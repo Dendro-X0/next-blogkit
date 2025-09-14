@@ -13,6 +13,7 @@ const initialState: SignupFormState = {
   values: {
     firstName: "",
     lastName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",

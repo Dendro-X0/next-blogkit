@@ -4,6 +4,9 @@ import { auth } from "@/lib/auth/auth";
 import { isAuthError } from "@/lib/auth/auth-utils";
 import { type SignupInput, SignupSchema } from "@/lib/validations/auth";
 import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
+import { user } from "../../auth-schema";
+import { eq } from "drizzle-orm";
 
 export type SignupFormState = {
   error?: {
@@ -13,6 +16,7 @@ export type SignupFormState = {
   values: {
     firstName: string;
     lastName: string;
+    username: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -36,6 +40,7 @@ export async function signupAction(
   const formValues = {
     firstName: (rawFormData.firstName as string) || "",
     lastName: (rawFormData.lastName as string) || "",
+    username: (rawFormData.username as string) || "",
     email: (rawFormData.email as string) || "",
     password: (rawFormData.password as string) || "",
     confirmPassword: (rawFormData.confirmPassword as string) || "",
@@ -52,8 +57,20 @@ export async function signupAction(
   }
 
   try {
-    const { email, password } = validatedFields.data;
-    await auth.api.signUpEmail({ body: { email, password, name, onboardingComplete: false } });
+    const { email, password, username } = validatedFields.data as SignupInput & { username: string };
+
+    // Enforce username uniqueness
+    const existing = await db.query.user.findFirst({ where: eq(user.username, username) });
+    if (existing) {
+      return {
+        error: { fields: { username: ["Username is already taken."] } },
+        values: formValues,
+      };
+    }
+
+    await auth.api.signUpEmail({
+      body: { email, password, name, username, displayUsername: username, onboardingComplete: false },
+    });
   } catch (error: unknown) {
     if (isAuthError(error)) {
       return {

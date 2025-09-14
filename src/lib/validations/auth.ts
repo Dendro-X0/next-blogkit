@@ -1,9 +1,18 @@
 import { z } from "zod";
 
 export const LoginSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
+  identifier: z
+    .string()
+    .min(3, { message: "Please enter your email or username." })
+    .max(100, { message: "Identifier is too long." })
+    .refine(
+      (val) => {
+        const isEmail = /.+@.+\..+/.test(val);
+        const isUsername = /^[a-zA-Z0-9._-]{3,30}$/.test(val);
+        return isEmail || isUsername;
+      },
+      { message: "Enter a valid email or username." },
+    ),
   password: z.string().min(1, {
     message: "Password is required.",
   }),
@@ -14,6 +23,13 @@ export const SignupSchema = z
     name: z.string().min(3, {
       message: "Name must be at least 3 characters long.",
     }),
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 3 characters long." })
+      .max(30, { message: "Username must be at most 30 characters long." })
+      .regex(/^[a-zA-Z0-9._-]+$/, {
+        message: "Username can only contain letters, numbers, dots, underscores, and hyphens.",
+      }),
     email: z.string().email({
       message: "Please enter a valid email address.",
     }),

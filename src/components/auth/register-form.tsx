@@ -67,6 +67,21 @@ export function RegisterForm({ formState }: RegisterFormProps): ReactElement {
       )}
 
       <div className="space-y-2">
+        <Label htmlFor="username">Username</Label>
+        <Input
+          id="username"
+          name="username"
+          placeholder="johndoe"
+          autoComplete="username"
+          required
+          defaultValue={formState.values.username}
+        />
+        {formState.error?.fields?.username && (
+          <p className="text-sm text-destructive">{formState.error.fields.username.join(", ")}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <div className="relative flex items-center">
           <Mail className="absolute left-3 h-4 w-4 text-muted-foreground" />

@@ -35,6 +35,7 @@ jobs:
 
       - name: Biome Lint (non-blocking)
         run: pnpm run lint:biome
+        continue-on-error: true
 
       - name: Build
         run: pnpm build

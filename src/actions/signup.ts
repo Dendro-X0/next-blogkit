@@ -1,12 +1,12 @@
 "use server";
 
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 import { isAuthError } from "@/lib/auth/auth-utils";
-import { type SignupInput, SignupSchema } from "@/lib/validations/auth";
-import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { type SignupInput, SignupSchema } from "@/lib/validations/auth";
 import { user } from "../../auth-schema";
-import { eq } from "drizzle-orm";
 
 export type SignupFormState = {
   error?: {
@@ -25,7 +25,7 @@ export type SignupFormState = {
 };
 
 export async function signupAction(
-  prevState: SignupFormState,
+  _prevState: SignupFormState,
   formData: FormData,
 ): Promise<SignupFormState> {
   const rawFormData = Object.fromEntries(formData.entries());

@@ -1,8 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { isAuthError } from "@/lib/auth/auth-utils";
-import { headers } from "next/headers";
 
 export type TwoFactorFormState = {
   error?: string;
@@ -61,7 +61,7 @@ export async function generateTwoFactorSecret(
 }
 
 export async function verifyTwoFactorCode(
-  prevState?: TwoFactorFormState,
+  _prevState?: TwoFactorFormState,
   formData?: FormData,
 ): Promise<TwoFactorFormState> {
   const code = formData?.get("code") as string;
@@ -85,7 +85,7 @@ export async function verifyTwoFactorCode(
 }
 
 export async function enableTwoFactor(
-  prevState?: TwoFactorFormState,
+  _prevState?: TwoFactorFormState,
   formData?: FormData,
 ): Promise<TwoFactorFormState> {
   const code = formData?.get("code") as string;

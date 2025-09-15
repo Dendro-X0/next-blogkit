@@ -1,9 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 import { isAuthError } from "@/lib/auth/auth-utils";
 import { LoginSchema } from "@/lib/validations/auth";
-import { redirect } from "next/navigation";
 
 export type LoginFormState = {
   success?: boolean;
@@ -17,7 +17,7 @@ export type LoginFormState = {
 };
 
 export async function loginAction(
-  prevState: LoginFormState,
+  _prevState: LoginFormState,
   formData: FormData,
 ): Promise<LoginFormState> {
   try {

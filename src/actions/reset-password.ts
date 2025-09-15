@@ -1,16 +1,16 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 import { isAuthError } from "@/lib/auth/auth-utils";
 import { ResetPasswordSchema } from "@/lib/validations/auth";
-import { redirect } from "next/navigation";
 
 export type FormState = {
   error?: { message: string };
   message?: string;
 };
 export async function resetPasswordAction(
-  prevState: FormState,
+  _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
   const data = Object.fromEntries(formData.entries());

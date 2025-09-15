@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Save } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 // This interface should align with the fields managed in the profile form
 export interface ProfileData {
@@ -27,6 +27,8 @@ interface ProfileSettingsProps {
 }
 
 export function ProfileSettings({ isPending, initialData, onSave }: ProfileSettingsProps) {
+  const uid = useId();
+  const fid = (name: string): string => `${uid}-${name}`;
   const [profileData, setProfileData] = useState<ProfileData>({
     name: initialData.name || "",
     username: initialData.username || "",
@@ -72,18 +74,20 @@ export function ProfileSettings({ isPending, initialData, onSave }: ProfileSetti
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor={fid("name")}>Name</Label>
           <Input
-            id="name"
+            id={fid("name")}
             value={profileData.name}
             onChange={(e) => setProfileData((prev) => ({ ...prev, name: e.target.value }))}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
+          <Label htmlFor={fid("username")}>
+            Username
+          </Label>
           <Input
-            id="username"
+            id={fid("username")}
             value={profileData.username || ""}
             onChange={(e) => setProfileData((prev) => ({ ...prev, username: e.target.value }))}
             placeholder="johndoe"
@@ -92,14 +96,18 @@ export function ProfileSettings({ isPending, initialData, onSave }: ProfileSetti
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" value={initialData.email || ""} disabled />
+          <Label htmlFor={fid("email")}>
+            Email
+          </Label>
+          <Input id={fid("email")} type="email" value={initialData.email || ""} disabled />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
+          <Label htmlFor={fid("bio")}>
+            Bio
+          </Label>
           <Textarea
-            id="bio"
+            id={fid("bio")}
             value={profileData.bio || ""}
             onChange={(e) => setProfileData((prev) => ({ ...prev, bio: e.target.value }))}
             rows={3}
@@ -108,9 +116,11 @@ export function ProfileSettings({ isPending, initialData, onSave }: ProfileSetti
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="location">Location</Label>
+          <Label htmlFor={fid("location")}>
+            Location
+          </Label>
           <Input
-            id="location"
+            id={fid("location")}
             value={profileData.location || ""}
             onChange={(e) => setProfileData((prev) => ({ ...prev, location: e.target.value }))}
             placeholder="City, Country"

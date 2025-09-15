@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import QRCode from "qrcode";
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 interface TwoFactorSettingsProps {
@@ -27,6 +27,8 @@ interface TwoFactorSettingsProps {
 export function TwoFactorSettings({
   isTwoFactorEnabled: initialIsTwoFactorEnabled,
 }: TwoFactorSettingsProps) {
+  const uid = useId();
+  const fid = (name: string): string => `${uid}-${name}`;
   const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(initialIsTwoFactorEnabled);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [secret, setSecret] = useState<string | null>(null);
@@ -133,9 +135,11 @@ export function TwoFactorSettings({
                   <DialogDescription>Enter your password to disable 2FA.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2 py-2">
-                  <Label htmlFor="disable-password">Password</Label>
+                  <Label htmlFor={fid("disable-password")}>
+                    Password
+                  </Label>
                   <Input
-                    id="disable-password"
+                    id={fid("disable-password")}
                     type="password"
                     value={disablePassword}
                     onChange={(e) => setDisablePassword(e.target.value)}
@@ -170,9 +174,11 @@ export function TwoFactorSettings({
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="enable-password">Password</Label>
+                  <Label htmlFor={fid("enable-password")}>
+                    Password
+                  </Label>
                   <Input
-                    id="enable-password"
+                    id={fid("enable-password")}
                     type="password"
                     value={enablePassword}
                     onChange={(e) => setEnablePassword(e.target.value)}
@@ -197,9 +203,11 @@ export function TwoFactorSettings({
                   </div>
                 )}
                 <div className="space-y-2">
-                  <Label htmlFor="2fa-code">Verification Code</Label>
+                  <Label htmlFor={fid("2fa-code")}>
+                    Verification Code
+                  </Label>
                   <Input
-                    id="2fa-code"
+                    id={fid("2fa-code")}
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                     placeholder="Enter 6-digit code"

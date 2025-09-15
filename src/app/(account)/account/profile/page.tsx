@@ -46,8 +46,9 @@ export default async function ProfilePage(): Promise<ReactElement> {
   const userPosts = userData.posts;
   const userComments = userData.comments;
 
+  const titleId = `profile-title-${session.user.id}`;
   return (
-    <main className="container mx-auto px-4 py-8" aria-labelledby="profile-title">
+    <main className="container mx-auto px-4 py-8" aria-labelledby={titleId}>
       <UrlMessageToaster />
       <div className="max-w-4xl mx-auto">
         {/* Profile Header */}
@@ -71,7 +72,7 @@ export default async function ProfilePage(): Promise<ReactElement> {
 
               <div className="flex-1 text-center md:text-left">
                 <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                  <h1 id="profile-title" className="text-3xl font-bold">
+                  <h1 id={titleId} className="text-3xl font-bold">
                     {userData.name || "New User"}
                   </h1>
                   <Link href="/account/settings">

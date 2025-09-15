@@ -1,12 +1,12 @@
 "use server";
 
+import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { isAuthError } from "@/lib/auth/auth-utils";
 import { db } from "@/lib/db";
-import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
-import { user } from "../../auth-schema";
 import { userPreferences } from "@/lib/db/schema";
+import { user } from "../../auth-schema";
 
 // Profile schema removed as it's only used as a type
 
@@ -172,7 +172,7 @@ export async function updateSecuritySettings(data: {
   if (typeof data.loginAlerts !== "boolean") {
     return { error: "Invalid loginAlerts" } as const;
   }
-  if (!Object.prototype.hasOwnProperty.call(allowed, data.sessionTimeout)) {
+  if (!Object.hasOwn(allowed, data.sessionTimeout)) {
     return { error: "Invalid sessionTimeout" } as const;
   }
   const sessionTimeoutMinutes: number = allowed[data.sessionTimeout];

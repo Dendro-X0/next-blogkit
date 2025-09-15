@@ -24,7 +24,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Eye, EyeOff, Shield, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { toast } from "sonner";
 import { TwoFactorSettings } from "./two-factor-settings";
 
@@ -56,6 +56,8 @@ export function SecuritySettings({
   onPasswordChange,
   onDeleteAccount,
 }: SecuritySettingsProps) {
+  const uid = useId();
+  const fid = (name: string): string => `${uid}-${name}`;
   const [security, setSecurity] = useState<SecurityData>(initialData);
   const [passwordData, setPasswordData] = useState<PasswordData>({
     currentPassword: "",
@@ -171,10 +173,10 @@ export function SecuritySettings({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="currentPassword">Current Password</Label>
+            <Label htmlFor={fid("currentPassword")}>Current Password</Label>
             <div className="relative">
               <Input
-                id="currentPassword"
+                id={fid("currentPassword")}
                 type={showCurrentPassword ? "text" : "password"}
                 value={passwordData.currentPassword}
                 onChange={(e) =>
@@ -193,10 +195,12 @@ export function SecuritySettings({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="newPassword">New Password</Label>
+            <Label htmlFor={fid("newPassword")}>
+              New Password
+            </Label>
             <div className="relative">
               <Input
-                id="newPassword"
+                id={fid("newPassword")}
                 type={showNewPassword ? "text" : "password"}
                 value={passwordData.newPassword}
                 onChange={(e) =>
@@ -215,9 +219,11 @@ export function SecuritySettings({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm New Password</Label>
+            <Label htmlFor={fid("confirmPassword")}>
+              Confirm New Password
+            </Label>
             <Input
-              id="confirmPassword"
+              id={fid("confirmPassword")}
               type="password"
               value={passwordData.confirmPassword}
               onChange={(e) =>
@@ -270,19 +276,23 @@ export function SecuritySettings({
               </DialogHeader>
               <div className="space-y-4 py-2">
                 <div className="space-y-2">
-                  <Label htmlFor="confirmText">Confirmation</Label>
+                  <Label htmlFor={fid("confirmText")}>
+                    Confirmation
+                  </Label>
                   <Input
-                    id="confirmText"
+                    id={fid("confirmText")}
                     value={deleteConfirm}
                     onChange={(e) => setDeleteConfirm(e.target.value)}
                     placeholder="Type DELETE"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="deletePassword">Password (optional)</Label>
+                  <Label htmlFor={fid("deletePassword")}>
+                    Password (optional)
+                  </Label>
                   <div className="relative">
                     <Input
-                      id="deletePassword"
+                      id={fid("deletePassword")}
                       type={showDeletePassword ? "text" : "password"}
                       value={deletePassword}
                       onChange={(e) => setDeletePassword(e.target.value)}

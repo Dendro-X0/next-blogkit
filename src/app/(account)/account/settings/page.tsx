@@ -29,10 +29,12 @@ export default async function SettingsPage(): Promise<ReactElement> {
 
   const avatarUrl = user.image && env.S3_PUBLIC_URL ? `${env.S3_PUBLIC_URL}/${user.image}` : null;
 
+  // Generate a unique id for aria-labelledby linkage
+  const titleId = `settings-title-${session.user.id}`;
   return (
-    <main className="container mx-auto px-4 py-8" aria-labelledby="settings-title">
+    <main className="container mx-auto px-4 py-8" aria-labelledby={titleId}>
       <div className="max-w-4xl mx-auto">
-        <h1 id="settings-title" className="sr-only">
+        <h1 id={titleId} className="sr-only">
           Settings
         </h1>
         <PageHeader title="Settings" description="Manage your account settings and preferences" />

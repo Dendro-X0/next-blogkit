@@ -9,7 +9,7 @@ export type FormState = {
 };
 
 export async function forgotPasswordAction(
-  prevState: FormState,
+  _prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
   const data = Object.fromEntries(formData.entries());

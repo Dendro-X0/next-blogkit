@@ -22,6 +22,17 @@ import { format } from "date-fns";
 import { CalendarIcon, Eye, Plus, Save, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import remarkToc from "remark-toc";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export interface PostData {
   title: string;
@@ -46,6 +57,39 @@ interface Category {
   name: string;
   description: string | null;
 }
+
+// Preview content rendered inside the Admin editor.
+// Uses the same typography as the public blog `.prose` content.
+const PreviewContent = ({
+  title,
+  content,
+}: {
+  title: string;
+  content: string;
+}) => {
+  return (
+    <article className="mx-auto max-w-4xl">
+      <h1 className="mb-2 text-3xl font-bold">{title || "Untitled"}</h1>
+      <div className="prose">
+        <ReactMarkdown
+          remarkPlugins={[remarkToc]}
+          rehypePlugins={[
+            rehypeSlug,
+            [
+              rehypeAutolinkHeadings,
+              {
+                behavior: "append",
+                properties: { ariaHidden: true, tabIndex: -1, className: "hash-link" },
+              },
+            ],
+          ]}
+        >
+          {content || ""}
+        </ReactMarkdown>
+      </div>
+    </article>
+  );
+};
 
 interface PostEditorProps {
   initialData?: Partial<PostData>;
@@ -302,10 +346,25 @@ export function PostEditor({
             <Separator />
 
             <div className="flex justify-between gap-2">
-              <Button variant="outline" size="sm">
-                <Eye className="h-4 w-4 mr-2" />
-                Preview
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Eye className="h-4 w-4 mr-2" />
+                    Preview
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-3xl md:max-w-4xl lg:max-w-5xl h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Preview</DialogTitle>
+                  </DialogHeader>
+                  <div className="px-1">
+                    <PreviewContent title={formData.title} content={formData.content} />
+                    <p className="mt-6 text-xs text-muted-foreground">
+                      Note: Preview shows Markdown styling. Custom MDX components may not render here.
+                    </p>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Button onClick={() => handleSave(formData.status)} disabled={isLoading} size="sm">
                 <Save className="h-4 w-4 mr-2" />
                 {isLoading ? "Saving..." : "Save"}

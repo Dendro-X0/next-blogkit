@@ -145,7 +145,7 @@ export default async function BlogPostPage({
 
         <Separator className="mb-8" />
 
-        <div className="prose prose-slate max-w-none mb-12">
+        <div className="prose mb-12">
           {post.format === "standard" && (
             <MDXRemote source={post.content} components={{ Callout }} />
           )}

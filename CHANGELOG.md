@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2025-09-17
+
+### Added
+- Keyboard shortcuts to focus the header search: `/`, `Ctrl+K` (Windows/Linux) and `⌘K` (macOS), with inline hint badges and `aria-keyshortcuts` for accessibility.
+  - `src/components/layout/header-client.tsx`
+- Modern MDX/Markdown `.prose` typography for blog posts (larger responsive headings, improved spacing, lists, quotes, code, tables, images, and balanced margins).
+  - `src/app/globals.css`
+- Admin Post Editor Preview dialog that renders Markdown using the same `.prose` styles for WYSIWYG consistency.
+  - `src/app/(admin)/admin/_components/post-editor.tsx`
+
+### Changed
+- Blog post page now uses the new `.prose` container for content rendering.
+  - `src/app/(public)/blog/[slug]/page.tsx`
+- Build script now uses Turbopack: `next build --turbopack`.
+  - `package.json`
+
+### Fixed
+- Dev server failed to start with Turbopack due to non-serializable options in `@next/mdx`. Removed `@next/mdx` integration and `mdx` from `pageExtensions`.
+  - `next.config.ts`
+- Header not updating immediately after login. Passed server `initialUser` to `HeaderClient` for hydration-correct initial state while keeping reactive session updates.
+  - `src/components/layout/header.tsx`
+  - `src/components/layout/header-client.tsx`
+
 ## [1.2.0] - 2025-09-14
 
 ### Added

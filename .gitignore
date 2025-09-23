@@ -50,3 +50,9 @@ next-env.d.ts
 storybook-static
 
 .vercel
+
+# Local Netlify folder
+.netlify
+
+# Local OpenDeploy logs
+.artifacts

@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Menu,
   BookOpen,
@@ -35,14 +35,79 @@ import {
 } from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth/auth-client";
 
-export type HeaderClientProps = Readonly<{ isAdmin: boolean }>;
+interface HeaderUser {
+  readonly id: string;
+  readonly email?: string | null;
+  readonly name?: string | null;
+  readonly image?: string | null;
+}
 
-export function HeaderClient({ isAdmin }: HeaderClientProps) {
+export type HeaderClientProps = Readonly<{
+  isAdmin: boolean;
+  initialUser: HeaderUser | null;
+}>;
+
+/**
+ * Client header that can render user state immediately via `initialUser`
+ * from the server, while staying reactive through `authClient.useSession()`.
+ */
+export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { data: session, isPending: isLoading } = authClient.useSession();
-  const user = session?.user;
+  const { data: session, isPending } = authClient.useSession();
+  const user = (session?.user as HeaderUser | undefined) ?? initialUser ?? null;
+  const isLoading = isPending && !initialUser;
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const [platformHint, setPlatformHint] = useState<string>("Ctrl K");
+
+  // Keyboard shortcuts: '/' focuses search; Ctrl/Cmd+K focuses search.
+  useEffect((): () => void => {
+    // Detect platform to show ⌘K on macOS, Ctrl K elsewhere
+    try {
+      const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/i.test(navigator.platform || "");
+      setPlatformHint(isMac ? "⌘ K" : "Ctrl K");
+    } catch {
+      setPlatformHint("Ctrl K");
+    }
+
+    function shouldIgnoreTarget(target: EventTarget | null): boolean {
+      const el = target as HTMLElement | null;
+      if (!el) return false;
+      const tag = el.tagName;
+      const editable = (el as HTMLElement).isContentEditable;
+      return (
+        editable ||
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        (el.getAttribute && el.getAttribute("role") === "textbox")
+      );
+    }
+
+    function handleGlobalKeydown(e: KeyboardEvent): void {
+      // Focus search with '/'
+      if (
+        e.key === "/" &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !e.altKey &&
+        !e.shiftKey &&
+        !shouldIgnoreTarget(e.target)
+      ) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        return;
+      }
+      // Focus search with Cmd/Ctrl+K
+      if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    }
+
+    window.addEventListener("keydown", handleGlobalKeydown);
+    return () => window.removeEventListener("keydown", handleGlobalKeydown);
+  }, []);
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -85,7 +150,20 @@ export function HeaderClient({ isAdmin }: HeaderClientProps) {
             <div className="hidden sm:flex items-center gap-2">
               <div className="relative">
                 <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search posts..." className="pl-10 w-64" />
+                <Input
+                  ref={searchInputRef}
+                  placeholder="Search posts..."
+                  aria-label="Search posts"
+                  aria-keyshortcuts="/ Control+K Meta+K"
+                  className="pl-10 pr-16 w-64"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-xs text-muted-foreground"
+                >
+                  <span className="rounded border bg-secondary px-1.5 py-0.5">/</span>
+                  <span className="rounded border bg-secondary px-1.5 py-0.5">{platformHint}</span>
+                </div>
               </div>
             </div>
 

@@ -140,13 +140,13 @@ export default async function HomePage(): Promise<React.ReactElement> {
         </section>
         <section className="mt-16 flex justify-center gap-4">
           <Button asChild size="lg">
-            <Link href="#">
+            <Link href="https://github.com/Dendro-X0/next-blogkit" target="_blank">
               <FaGithub className="mr-2 h-5 w-5" />
               {t("githubButton")}
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link href="#">{t("demoButton")}</Link>
+            <Link href="https://next-blogkit.vercel.app/" target="_blank">{t("demoButton")}</Link>
           </Button>
         </section>
       </main>

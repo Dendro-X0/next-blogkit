@@ -13,6 +13,7 @@ import { websiteConfig } from "@/config/website";
 import { NextIntlClientProvider } from "next-intl";
 import type { AbstractIntlMessages } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { WebVitals } from "@/components/analytics/web-vitals";
 
 export const metadata: Metadata = {
   title: "BlogKit",
@@ -29,6 +30,13 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className="min-h-screen">
+        {/* Skip link for keyboard users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-primary text-primary-foreground px-3 py-1 rounded"
+        >
+          Skip to content
+        </a>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -39,12 +47,13 @@ export default async function RootLayout({
             <Suspense fallback={<div className="container mx-auto px-4 py-8">Loading...</div>}>
               <div className="min-h-screen flex flex-col">
                 <Header />
-                <div className="flex-1">{children}</div>
+                <main id="main-content" className="flex-1">{children}</main>
                 <Footer />
                 {process.env.NODE_ENV === "production" && (
                   <>
                     <Analytics />
                     {websiteConfig.analytics.enableFirstPartyAnalytics && <AutoPageview />}
+                    <WebVitals />
                   </>
                 )}
                 {process.env.NODE_ENV !== "production" &&

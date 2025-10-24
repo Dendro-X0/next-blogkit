@@ -127,7 +127,7 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-primary" />
+              <BookOpen className="h-6 w-6 text-primary" aria-hidden="true" />
               <span className="font-bold text-xl">BlogKit</span>
             </Link>
 
@@ -149,9 +149,11 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-2">
               <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                <label htmlFor="site-search" className="sr-only">Search posts</label>
                 <Input
                   ref={searchInputRef}
+                  id="site-search"
                   placeholder="Search posts..."
                   aria-label="Search posts"
                   aria-keyshortcuts="/ Control+K Meta+K"
@@ -161,8 +163,8 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                   aria-hidden="true"
                   className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-xs text-muted-foreground"
                 >
-                  <span className="rounded border bg-secondary px-1.5 py-0.5">/</span>
-                  <span className="rounded border bg-secondary px-1.5 py-0.5">{platformHint}</span>
+                  <span className="rounded border bg-secondary px-1.5 py-0.5" aria-hidden="true">/</span>
+                  <span className="rounded border bg-secondary px-1.5 py-0.5" aria-hidden="true">{platformHint}</span>
                 </div>
               </div>
             </div>
@@ -175,7 +177,14 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                    aria-label={`Open user menu for ${user.name ?? "user"}`}
+                    title={`Open user menu for ${user.name ?? "user"}`}
+                    aria-haspopup="menu"
+                  >
+                    <span className="sr-only">Open user menu</span>
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.image || "/placeholder.svg"} alt={user.name || ""} />
                       <AvatarFallback>
@@ -251,11 +260,14 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                   className="md:hidden"
                   aria-label="Open menu"
                   title="Open menu"
+                  aria-expanded={isOpen}
+                  aria-controls="mobile-nav"
                 >
-                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Open menu</span>
+                  <Menu className="h-5 w-5" aria-hidden="true" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
+              <SheetContent side="right" id="mobile-nav">
                 <SheetHeader className="sr-only">
                   <SheetTitle>Menu</SheetTitle>
                   <SheetDescription>Mobile navigation</SheetDescription>

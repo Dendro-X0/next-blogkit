@@ -10,6 +10,7 @@ import { env } from "~/env";
 import { type NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest): Promise<NextResponse> {
+  const t0: number = Date.now();
   const { nextUrl } = req;
   const session = await auth.api.getSession({ headers: req.headers });
   const isLoggedIn = !!session?.user;
@@ -26,7 +27,9 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
       new RegExp(`^${route}$`).test(pathname),
     );
     if (isNotAllowedRoute) {
-      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+      const res = NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+      res.headers.set("Server-Timing", `mw;desc=auth;dur=${Date.now() - t0}`);
+      return res;
     }
     // Admin access control
     if (isAdminPath) {
@@ -34,13 +37,17 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
       if (allowlist.length > 0) {
         const email = session.user.email?.toLowerCase();
         if (!email || !allowlist.includes(email)) {
-          return NextResponse.redirect(new URL(Routes.Login, nextUrl));
+          const res = NextResponse.redirect(new URL(Routes.Login, nextUrl));
+          res.headers.set("Server-Timing", `mw;desc=auth;dur=${Date.now() - t0}`);
+          return res;
         }
       } else {
         // Otherwise require the 'admin' role.
         const roles = await getUserRoles(session.user.id);
         if (!roles.includes("admin")) {
-          return NextResponse.redirect(new URL(Routes.Login, nextUrl));
+          const res = NextResponse.redirect(new URL(Routes.Login, nextUrl));
+          res.headers.set("Server-Timing", `mw;desc=auth;dur=${Date.now() - t0}`);
+          return res;
         }
       }
     }
@@ -54,11 +61,15 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
       callbackUrl += nextUrl.search;
     }
     const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-    return NextResponse.redirect(
+    const res = NextResponse.redirect(
       new URL(`${Routes.Login}?callbackUrl=${encodedCallbackUrl}`, nextUrl),
     );
+    res.headers.set("Server-Timing", `mw;desc=auth;dur=${Date.now() - t0}`);
+    return res;
   }
-  return NextResponse.next();
+  const res = NextResponse.next();
+  res.headers.set("Server-Timing", `mw;desc=auth;dur=${Date.now() - t0}`);
+  return res;
 }
 
 export const config = {

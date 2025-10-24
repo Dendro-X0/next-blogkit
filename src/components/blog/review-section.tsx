@@ -116,8 +116,14 @@ export function ReviewSection({ postId }: ReviewSectionProps) {
             <StarRating rating={review.rating} readonly />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label="Open review actions"
+                  aria-haspopup="menu"
+                >
+                  <span className="sr-only">Open review actions</span>
+                  <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>

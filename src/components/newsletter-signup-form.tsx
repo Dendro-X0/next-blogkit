@@ -39,13 +39,16 @@ export function NewsletterSignupForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-md items-center space-x-2">
+      <label htmlFor="newsletter-email" className="sr-only">Email address</label>
       <Input
+        id="newsletter-email"
         type="email"
         placeholder="Enter your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
         disabled={isPending}
+        aria-label="Email address"
       />
       <Button type="submit" disabled={isPending}>
         {isPending ? "Subscribing..." : "Subscribe"}

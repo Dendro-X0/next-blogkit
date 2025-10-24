@@ -25,15 +25,43 @@ type ChevronProps = {
 
 function CalendarChevron({ className, orientation, ...props }: ChevronProps) {
   if (orientation === "left") {
-    return <ChevronLeftIcon className={cn("size-4", className)} {...props} />;
+    return (
+      <ChevronLeftIcon
+        className={cn("size-4", className)}
+        aria-hidden="true"
+        focusable="false"
+        {...props}
+      />
+    );
   }
   if (orientation === "right") {
-    return <ChevronRightIcon className={cn("size-4", className)} {...props} />;
+    return (
+      <ChevronRightIcon
+        className={cn("size-4", className)}
+        aria-hidden="true"
+        focusable="false"
+        {...props}
+      />
+    );
   }
   if (orientation === "up") {
-    return <ChevronUpIcon className={cn("size-4", className)} {...props} />;
+    return (
+      <ChevronUpIcon
+        className={cn("size-4", className)}
+        aria-hidden="true"
+        focusable="false"
+        {...props}
+      />
+    );
   }
-  return <ChevronDownIcon className={cn("size-4", className)} {...props} />;
+  return (
+    <ChevronDownIcon
+      className={cn("size-4", className)}
+      aria-hidden="true"
+      focusable="false"
+      {...props}
+    />
+  );
 }
 
 function CalendarWeekNumber({ children, ...props }: React.ComponentProps<"td">) {
@@ -54,6 +82,7 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
+  labels,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
@@ -73,6 +102,11 @@ function Calendar({
       formatters={{
         formatMonthDropdown: (date) => date.toLocaleString("default", { month: "short" }),
         ...formatters,
+      }}
+      labels={{
+        labelPrevious: () => "Previous month",
+        labelNext: () => "Next month",
+        ...(labels ?? {}),
       }}
       classNames={{
         root: cn("w-fit", defaultClassNames.root),
@@ -168,11 +202,21 @@ function CalendarDayButton({
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
 
+  const dateLabel: string = day.date.toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const buttonProps = props as React.ButtonHTMLAttributes<HTMLButtonElement>;
+
   return (
     <Button
       ref={ref}
       variant="ghost"
       size="icon"
+      aria-label={buttonProps?.["aria-label"] ?? dateLabel}
+      aria-pressed={!!modifiers.selected}
       data-day={day.date.toLocaleDateString()}
       data-selected-single={
         modifiers.selected &&

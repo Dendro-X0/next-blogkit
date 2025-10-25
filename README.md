@@ -6,7 +6,8 @@
 
 Modern, production‑ready blog platform built with Next.js 15 and TypeScript—MDX content, admin dashboard, Better Auth, Cloudinary uploads by default (S3 optional), and built‑in analytics. Clean architecture, fast by default, and easy to extend.
 
-![Project Thumbnail](public/next-blog-starter.png)
+![Project Thumbnail](public/next-blogkit.png)
+![Lighthouse Score](public/lighthouse.png)
 
 ## Features
 

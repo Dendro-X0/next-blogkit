@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2025-10-24
+
+### Added
+- Reading indicator on post pages: top progress bar + accessible on‑page navigation (ToC). 
+  - `src/components/blog/reading-indicator.tsx`
+  - Integrated in `src/app/(public)/blog/[slug]/page.tsx`
+- Mobile menu polish: icons for primary links, subtle separators, wider sheet and larger tap targets, preserved a11y (focus management, `aria-current`).
+  - `src/components/layout/header-client.tsx`
+
+### Changed
+- Registration flow simplified: removed first/last name fields; initial `name` defaults to `username` (editable in profile).
+  - `src/components/auth/register-form.tsx`
+  - `src/app/(public)/auth/register/page.tsx`
+  - `src/actions/signup.ts`
+
+### Fixed
+- Better Auth user creation error by aligning Drizzle schema with two‑factor plugin:
+  - Added `user.twoFactorEnabled` and `two_factor` table; made `user.name` nullable for social sign‑in edge cases.
+  - `auth-schema.ts`
+- Type issues where `JSX.Element` namespace was unavailable; migrated to `ReactElement`.
+  - `src/components/blog/reading-indicator.tsx`
+  - `src/components/layout/header-client.tsx`
+
 ## [1.2.1] - 2025-09-17
 
 ### Added

@@ -11,8 +11,6 @@ import { SocialLogin } from "@/components/auth/social-login";
 
 const initialState: SignupFormState = {
   values: {
-    firstName: "",
-    lastName: "",
     username: "",
     email: "",
     password: "",

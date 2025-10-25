@@ -14,8 +14,6 @@ export type SignupFormState = {
     fields?: Partial<Record<keyof SignupInput, string[]>>;
   };
   values: {
-    firstName: string;
-    lastName: string;
     username: string;
     email: string;
     password: string;
@@ -29,17 +27,14 @@ export async function signupAction(
   formData: FormData,
 ): Promise<SignupFormState> {
   const rawFormData = Object.fromEntries(formData.entries());
-  const name = `${rawFormData.firstName} ${rawFormData.lastName}`.trim();
+  const name = (rawFormData.username as string) || ""; // optional; user can update profile later
 
   const validatedFields = SignupSchema.safeParse({
     ...rawFormData,
-    name,
     agreeToTerms: rawFormData.agreeToTerms === "on",
   });
 
   const formValues = {
-    firstName: (rawFormData.firstName as string) || "",
-    lastName: (rawFormData.lastName as string) || "",
     username: (rawFormData.username as string) || "",
     email: (rawFormData.email as string) || "",
     password: (rawFormData.password as string) || "",
@@ -74,7 +69,7 @@ export async function signupAction(
       body: {
         email,
         password,
-        name,
+        name: username, // simplify: initial display name = username; user can edit later
         username,
         displayUsername: username,
         onboardingComplete: false,

@@ -16,6 +16,7 @@ import { Suspense } from "react";
 import type { BlogPosting, WithContext } from "schema-dts";
 import { getAbsoluteUrl } from "@/lib/url";
 import { PostHeaderActions } from "../_components/post-header-actions";
+import { ReadingIndicator } from "@/components/blog/reading-indicator";
 
 // Define the shape of the detailed post data from our API
 interface Review {
@@ -129,6 +130,7 @@ export default async function BlogPostPage({
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <ReadingIndicator targetId="post-content" headingsSelector="h2, h3" scrollOffset={88} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
@@ -145,7 +147,7 @@ export default async function BlogPostPage({
 
         <Separator className="mb-8" />
 
-        <div className="prose mb-12">
+        <div className="prose mb-12" id="post-content">
           {post.format === "standard" && (
             <MDXRemote source={post.content} components={{ Callout }} />
           )}

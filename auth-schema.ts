@@ -1,8 +1,8 @@
-import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
-  name: text("name").notNull(),
+  name: text("name"),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
@@ -17,6 +17,8 @@ export const user = pgTable("user", {
   // Required by Better Auth username plugin to preserve display casing
   displayUsername: text("display_username"),
   onboardingComplete: boolean("onboarding_complete").default(false).notNull(),
+  // Required by Better Auth twoFactor plugin
+  twoFactorEnabled: boolean("two_factor_enabled").default(false),
 });
 
 export const session = pgTable("session", {
@@ -74,4 +76,14 @@ export const verification = pgTable("verification", {
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").$defaultFn(() => /* @__PURE__ */ new Date()),
   updatedAt: timestamp("updated_at").$defaultFn(() => /* @__PURE__ */ new Date()),
+});
+
+// 2FA secrets and backup codes, required by Better Auth twoFactor plugin
+export const twoFactor = pgTable("two_factor", {
+  id: serial("id").primaryKey(),
+  secret: text("secret").notNull(),
+  backupCodes: text("backup_codes").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
 });

@@ -32,39 +32,7 @@ export function RegisterForm({ formState }: RegisterFormProps): ReactElement {
   const [password, setPassword] = useState<string>(formState.values.password ?? "");
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="firstName">First Name</Label>
-          <div className="relative flex items-center">
-            <User className="absolute left-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="firstName"
-              name="firstName"
-              placeholder="John"
-              className="pl-10"
-              autoComplete="given-name"
-              required
-              defaultValue={formState.values.firstName}
-            />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="lastName">Last Name</Label>
-          <Input
-            id="lastName"
-            name="lastName"
-            placeholder="Doe"
-            autoComplete="family-name"
-            required
-            defaultValue={formState.values.lastName}
-          />
-        </div>
-      </div>
-      {formState.error?.fields?.name && (
-        <p className="text-sm text-destructive col-span-2">
-          {formState.error.fields.name.join(", ")}
-        </p>
-      )}
+      {/* Name fields removed per UX simplification. Users can set names in profile. */}
 
       <div className="space-y-2">
         <Label htmlFor="username">Username</Label>

@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactElement } from "react";
 import {
   Menu,
   BookOpen,
@@ -21,6 +21,8 @@ import {
   User as UserIcon,
   UserCog,
   Users,
+  Home as HomeIcon,
+  Mail as MailIcon,
 } from "lucide-react";
 
 import LanguageSwitcher from "@/components/i18n/language-switcher";
@@ -60,6 +62,7 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
   const isLoading = isPending && !initialUser;
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [platformHint, setPlatformHint] = useState<string>("Ctrl K");
+  const firstMobileLinkRef = useRef<HTMLAnchorElement | null>(null);
 
   // Keyboard shortcuts: '/' focuses search; Ctrl/Cmd+K focuses search.
   useEffect((): () => void => {
@@ -116,6 +119,14 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
     { name: "Contact", href: "/contact" },
   ];
 
+  const renderNavIcon = (href: string): ReactElement => {
+    if (href === "/") return <HomeIcon className="h-5 w-5" aria-hidden="true" />;
+    if (href === "/blog") return <BookOpen className="h-5 w-5" aria-hidden="true" />;
+    if (href === "/search") return <SearchIcon className="h-5 w-5" aria-hidden="true" />;
+    if (href === "/contact") return <MailIcon className="h-5 w-5" aria-hidden="true" />;
+    return <HomeIcon className="h-5 w-5" aria-hidden="true" />;
+  };
+
   const handleLogout = async (): Promise<void> => {
     await authClient.signOut();
     router.push("/auth/login?message=Logged out successfully");
@@ -134,11 +145,12 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
             <nav className="hidden md:flex items-center gap-6">
               {navigation.map((item) => (
                 <Link
-                  key={item.name}
+                  key={item.href}
                   href={item.href}
                   className={`text-sm font-medium transition-colors hover:text-primary ${
                     pathname === item.href ? "text-primary" : "text-muted-foreground"
                   }`}
+                  aria-current={pathname === item.href ? "page" : undefined}
                 >
                   {item.name}
                 </Link>
@@ -258,103 +270,127 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                   variant="ghost"
                   size="icon"
                   className="md:hidden"
-                  aria-label="Open menu"
-                  title="Open menu"
+                  aria-label={isOpen ? "Close menu" : "Open menu"}
+                  title={isOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isOpen}
                   aria-controls="mobile-nav"
                 >
-                  <span className="sr-only">Open menu</span>
+                  <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
                   <Menu className="h-5 w-5" aria-hidden="true" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" id="mobile-nav">
+              <SheetContent
+                side="right"
+                id="mobile-nav"
+                onOpenAutoFocus={(e) => {
+                  // Direct focus to the first navigation link for better keyboard UX
+                  e.preventDefault();
+                  firstMobileLinkRef.current?.focus();
+                }}
+                className="w-[85%] sm:max-w-md px-6 py-6"
+              >
                 <SheetHeader className="sr-only">
                   <SheetTitle>Menu</SheetTitle>
                   <SheetDescription>Mobile navigation</SheetDescription>
                 </SheetHeader>
-                <nav className="flex flex-col gap-4 mt-8">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={`text-lg font-medium transition-colors hover:text-primary ${
-                        pathname === item.href ? "text-primary" : "text-muted-foreground"
-                      }`}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                  {isAdmin && (
-                    <Link
-                      href="/admin"
-                      onClick={() => setIsOpen(false)}
-                      className={`text-lg font-medium transition-colors hover:text-primary ${
-                        pathname === "/admin" ? "text-primary" : "text-muted-foreground"
-                      }`}
-                    >
-                      Admin
-                    </Link>
-                  )}
-                </nav>
-                <div className="mt-6">
-                  <LanguageSwitcher />
-                </div>
-                <div className="mt-6 pt-6 border-t">
-                  {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-                      <div className="flex flex-col gap-2">
-                        <div className="h-4 w-24 bg-muted animate-pulse rounded-md" />
-                        <div className="h-3 w-32 bg-muted animate-pulse rounded-md" />
+                <div className="mt-2 space-y-8">
+                  <nav className="flex flex-col gap-1" role="navigation" aria-label="Mobile">
+                    {navigation.map((item, idx) => (
+                      <div key={item.href} className="border-b border-border/60 last:border-b-0">
+                        <Link
+                          href={item.href}
+                          onClick={() => setIsOpen(false)}
+                          className={`flex items-center gap-3 text-xl font-medium transition-colors hover:text-primary py-3 ${
+                            pathname === item.href ? "text-primary" : "text-muted-foreground"
+                          }`}
+                          aria-current={pathname === item.href ? "page" : undefined}
+                          ref={idx === 0 ? firstMobileLinkRef : undefined}
+                        >
+                          {renderNavIcon(item.href)}
+                          <span>{item.name}</span>
+                        </Link>
                       </div>
-                    </div>
-                  ) : user ? (
-                    <div className="flex flex-col gap-4">
-                      <Link
-                        href="/profile"
-                        className="flex items-center gap-2"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage
-                            src={user.image || "/placeholder.svg"}
-                            alt={user.name || ""}
-                          />
-                          <AvatarFallback>
-                            {user.name
-                              ?.split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{user.name}</span>
-                          <span className="text-sm text-muted-foreground">View Profile</span>
+                    ))}
+                    {isAdmin && (
+                      <div className="border-b border-border/60">
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsOpen(false)}
+                          className={`flex items-center gap-3 text-xl font-medium transition-colors hover:text-primary py-3 ${
+                            pathname === "/admin" ? "text-primary" : "text-muted-foreground"
+                          }`}
+                          aria-current={pathname === "/admin" ? "page" : undefined}
+                        >
+                          <UserCog className="h-5 w-5" aria-hidden="true" />
+                          <span>Admin</span>
+                        </Link>
+                      </div>
+                    )}
+                  </nav>
+
+                  <div className="border-t" role="separator" aria-hidden="true" />
+
+                  <div>
+                    <LanguageSwitcher />
+                  </div>
+
+                  <div className="border-t pt-4">
+                    {isLoading ? (
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+                        <div className="flex flex-col gap-2">
+                          <div className="h-4 w-28 bg-muted animate-pulse rounded-md" />
+                          <div className="h-3 w-36 bg-muted animate-pulse rounded-md" />
                         </div>
-                      </Link>
-                      <Button
-                        onClick={() => {
-                          void handleLogout();
-                          setIsOpen(false);
-                        }}
-                        variant="outline"
-                      >
-                        Log out
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-4">
-                      <Link href="/auth/login" onClick={() => setIsOpen(false)}>
-                        <Button className="w-full">Login</Button>
-                      </Link>
-                      <Link href="/auth/register" onClick={() => setIsOpen(false)}>
-                        <Button variant="outline" className="w-full">
-                          Sign Up
+                      </div>
+                    ) : user ? (
+                      <div className="flex flex-col gap-4">
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-3"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage
+                              src={user.image || "/placeholder.svg"}
+                              alt={user.name || ""}
+                            />
+                            <AvatarFallback>
+                              {user.name
+                                ?.split(" ")
+                                .map((n) => n[0])
+                                .join("")}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{user.name}</span>
+                            <span className="text-sm text-muted-foreground">View Profile</span>
+                          </div>
+                        </Link>
+                        <Button
+                          onClick={() => {
+                            void handleLogout();
+                            setIsOpen(false);
+                          }}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          Log out
                         </Button>
-                      </Link>
-                    </div>
-                  )}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-4">
+                        <Link href="/auth/login" onClick={() => setIsOpen(false)}>
+                          <Button className="w-full">Login</Button>
+                        </Link>
+                        <Link href="/auth/register" onClick={() => setIsOpen(false)}>
+                          <Button variant="outline" className="w-full">
+                            Sign Up
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>

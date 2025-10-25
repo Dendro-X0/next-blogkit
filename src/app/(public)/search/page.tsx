@@ -188,7 +188,7 @@ export default function SearchPage(): ReactElement {
 
         {/* Search Bar */}
         <div className="relative mb-6" role="search" aria-label="Search posts">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <Input
             placeholder="Search posts, tags, or topics..."
             value={inputQuery}
@@ -378,7 +378,7 @@ export default function SearchPage(): ReactElement {
 
               {filteredPosts.length === 0 && (
                 <div className="text-center py-12">
-                  <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" aria-hidden="true" />
                   <h3 className="text-lg font-medium text-foreground mb-2">No posts found</h3>
                   <p className="text-muted-foreground mb-4">
                     Try adjusting your search terms or filters

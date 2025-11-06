@@ -268,4 +268,32 @@ h4:hover .hash-link::before {
 
   /* Lead paragraph helper (optional) */
   .prose .lead { font-size: 1.15em; color: var(--muted-foreground); }
+
+  .prose img,
+  .prose video,
+  .prose svg,
+  .prose canvas { max-width: 100%; height: auto; }
+
+  .prose iframe { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
+
+  .prose { overflow-wrap: anywhere; word-break: break-word; }
+
+  .prose a { overflow-wrap: anywhere; }
+
+  .prose table { display: block; width: 100%; overflow-x: auto; }
+  .prose thead, .prose tbody, .prose tfoot, .prose tr { width: max-content; min-width: 100%; }
+}
+
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-top { padding-top: max(env(safe-area-inset-top), 0px); }
+  .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

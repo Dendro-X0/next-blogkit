@@ -24,9 +24,9 @@ export function ThemeToggleSwitch(): React.ReactElement {
     return (
       <button
         type="button"
-        className="relative inline-flex h-8 w-14 items-center rounded-full bg-muted transition-colors focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="relative inline-flex h-11 w-16 items-center rounded-full bg-muted transition-colors focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
-        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-background shadow-lg" />
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-background shadow-lg" />
       </button>
     );
   }
@@ -34,13 +34,13 @@ export function ThemeToggleSwitch(): React.ReactElement {
     <button
       type="button"
       onClick={toggleTheme}
-      className="relative inline-flex h-8 w-14 items-center rounded-full bg-muted transition-colors focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
+      className="relative inline-flex h-11 w-16 items-center rounded-full bg-muted transition-colors focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
       role="switch"
       aria-checked={resolvedTheme === "dark"}
       aria-label={`Switch to ${resolvedTheme === "light" ? "dark" : "light"} mode`}
     >
       <motion.div
-        className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-background shadow-lg"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-background shadow-lg"
         animate={{ x: resolvedTheme === "dark" ? 28 : 4 }}
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
       >
@@ -52,9 +52,9 @@ export function ThemeToggleSwitch(): React.ReactElement {
           transition={{ duration: 0.2 }}
         >
           {resolvedTheme === "dark" ? (
-            <Moon className="h-3 w-3 text-muted-foreground" />
+            <Moon className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <Sun className="h-3 w-3 text-yellow-500" />
+            <Sun className="h-4 w-4 text-yellow-500" />
           )}
         </motion.div>
       </motion.div>

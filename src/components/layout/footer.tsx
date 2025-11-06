@@ -4,7 +4,7 @@ import { FaBookOpen, FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 export function Footer() {
   return (
-    <footer className="bg-background text-foreground">
+    <footer className="bg-background text-foreground safe-bottom">
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1 text-center md:text-left">
@@ -61,24 +61,24 @@ export function Footer() {
 
           <div className="text-center md:text-left">
             <h3 className="font-semibold mb-4">Connect</h3>
-            <div className="flex gap-4 justify-center md:justify-start">
+            <div className="flex gap-3 justify-center md:justify-start">
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex h-11 w-11 items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-ring/50"
                 aria-label="GitHub"
               >
                 <FaGithub className="h-5 w-5" />
               </Link>
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex h-11 w-11 items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-ring/50"
                 aria-label="Twitter"
               >
                 <FaTwitter className="h-5 w-5" />
               </Link>
               <Link
                 href="#"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex h-11 w-11 items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-ring/50"
                 aria-label="LinkedIn"
               >
                 <FaLinkedin className="h-5 w-5" />

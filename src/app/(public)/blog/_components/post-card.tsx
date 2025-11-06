@@ -34,8 +34,8 @@ export function PostCard({ post }: PostCardProps) {
         <CardDescription className="text-base">{post.excerpt}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <User className="h-4 w-4" aria-hidden="true" />
               {post.author}
@@ -52,11 +52,12 @@ export function PostCard({ post }: PostCardProps) {
           <Button variant="ghost" asChild>
             <Link
               href={`/blog/${post.slug}`}
-              className="flex items-center gap-1"
+              className="inline-flex items-center gap-1 whitespace-nowrap"
               aria-label={`Read more about ${post.title}`}
             >
-              {`Read more about ${post.title}`}
+              Read more
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <span className="sr-only">{`about ${post.title}`}</span>
             </Link>
           </Button>
         </div>

@@ -133,7 +133,7 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 safe-top">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
@@ -269,7 +269,7 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden"
+                  className="md:hidden h-11 w-11"
                   aria-label={isOpen ? "Close menu" : "Open menu"}
                   title={isOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isOpen}

@@ -124,7 +124,10 @@ export function Reactions({ postId }: ReactionsProps): ReactElement {
             aria-pressed={isActive}
             aria-label={labels[type]}
             title={labels[type]}
-            className={cn("gap-1", isActive && "text-primary")}
+            className={cn(
+              "gap-1 h-11 px-4 md:h-8 md:px-3",
+              isActive && "text-primary",
+            )}
             onClick={() => toggle(type)}
             disabled={loading}
           >

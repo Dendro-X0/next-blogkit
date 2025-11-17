@@ -35,8 +35,8 @@ export function PasswordStrength({ password, showRequirements = true }: Password
 
       {showRequirements && (
         <div className="space-y-1">
-          {requirements.map((req, index) => (
-            <div key={index} className="flex items-center gap-2 text-xs">
+          {requirements.map((req) => (
+            <div key={req.label} className="flex items-center gap-2 text-xs">
               {req.met ? (
                 <Check className="h-3 w-3 text-success" />
               ) : (

@@ -1,12 +1,12 @@
 # Modern Blog Starter Kit — Overview
 
-This repository is a production‑ready blog platform built on Next.js 15. It includes a full content pipeline (MDX rendering with shortcodes), rich admin tools, monetization primitives, authentication, S3 uploads, analytics, and strong defaults for performance and accessibility.
+This repository is a production‑ready blog platform built on Next.js 16. It includes a full content pipeline (MDX rendering with shortcodes), rich admin tools, monetization primitives, authentication, S3 uploads, analytics, and strong defaults for performance and accessibility.
 
 Use this guide to understand what’s included and how the parts fit together. For setup and environment configuration, see docs/configuration.md.
 
 ## Key Capabilities
 
-- Framework: Next.js 15 (App Router), TypeScript
+- Framework: Next.js 16 (App Router), TypeScript
 - Styling & UI: Tailwind CSS v4, shadcn/ui
 - Content: MDX rendering, automated Table of Contents, audio posts
 - Admin: Posts, categories, tags, affiliate links, ads

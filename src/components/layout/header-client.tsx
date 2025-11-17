@@ -294,7 +294,7 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                   <SheetDescription>Mobile navigation</SheetDescription>
                 </SheetHeader>
                 <div className="mt-2 space-y-8">
-                  <nav className="flex flex-col gap-1" role="navigation" aria-label="Mobile">
+                  <nav className="flex flex-col gap-1" aria-label="Mobile">
                     {navigation.map((item, idx) => (
                       <div key={item.href} className="border-b border-border/60 last:border-b-0">
                         <Link
@@ -328,7 +328,7 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                     )}
                   </nav>
 
-                  <div className="border-t" role="separator" aria-hidden="true" />
+                  <hr className="border-t" />
 
                   <div>
                     <LanguageSwitcher />

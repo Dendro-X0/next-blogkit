@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: Promise<{ linkId: string }> }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ linkId: string }> }) {
   try {
     const { linkId } = await params;
     const link = await db.query.affiliateLinks.findFirst({
@@ -63,7 +63,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ link
 }
 
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ linkId: string }> },
 ) {
   try {

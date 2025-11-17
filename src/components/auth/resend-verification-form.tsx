@@ -47,7 +47,7 @@ export function ResendVerificationForm(): React.ReactElement {
           </p>
         )}
         {formState?.message && (
-          <p className="text-xs text-emerald-600" role="status">
+          <p className="text-xs text-emerald-600" aria-live="polite">
             {formState.message}
           </p>
         )}

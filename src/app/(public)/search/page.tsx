@@ -187,7 +187,7 @@ export default function SearchPage(): ReactElement {
         </div>
 
         {/* Search Bar */}
-        <div className="relative mb-6" role="search" aria-label="Search posts">
+        <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <Input
             placeholder="Search posts, tags, or topics..."
@@ -233,7 +233,7 @@ export default function SearchPage(): ReactElement {
               </div>
             </div>
 
-            <div
+            <section
               id="filters-panel"
               className={`space-y-6 ${showFilters ? "block" : "hidden lg:block"}`}
               aria-labelledby="filters-heading"
@@ -329,13 +329,13 @@ export default function SearchPage(): ReactElement {
                   ))}
                 </div>
               </fieldset>
-            </div>
+            </section>
           </aside>
 
           {/* Results */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-6">
-              <p className="text-muted-foreground" role="status" aria-live="polite">
+              <p className="text-muted-foreground" aria-live="polite">
                 {filteredPosts.length} result{filteredPosts.length !== 1 ? "s" : ""} found
               </p>
             </div>

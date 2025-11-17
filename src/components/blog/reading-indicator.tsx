@@ -61,13 +61,16 @@ export function ReadingIndicator({
         el.id = candidate;
       }
       const level = Number(el.tagName.replace("H", ""));
-      return { id: el.id, text: el.textContent || "Section", level: isNaN(level) ? 2 : level };
+      return {
+        id: el.id,
+        text: el.textContent || "Section",
+        level: Number.isNaN(level) ? 2 : level,
+      };
     });
     setHeadings(collected);
 
     // Progress listener
     const onScroll = (): void => {
-      const rect = container.getBoundingClientRect();
       const total = Math.max(1, container.scrollHeight - window.innerHeight);
       const scrolled = Math.min(total, Math.max(0, window.scrollY - (container.offsetTop || 0)));
       const pct = Math.round((scrolled / total) * 100);
@@ -90,7 +93,9 @@ export function ReadingIndicator({
       },
       { rootMargin: "-40% 0px -55% 0px", threshold: [0, 1] },
     );
-    nodes.forEach((n) => observerRef.current?.observe(n));
+    for (const n of nodes) {
+      observerRef.current?.observe(n);
+    }
 
     return () => {
       window.removeEventListener("scroll", onScroll);
@@ -141,6 +146,7 @@ export function ReadingIndicator({
           {items.map((h) => (
             <button
               key={h.id}
+              type="button"
               onClick={() => handleJump(h.id)}
               className={`block w-full text-left text-sm hover:text-primary focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xs px-1 ${
                 activeId === h.id ? "text-primary" : "text-muted-foreground"
@@ -162,6 +168,7 @@ export function ReadingIndicator({
             {items.map((h) => (
               <li key={h.id} className={h.level === 3 ? "pl-3" : undefined}>
                 <button
+                  type="button"
                   onClick={() => handleJump(h.id)}
                   className={`w-full text-left hover:text-primary focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-xs px-1 ${
                     activeId === h.id ? "text-primary" : "text-muted-foreground"

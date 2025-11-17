@@ -27,7 +27,6 @@ export async function signupAction(
   formData: FormData,
 ): Promise<SignupFormState> {
   const rawFormData = Object.fromEntries(formData.entries());
-  const name = (rawFormData.username as string) || ""; // optional; user can update profile later
 
   const validatedFields = SignupSchema.safeParse({
     ...rawFormData,

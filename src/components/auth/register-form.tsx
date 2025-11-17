@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordStrengthIndicator } from "@/components/ui/password-strength-indicator";
-import { Mail, User } from "lucide-react";
+import { Mail } from "lucide-react";
 import Link from "next/link";
 import { type ReactElement, useState } from "react";
 import { useFormStatus } from "react-dom";

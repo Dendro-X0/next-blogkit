@@ -27,6 +27,7 @@ export function TwoFactorForm({
   resendCooldown = 0,
 }: TwoFactorFormProps): React.ReactElement {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const positions: ReadonlyArray<number> = [0, 1, 2, 3, 4, 5] as const;
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -92,26 +93,29 @@ export function TwoFactorForm({
         <fieldset aria-label="Two-factor authentication code">
           <legend className="sr-only">Enter 6-digit verification code</legend>
           <div className="flex justify-center gap-2 sm:gap-3">
-            {code.map((digit, index) => (
-              <Input
-                key={index}
-                ref={(el) => {
-                  inputRefs.current[index] = el;
-                }}
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                autoComplete="one-time-code"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleInputChange(index, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(index, e)}
-                onPaste={index === 0 ? handlePaste : undefined}
-                aria-label={`Digit ${index + 1}`}
-                className="w-10 h-12 sm:w-12 text-center text-base sm:text-lg font-semibold"
-                disabled={isLoading}
-              />
-            ))}
+            {positions.map((position) => {
+              const digit: string = code[position];
+              return (
+                <Input
+                  key={`digit-${position}`}
+                  ref={(el) => {
+                    inputRefs.current[position] = el;
+                  }}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete="one-time-code"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleInputChange(position, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(position, e)}
+                  onPaste={position === 0 ? handlePaste : undefined}
+                  aria-label={`Digit ${position + 1}`}
+                  className="w-10 h-12 sm:w-12 text-center text-base sm:text-lg font-semibold"
+                  disabled={isLoading}
+                />
+              );
+            })}
           </div>
         </fieldset>
 

@@ -14,7 +14,7 @@ export async function GET() {
 
   try {
     const allPosts = await db.select().from(posts).orderBy(posts.createdAt);
-    allPosts.forEach((post) => {
+    for (const post of allPosts) {
       feed.item({
         title: post.title,
         description: post.content.substring(0, 250),
@@ -22,7 +22,7 @@ export async function GET() {
         guid: post.id.toString(),
         date: post.createdAt,
       });
-    });
+    }
   } catch (error) {
     console.warn("[rss] DB unavailable. Serving empty feed.", error);
   }

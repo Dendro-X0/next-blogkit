@@ -4,14 +4,14 @@
  
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDendro-X0%2Fnext-blog-starterkit&project-name=next-blog-starterkit&repository-name=next-blog-starterkit&env=NEXT_PUBLIC_APP_URL,DATABASE_URL,BETTER_AUTH_SECRET,MAIL_PROVIDER,RESEND_API_KEY,EMAIL_FROM&envDescription=Required%20variables%20for%20production%20build.%20Use%20MAIL_PROVIDER%3Dresend%20with%20RESEND_API_KEY%20and%20EMAIL_FROM%2C%20or%20set%20MAIL_PROVIDER%3Dsmtp%20and%20fill%20SMTP_*.&envLink=https%3A%2F%2Fgithub.com%2FDendro-X0%2Fnext-blog-starterkit%23-3-environment-variables)
 
-Modern, production‑ready blog platform built with Next.js 15 and TypeScript—MDX content, admin dashboard, Better Auth, Cloudinary uploads by default (S3 optional), and built‑in analytics. Clean architecture, fast by default, and easy to extend.
+Modern, production‑ready blog platform built with Next.js 16 and TypeScript—MDX content, admin dashboard, Better Auth, Cloudinary uploads by default (S3 optional), and built‑in analytics. Clean architecture, fast by default, and easy to extend.
 
 ![Project Thumbnail](public/next-blogkit.png)
 ![Lighthouse Score](public/lighthouse.png)
 
 ## Features
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Authentication**: Better Auth (GitHub & Google providers; optional and auto-disabled if not configured)
 - **Database**: PostgreSQL with Drizzle ORM
 - **Styling**: Tailwind CSS v4 with Shadcn UI

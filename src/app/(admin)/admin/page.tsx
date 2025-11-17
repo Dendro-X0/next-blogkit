@@ -148,7 +148,7 @@ export default async function AdminDashboard(): Promise<ReactElement> {
     .filter(Boolean);
   const email = me?.email?.toLowerCase() ?? null;
   const isAllowlisted = allowlist.length > 0 && !!email && allowlist.includes(email);
-  const isAdmin = Boolean(me && me.roles.includes("admin")) || isAllowlisted;
+  const isAdmin = Boolean(me?.roles.includes("admin")) || isAllowlisted;
   if (!isAdmin) {
     redirect("/");
   }

@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: Promise<{ adId: string }> }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ adId: string }> }) {
   try {
     const { adId } = await params;
     const ad = await db.query.advertisements.findFirst({
@@ -63,7 +63,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ adId
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ adId: string }> }) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ adId: string }> }) {
   try {
     const session = await auth.api.getSession({ headers: new Headers(await headers()) });
     if (!session || !session.user) {

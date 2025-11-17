@@ -3,7 +3,7 @@ import { userProfile as profiles, user } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ userId: string }> }) {
   try {
     const { userId } = await params;
 

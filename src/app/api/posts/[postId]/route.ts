@@ -19,12 +19,12 @@ export async function PUT(request: Request, { params }: { params: Promise<{ post
     const body = await request.json();
     const { tags: tagNames, ...postData } = body;
 
-    if (!postId || Number.isNaN(parseInt(postId))) {
+    if (!postId || Number.isNaN(parseInt(postId, 10))) {
       return NextResponse.json({ message: "Invalid post ID" }, { status: 400 });
     }
 
     const postToUpdate = await db.query.posts.findFirst({
-      where: eq(posts.id, parseInt(postId)),
+      where: eq(posts.id, parseInt(postId, 10)),
     });
 
     if (!postToUpdate) {
@@ -54,10 +54,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ post
       await tx
         .update(posts)
         .set(updateData)
-        .where(eq(posts.id, parseInt(postId)));
+        .where(eq(posts.id, parseInt(postId, 10)));
 
       if (tagNames && Array.isArray(tagNames)) {
-        await tx.delete(postsToTags).where(eq(postsToTags.postId, parseInt(postId)));
+        await tx.delete(postsToTags).where(eq(postsToTags.postId, parseInt(postId, 10)));
 
         if (tagNames.length > 0) {
           const cleanTagNames = tagNames.filter(
@@ -84,7 +84,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ post
 
             await tx.insert(postsToTags).values(
               allTagIds.map((tagId) => ({
-                postId: parseInt(postId),
+                postId: parseInt(postId, 10),
                 tagId: tagId,
               })),
             );
@@ -93,7 +93,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ post
       }
 
       return tx.query.posts.findFirst({
-        where: eq(posts.id, parseInt(postId)),
+        where: eq(posts.id, parseInt(postId, 10)),
       });
     });
 
@@ -123,12 +123,12 @@ export async function DELETE(
 
     const { postId } = await params;
 
-    if (!postId || Number.isNaN(parseInt(postId))) {
+    if (!postId || Number.isNaN(parseInt(postId, 10))) {
       return NextResponse.json({ message: "Invalid post ID" }, { status: 400 });
     }
 
     const postToDelete = await db.query.posts.findFirst({
-      where: eq(posts.id, parseInt(postId)),
+      where: eq(posts.id, parseInt(postId, 10)),
     });
 
     if (!postToDelete) {
@@ -151,7 +151,7 @@ export async function DELETE(
     }
     if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
-    await db.delete(posts).where(eq(posts.id, parseInt(postId)));
+    await db.delete(posts).where(eq(posts.id, parseInt(postId, 10)));
 
     // Invalidate cache
     if (redis) {
@@ -167,11 +167,11 @@ export async function DELETE(
   }
 }
 
-export async function GET(request: Request, { params }: { params: Promise<{ postId: string }> }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ postId: string }> }) {
   try {
     const { postId } = await params;
 
-    if (!postId || Number.isNaN(parseInt(postId))) {
+    if (!postId || Number.isNaN(parseInt(postId, 10))) {
       return NextResponse.json({ message: "Invalid post ID" }, { status: 400 });
     }
 
@@ -180,7 +180,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ post
       { key: cacheKey, ttl: 60 * 5 }, // Cache for 5 minutes
       () =>
         db.query.posts.findFirst({
-          where: eq(posts.id, parseInt(postId)),
+          where: eq(posts.id, parseInt(postId, 10)),
           with: {
             category: {
               columns: {

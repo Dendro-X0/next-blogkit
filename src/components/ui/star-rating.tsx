@@ -41,21 +41,15 @@ export function StarRating({
   const values: ReadonlyArray<number> = [1, 2, 3, 4, 5] as const;
 
   return (
-    <div
-      className={cn("flex items-center gap-1", className)}
-      onMouseLeave={handleMouseLeave}
-      role="radiogroup"
-      aria-readonly={readonly}
-      aria-label="Rating"
-    >
+    <fieldset className={cn("flex items-center gap-1", className)} onMouseLeave={handleMouseLeave}>
+      <legend className="sr-only">Rating</legend>
       {values.map((value) => {
         const checked: boolean = currentRating >= value;
         return (
           <button
             key={value}
             type="button"
-            role="radio"
-            aria-checked={checked}
+            aria-pressed={checked}
             aria-label={`${value} ${value === 1 ? "star" : "stars"}`}
             disabled={readonly}
             onClick={() => handleStarClick(value - 1)}
@@ -73,6 +67,6 @@ export function StarRating({
           </button>
         );
       })}
-    </div>
+    </fieldset>
   );
 }

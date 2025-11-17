@@ -177,7 +177,7 @@ export default async function BlogPostPage({
           {post.format === "gallery" && post.galleryImages && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {post.galleryImages.map((imageUrl, index) => (
-                <div key={index} className="relative aspect-square">
+                <div key={imageUrl} className="relative aspect-square">
                   <Image
                     src={imageUrl}
                     alt={`Gallery image ${index + 1}`}

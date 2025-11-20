@@ -1,6 +1,7 @@
 import { NewsletterSignupForm } from "@/components/newsletter-signup-form";
 import Link from "next/link";
-import { FaBookOpen, FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { BlogKitLogo } from "@/components/layout/blogkit-logo";
 
 export function Footer() {
   return (
@@ -9,7 +10,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1 text-center md:text-left">
             <div className="flex items-center gap-2 justify-center md:justify-start">
-              <FaBookOpen className="h-6 w-6 text-primary" />
+              <BlogKitLogo />
               <span className="font-bold text-xl">BlogKit</span>
             </div>
             <p className="text-muted-foreground">

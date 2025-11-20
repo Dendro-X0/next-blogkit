@@ -27,6 +27,7 @@ import {
 
 import LanguageSwitcher from "@/components/i18n/language-switcher";
 import { ThemeToggleSwitch } from "@/components/theme/theme-toggle-switch";
+import { BlogKitLogo } from "@/components/layout/blogkit-logo";
 import {
   Sheet,
   SheetContent,
@@ -137,8 +138,8 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-primary" aria-hidden="true" />
+            <Link href="/" className="flex items-center gap-2" aria-label="BlogKit home">
+              <BlogKitLogo />
               <span className="font-bold text-xl">BlogKit</span>
             </Link>
 

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
+  <title>BlogKit</title>
+  <rect width="32" height="32" rx="8" fill="#ffffff" />
+  <path d="M9 9.5C9 8.673 9.673 8 10.5 8H16v14.5l-4.75-2.5L9 21.5V9.5z" fill="#020617" />
+  <path d="M23 9.5C23 8.673 22.327 8 21.5 8H16v14.5l4.75-2.5L23 21.5V9.5z" fill="#020617" />
+</svg>

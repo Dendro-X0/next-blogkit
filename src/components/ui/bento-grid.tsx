@@ -50,12 +50,12 @@ const BentoCard = ({
       )}
     >
       {/* Base minimalist gradient responsive to theme */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[hsl(var(--background))] to-[hsl(var(--muted))]" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-br from-[hsl(var(--background))] to-[hsl(var(--muted))]" />
       {/* Optional per-card accent background overlay from props */}
       <div className="absolute inset-0 -z-10 mix-blend-overlay opacity-60">{background}</div>
       <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-4">
         <Icon className="h-12 w-12 origin-left transform-gpu text-foreground/80 transition-all duration-300 ease-in-out group-hover:scale-75" />
-        <h3 className="text-xl font-semibold text-foreground">{name}</h3>
+        <h2 className="text-xl font-semibold text-foreground">{name}</h2>
         <p className="max-w-lg text-muted-foreground">{description}</p>
       </div>
 

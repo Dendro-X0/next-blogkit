@@ -16,6 +16,6 @@ export const websiteConfig = {
   analytics: {
     enableVercelAnalytics: true,
     enableSpeedInsights: true,
-    enableFirstPartyAnalytics: true,
+    enableFirstPartyAnalytics: false,
   },
 };

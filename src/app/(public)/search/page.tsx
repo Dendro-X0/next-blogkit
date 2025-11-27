@@ -175,7 +175,7 @@ export default function SearchPage(): ReactElement {
     selectedAuthors.length > 0;
 
   return (
-    <main className="container mx-auto px-4 py-8" aria-labelledby="search-title">
+    <main className="container mx-auto px-4 py-8 min-h-screen" aria-labelledby="search-title">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 id="search-title" className="text-4xl font-semibold text-foreground mb-4">
@@ -204,9 +204,9 @@ export default function SearchPage(): ReactElement {
           {/* Filters Sidebar */}
           <aside className="lg:w-64 space-y-6" aria-labelledby="filters-heading">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-lg" id="filters-heading">
+              <h2 className="font-semibold text-lg" id="filters-heading">
                 Filters
-              </h3>
+              </h2>
               <div className="flex gap-2">
                 <Button
                   variant="ghost"

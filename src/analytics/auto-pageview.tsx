@@ -13,6 +13,10 @@ export function AutoPageview(): ReactElement | null {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    // Skip during Lighthouse CI runs when ?lhci=1 is present
+    if (typeof window !== "undefined" && window.location.search.includes("lhci=1")) {
+      return;
+    }
     if (!pathname) return;
     const path = `${pathname}${searchParams?.toString() ? `?${searchParams.toString()}` : ""}`;
     pageView({ path });

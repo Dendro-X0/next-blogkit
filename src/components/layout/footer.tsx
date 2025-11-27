@@ -19,7 +19,7 @@ export function Footer() {
           </div>
 
           <div className="text-center md:text-left">
-            <h3 className="font-semibold mb-4">Platform</h3>
+            <h2 className="font-semibold mb-4">Platform</h2>
             <ul className="space-y-3 text-muted-foreground">
               <li>
                 <Link href="/blog" className="hover:text-foreground transition-colors">
@@ -40,7 +40,7 @@ export function Footer() {
           </div>
 
           <div className="text-center md:text-left">
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h2 className="font-semibold mb-4">Resources</h2>
             <ul className="space-y-3 text-muted-foreground">
               <li>
                 <Link href="#" className="hover:text-foreground transition-colors">
@@ -61,7 +61,7 @@ export function Footer() {
           </div>
 
           <div className="text-center md:text-left">
-            <h3 className="font-semibold mb-4">Connect</h3>
+            <h2 className="font-semibold mb-4">Connect</h2>
             <div className="flex gap-3 justify-center md:justify-start">
               <Link
                 href="#"
@@ -88,7 +88,7 @@ export function Footer() {
           </div>
 
           <div className="md:col-span-2 lg:col-span-1 text-center md:text-left">
-            <h3 className="font-semibold mb-4">Stay Updated</h3>
+            <h2 className="font-semibold mb-4">Stay Updated</h2>
             <p className="text-muted-foreground mb-4">
               Subscribe to our newsletter to get the latest updates and news.
             </p>

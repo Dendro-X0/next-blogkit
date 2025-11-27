@@ -1,0 +1,110 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "runs": 1,
+  "pages": [
+    {
+      "path": "/terms",
+      "label": "terms",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/settings",
+      "label": "settings",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/profile",
+      "label": "profile",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/privacy",
+      "label": "privacy",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/",
+      "label": "home",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/search",
+      "label": "search",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/contact",
+      "label": "contact",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/blog",
+      "label": "blog",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/auth/register",
+      "label": "register",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/auth/new-password",
+      "label": "new-password",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/auth/login",
+      "label": "login",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/auth/forgot-password",
+      "label": "forgot-password",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/auth/2fa",
+      "label": "2fa",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    }
+  ]
+}

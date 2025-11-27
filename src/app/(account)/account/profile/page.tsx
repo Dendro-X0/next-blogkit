@@ -59,6 +59,7 @@ export default async function ProfilePage(): Promise<ReactElement> {
                 <AvatarImage
                   src={userData.image || "/placeholder.svg"}
                   alt={userData.name || "User Avatar"}
+                  fetchPriority="high"
                 />
                 <AvatarFallback className="text-2xl">
                   {userData.name

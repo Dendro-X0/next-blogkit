@@ -59,8 +59,12 @@ export default async function RootLayout({
                 {process.env.NODE_ENV === "production" && (
                   <>
                     <Analytics />
-                    {websiteConfig.analytics.enableFirstPartyAnalytics && <AutoPageview />}
-                    <WebVitals />
+                    {websiteConfig.analytics.enableFirstPartyAnalytics && (
+                      <>
+                        <AutoPageview />
+                        <WebVitals />
+                      </>
+                    )}
                   </>
                 )}
                 {process.env.NODE_ENV !== "production" &&

@@ -131,10 +131,7 @@ export default async function BlogPostPage({
   return (
     <div className="container mx-auto px-4 py-8">
       <ReadingIndicator targetId="post-content" headingsSelector="h2, h3" scrollOffset={88} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
-      />
+      <script type="application/ld+json">{JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>
       <article className="max-w-4xl mx-auto" aria-labelledby="post-title">
         <h1 id="post-title" className="sr-only">
           {post.title}
@@ -156,6 +153,7 @@ export default async function BlogPostPage({
             <div className="w-full">
               <audio controls className="w-full" aria-label={`Audio for ${post.title}`}>
                 <source src={post.audioUrl} type="audio/mpeg" />
+                <track kind="captions" src="/captions/empty.vtt" srcLang="en" label="Captions" default />
                 Your browser does not support the audio element.
               </audio>
             </div>

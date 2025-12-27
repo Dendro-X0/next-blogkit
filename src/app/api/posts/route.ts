@@ -1,9 +1,26 @@
 import { auth } from "@/lib/auth/auth";
 import { cache } from "@/lib/cache/cache";
 import { db } from "@/lib/db";
-import { analyticsEvents, posts, postsToTags, tags } from "@/lib/db/schema";
-import { count, desc, eq, inArray } from "drizzle-orm";
+import { posts, postsToTags, tags } from "@/lib/db/schema";
+import { desc, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
+
+type DbTransactionCallback = Parameters<typeof db.transaction>[0];
+type DbTransaction = Parameters<DbTransactionCallback>[0];
+
+type PostsApiListItem = {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
+  published: boolean;
+  authorName: string;
+  categoryName: string;
+  commentsCount: number;
+  tags: string[];
+};
 
 export async function POST(request: Request) {
   try {
@@ -39,7 +56,7 @@ export async function POST(request: Request) {
 
     const authorId = session.user.id;
 
-    const newPost = await db.transaction(async (tx) => {
+    const newPost = await db.transaction(async (tx: DbTransaction) => {
       const [createdPost] = await tx
         .insert(posts)
         .values({
@@ -63,7 +80,7 @@ export async function POST(request: Request) {
       if (tagNames && tagNames.length > 0) {
         const existingTags = await tx.select().from(tags).where(inArray(tags.name, tagNames));
 
-        const existingTagNames = existingTags.map((t) => t.name);
+        const existingTagNames = existingTags.map((t: { name: string }) => t.name);
         const newTagNames = tagNames.filter((name: string) => !existingTagNames.includes(name));
 
         let newTags: { id: number; name: string }[] = [];
@@ -151,21 +168,7 @@ export async function GET(request: Request) {
         }),
     );
 
-    // Aggregate views per post path in one query to avoid N+1
-    const paths = fetchedPosts.map((p) => `/blog/${p.slug}`);
-    let viewsByPath = new Map<string, number>();
-    if (paths.length > 0) {
-      const rows = await db
-        .select({ path: analyticsEvents.path, cnt: count().as("cnt") })
-        .from(analyticsEvents)
-        .where(inArray(analyticsEvents.path, paths))
-        .groupBy(analyticsEvents.path);
-      viewsByPath = new Map(
-        rows.map((r: { path: string; cnt: number | string }) => [r.path, Number(r.cnt)]),
-      );
-    }
-
-    const responseData = fetchedPosts.map((post) => ({
+    const responseData: PostsApiListItem[] = fetchedPosts.map((post) => ({
       id: post.id,
       title: post.title,
       slug: post.slug,
@@ -176,7 +179,6 @@ export async function GET(request: Request) {
       authorName: post.author?.name ?? "Unknown",
       categoryName: post.category?.name ?? "Uncategorized",
       commentsCount: post.comments.length,
-      views: viewsByPath.get(`/blog/${post.slug}`) ?? 0,
       tags: post.postsToTags.map((ptt) => ptt.tag.name),
     }));
 

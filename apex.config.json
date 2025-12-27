@@ -105,6 +105,14 @@
         "mobile",
         "desktop"
       ]
+    },
+    {
+      "path": "/",
+      "label": "/",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
     }
   ]
 }

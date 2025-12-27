@@ -1,10 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  BarChart3,
   FileText,
-  Link as LucideLink,
-  Megaphone,
   MessageSquare,
   Plus,
   Users,
@@ -32,33 +29,15 @@ export function QuickActions() {
           </Link>
         </Button>
         <Button variant="outline" className="w-full justify-start" asChild>
-          <Link href="/admin/affiliate-links">
-            <LucideLink className="h-4 w-4 mr-2" />
-            Manage Affiliate Links
-          </Link>
-        </Button>
-        <Button variant="outline" className="w-full justify-start" asChild>
           <Link href="/admin/users">
             <Users className="h-4 w-4 mr-2" />
             Manage Users & Roles
           </Link>
         </Button>
         <Button variant="outline" className="w-full justify-start" asChild>
-          <Link href="/admin/advertisements">
-            <Megaphone className="h-4 w-4 mr-2" />
-            Manage Advertisements
-          </Link>
-        </Button>
-        <Button variant="outline" className="w-full justify-start" asChild>
           <Link href="/admin/comments">
             <MessageSquare className="h-4 w-4 mr-2" />
             Moderate Comments
-          </Link>
-        </Button>
-        <Button variant="outline" className="w-full justify-start" asChild>
-          <Link href="/admin/analytics">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            View Analytics
           </Link>
         </Button>
       </CardContent>

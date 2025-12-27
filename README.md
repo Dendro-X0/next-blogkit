@@ -1,12 +1,14 @@
-# Modern Blog Starter Kit
+# BlogKit (Public)
 
 ![CI](https://github.com/Dendro-X0/next-blog-starterkit/actions/workflows/ci.yml/badge.svg)
  
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDendro-X0%2Fnext-blog-starterkit&project-name=next-blog-starterkit&repository-name=next-blog-starterkit&env=NEXT_PUBLIC_APP_URL,DATABASE_URL,BETTER_AUTH_SECRET,MAIL_PROVIDER,RESEND_API_KEY,EMAIL_FROM&envDescription=Required%20variables%20for%20production%20build.%20Use%20MAIL_PROVIDER%3Dresend%20with%20RESEND_API_KEY%20and%20EMAIL_FROM%2C%20or%20set%20MAIL_PROVIDER%3Dsmtp%20and%20fill%20SMTP_*.&envLink=https%3A%2F%2Fgithub.com%2FDendro-X0%2Fnext-blog-starterkit%23-3-environment-variables)
 
-Modern, production‑ready blog platform built with Next.js 16 and TypeScript—MDX content, admin dashboard, Better Auth, Cloudinary uploads by default (S3 optional), and built‑in analytics. Clean architecture, fast by default, and easy to extend.
+Modern, production‑ready blog starter built with Next.js 16 and TypeScript—MDX content, Better Auth, a native CMS-style admin, and first‑party analytics.
 
-![Project Thumbnail](public/next-blogkit.png)
+- Pro landing page (reference): https://blogkit-pro.vercel.app
+
+![Project Thumbnail](public/next-blogkit_dark.png)
 ![Lighthouse Score](public/lighthouse.png)
 
 ## Features
@@ -39,7 +41,6 @@ This repository now includes a `docs/` directory with topic-focused guides:
 - Mobile & Accessibility: [docs/a11y-mobile.md](docs/a11y-mobile.md)
 - Internationalization (optional): [docs/internationalization.md](docs/internationalization.md)
 - Deployment: [docs/deployment.md](docs/deployment.md)
- - Roadmap: [roadmap.md](roadmap.md)
 
 ## Quick Start
 

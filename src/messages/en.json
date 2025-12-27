@@ -10,7 +10,7 @@
   },
   "HomePage": {
     "title": "Build Your Next Blog in Hours, Not Weeks",
-    "subtitle": "A production-ready Next.js 15 starter kit with everything you need: Auth, Admin, MDX, Analytics, and more. Launch faster, focus on content.",
+    "subtitle": "A production-ready Next.js 16 starter kit with everything you need: Auth, Admin, MDX, Analytics, and more. Launch faster, focus on content.",
     "feature1Title": "i18n Ready",
     "feature1Description": "Pre-configured for multiple languages.",
     "feature2Title": "MDX Support",
@@ -30,6 +30,7 @@
     "feature9Title": "Email Templates",
     "feature9Description": "Customizable email templates for notifications.",
     "githubButton": "View on GitHub",
-    "demoButton": "Live Demo"
+    "demoButton": "Live Demo",
+    "proButton": "See BlogKit Pro"
   }
 }

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 3,
+  "modules": {
+    "auth": {
+      "name": "auth",
+      "version": "0.1.0",
+      "installedAtIso": "2025-12-18T08:32:14.259Z",
+      "files": [
+        "g:\\Web Development Project\\Codebase-X0\\StarterKit\\next-blogkit-workspace\\next-blogkit\\src\\lib\\blogkit-pro\\auth\\auth.ts",
+        "g:\\Web Development Project\\Codebase-X0\\StarterKit\\next-blogkit-workspace\\next-blogkit\\src\\lib\\blogkit-pro\\auth\\auth-client.ts",
+        "g:\\Web Development Project\\Codebase-X0\\StarterKit\\next-blogkit-workspace\\next-blogkit\\src\\lib\\blogkit-pro\\db\\auth-schema.ts"
+      ],
+      "skippedFiles": [
+        "g:\\Web Development Project\\Codebase-X0\\StarterKit\\next-blogkit-workspace\\next-blogkit\\src\\app\\api\\auth\\[...betterauth]\\route.ts"
+      ],
+      "migrations": [],
+      "skippedMigrations": []
+    }
+  }
+}

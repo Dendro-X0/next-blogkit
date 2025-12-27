@@ -8,9 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { CellContext, ColumnDef } from "@tanstack/react-table";
 import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Link from "next/link";
+import type { ReactElement } from "react";
 
 interface Post {
   id: string;
@@ -18,7 +19,6 @@ interface Post {
   status: "published" | "draft" | "scheduled";
   author: string;
   publishedAt: string | null;
-  views: number;
   comments: number;
   slug: string;
 }
@@ -46,7 +46,7 @@ export function PostsTable({ posts, onDeletePost }: PostsTableProps) {
     {
       accessorKey: "title",
       header: "Title",
-      cell: ({ row }) => (
+      cell: ({ row }: CellContext<Post, unknown>): ReactElement => (
         <div>
           <div className="font-medium">{row.getValue("title")}</div>
           <div className="text-sm text-muted-foreground">/{row.original.slug}</div>
@@ -56,7 +56,7 @@ export function PostsTable({ posts, onDeletePost }: PostsTableProps) {
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
+      cell: ({ row }: CellContext<Post, unknown>): ReactElement => (
         <Badge variant={getStatusColor(row.getValue("status"))}>{row.getValue("status")}</Badge>
       ),
     },
@@ -67,15 +67,10 @@ export function PostsTable({ posts, onDeletePost }: PostsTableProps) {
     {
       accessorKey: "publishedAt",
       header: "Published",
-      cell: ({ row }) => {
+      cell: ({ row }: CellContext<Post, unknown>): ReactElement => {
         const date = row.getValue("publishedAt") as string | null;
-        return date ? new Date(date).toLocaleDateString() : "-";
+        return <span>{date ? new Date(date).toLocaleDateString() : "-"}</span>;
       },
-    },
-    {
-      accessorKey: "views",
-      header: "Views",
-      cell: ({ row }) => (row.getValue("views") as number).toLocaleString(),
     },
     {
       accessorKey: "comments",
@@ -83,7 +78,7 @@ export function PostsTable({ posts, onDeletePost }: PostsTableProps) {
     },
     {
       id: "actions",
-      cell: ({ row }) => {
+      cell: ({ row }: CellContext<Post, unknown>): ReactElement => {
         const post = row.original;
 
         return (

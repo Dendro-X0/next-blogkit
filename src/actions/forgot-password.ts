@@ -22,7 +22,8 @@ export async function forgotPasswordAction(
   const { email } = validatedFields.data;
 
   try {
-    await auth.api.forgetPassword({ body: { email } });
+    const redirectTo: string = new URL("/auth/new-password", "http://localhost:3000").toString();
+    await auth.api.requestPasswordReset({ body: { email, redirectTo } });
   } catch (error: unknown) {
     // Log the error for debugging, but don't expose it to the client to prevent email enumeration.
     console.error("Forgot password error:", error);

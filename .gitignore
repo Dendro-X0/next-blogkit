@@ -56,3 +56,5 @@ storybook-static
 
 # Local OpenDeploy logs
 .artifacts
+
+.lighthouseci

@@ -11,7 +11,7 @@ This document explains the main modules, how they interact, and the patterns use
   - `(admin)`: administrator UI
 - API routes: `src/app/api/*` for uploads, newsletter, etc.
 
-Each route uses React Server Components by default; Client Components are used for interactivity. Places that use `usePathname`, `useSearchParams`, or client hooks are wrapped in `Suspense` to satisfy Next.js 15 rendering.
+Each route uses React Server Components by default; Client Components are used for interactivity. Places that use `usePathname`, `useSearchParams`, or client hooks are wrapped in `Suspense` to satisfy Next.js 16 rendering.
 
 ## Data Layer
 

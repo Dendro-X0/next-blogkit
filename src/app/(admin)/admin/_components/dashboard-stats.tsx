@@ -1,12 +1,11 @@
 import { StatsCard } from "@/components/ui/stats-card";
-import { FileText, MessageSquare, TrendingUp, Users } from "lucide-react";
+import { FileText, MessageSquare, Users } from "lucide-react";
 
 interface DashboardStatsProps {
   stats: {
     totalPosts: number;
     totalUsers: number;
     totalComments: number;
-    monthlyViews: number;
   };
 }
 
@@ -33,13 +32,6 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
         description="from last week"
         icon={MessageSquare}
         trend={{ value: "+5", isPositive: true }}
-      />
-      <StatsCard
-        title="Monthly Views"
-        value={stats.monthlyViews}
-        description="from last month"
-        icon={TrendingUp}
-        trend={{ value: "+15%", isPositive: true }}
       />
     </div>
   );

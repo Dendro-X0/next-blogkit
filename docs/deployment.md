@@ -13,7 +13,7 @@ Notes:
 
 ## Other Platforms
 
-- Any Node platform that supports Next.js 15 should work.
+- Any Node platform that supports Next.js 16 should work.
 - Ensure environment variables and Postgres are available.
 
 ## Static Assets & Images

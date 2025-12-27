@@ -9,7 +9,6 @@ interface Post {
   slug: string;
   title: string;
   status: "published" | "draft" | "scheduled";
-  views: number;
   comments: number;
   publishedAt: string | null;
 }
@@ -55,10 +54,6 @@ export function RecentPosts({ posts }: RecentPostsProps) {
                   <Badge variant={getStatusColor(post.status)}>{post.status}</Badge>
                 </div>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Eye className="h-3 w-3" />
-                    {post.views} views
-                  </div>
                   <div className="flex items-center gap-1">
                     <MessageSquare className="h-3 w-3" />
                     {post.comments} comments

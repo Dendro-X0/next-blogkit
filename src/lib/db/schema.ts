@@ -171,48 +171,6 @@ export const postReactions = pgTable(
 export type PostReaction = typeof postReactions.$inferSelect;
 export type NewPostReaction = typeof postReactions.$inferInsert;
 
-// --- MONETIZATION TABLES ---
-
-export const affiliateLinks = pgTable("affiliate_links", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  url: text("url").notNull(),
-  description: text("description"),
-  clicks: integer("clicks").default(0).notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
-
-export type AffiliateLink = typeof affiliateLinks.$inferSelect;
-export type NewAffiliateLink = typeof affiliateLinks.$inferInsert;
-
-export const adPlacementEnum = pgEnum("ad_placement", [
-  "sidebar",
-  "header",
-  "in_content",
-  "footer",
-]);
-
-export const advertisements = pgTable("advertisements", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  placement: adPlacementEnum("placement").notNull(),
-  content: text("content").notNull(), // Can be HTML, image URL, etc.
-  isActive: boolean("is_active").default(true).notNull(),
-  startDate: timestamp("start_date"),
-  endDate: timestamp("end_date"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
-
-export type Advertisement = typeof advertisements.$inferSelect;
-export type NewAdvertisement = typeof advertisements.$inferInsert;
-
 // --- USER FEATURES ---
 export const bookmarks = pgTable(
   "bookmarks",
@@ -394,24 +352,3 @@ export const bookmarksRelations = relations(bookmarks, ({ one }) => ({
     references: [posts.id],
   }),
 }));
-
-// --- ANALYTICS TABLES ---
-export const analyticsEvents = pgTable(
-  "analytics_events",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 128 }).notNull(),
-    path: varchar("path", { length: 512 }).notNull(),
-    referrer: varchar("referrer", { length: 512 }),
-    userId: text("user_id"),
-    sessionId: varchar("session_id", { length: 128 }),
-    properties: json("properties").$type<Record<string, unknown> | null>().default(null),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (t) => ({
-    idxAnalyticsPath: index("idx_analytics_events_path").on(t.path),
-  }),
-);
-
-export type AnalyticsEventRow = typeof analyticsEvents.$inferSelect;
-export type NewAnalyticsEventRow = typeof analyticsEvents.$inferInsert;

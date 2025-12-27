@@ -3,17 +3,13 @@ import type { ReactElement } from "react";
 import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@/analytics/analytics";
-import { AutoPageview } from "@/analytics/auto-pageview";
-import { DevPageviewToggle } from "@/analytics/dev-pageview-toggle";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { websiteConfig } from "@/config/website";
 import { NextIntlClientProvider } from "next-intl";
 import type { AbstractIntlMessages } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-import { WebVitals } from "@/components/analytics/web-vitals";
 
 export const metadata: Metadata = {
   title: "BlogKit",
@@ -57,18 +53,8 @@ export default async function RootLayout({
                 <main id="main-content" className="flex-1">{children}</main>
                 <Footer />
                 {process.env.NODE_ENV === "production" && (
-                  <>
-                    <Analytics />
-                    {websiteConfig.analytics.enableFirstPartyAnalytics && (
-                      <>
-                        <AutoPageview />
-                        <WebVitals />
-                      </>
-                    )}
-                  </>
+                  <Analytics />
                 )}
-                {process.env.NODE_ENV !== "production" &&
-                  websiteConfig.analytics.enableFirstPartyAnalytics && <DevPageviewToggle />}
               </div>
             </Suspense>
             <Toaster richColors closeButton />

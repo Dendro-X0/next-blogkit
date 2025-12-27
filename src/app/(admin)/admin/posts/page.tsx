@@ -15,7 +15,6 @@ interface PostForTable {
   status: "published" | "draft" | "scheduled";
   author: string;
   publishedAt: string | null;
-  views: number;
   comments: number;
   slug: string;
 }
@@ -30,7 +29,6 @@ interface FetchedPost {
   categoryName: string | null;
   slug: string;
   commentsCount: number;
-  views: number;
 }
 
 export default function PostsManagement() {
@@ -53,7 +51,6 @@ export default function PostsManagement() {
             status: post.published ? "published" : "draft",
             author: post.authorName || "Unknown",
             publishedAt: post.createdAt,
-            views: Number(post.views) || 0,
             comments: Number(post.commentsCount) || 0,
             slug: post.slug,
           }),
@@ -82,7 +79,7 @@ export default function PostsManagement() {
           throw new Error("Failed to delete post");
         }
 
-        setPosts(posts.filter((post) => post.id !== postId));
+        setPosts(posts.filter((post: PostForTable) => post.id !== postId));
         toast.success("Post deleted successfully!");
       } catch (error) {
         console.error(error);

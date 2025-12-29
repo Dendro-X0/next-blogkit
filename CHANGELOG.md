@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.3] - 2025-12-29
+
+### Added
+- JSON-LD structured data component and global manifest/robots configuration to boost Lighthouse SEO signals.
+  - `src/components/ui/structured-data.tsx`
+  - `public/manifest.json`
+  - `public/robots.txt`
+
+### Changed
+- Home page metadata and hero imagery optimisations (priority/fetchPriority, lazy-loaded mobile previews, descriptive CTA link labels) to reduce LCP and satisfy descriptive-text audits.
+  - `src/app/(public)/page.tsx`
+- Root layout metadata (meta description, OpenGraph/Twitter defaults, viewport) and animation styles to clear SEO warnings.
+  - `src/app/layout.tsx`
+  - `src/app/globals.css`
+- Bento card layout tweaks for consistent heights and compact presentation.
+  - `src/components/ui/bento-grid.tsx`
+
+### Fixed
+- Lighthouse “document lacks meta description” and “links do not have descriptive text” issues by providing richer link labels and global meta description.
+- Hydration mismatch during scroll animations and introduced smooth scroll-triggered effects without JS runtime penalties.
+
 ## [1.3.0] - 2025-10-24
 
 ### Added

@@ -8,7 +8,7 @@ const BentoGrid = ({ children, className }: { children: ReactNode; className?: s
   return (
     <div
       className={cn(
-        "grid w-full auto-rows-[16rem] grid-cols-1 gap-4 md:auto-rows-[22rem] md:grid-cols-3",
+        "grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3",
         className,
       )}
     >
@@ -38,7 +38,7 @@ const BentoCard = ({
     <div
       key={name}
       className={cn(
-        "group relative col-span-3 flex flex-col justify-between overflow-hidden rounded-xl border",
+        "group relative flex h-full min-h-[240px] flex-col justify-between overflow-hidden rounded-xl border",
         // Tokenized border color
         "border-border",
         // Subtle shadow on hover
@@ -53,10 +53,10 @@ const BentoCard = ({
       <div className="absolute inset-0 -z-10 bg-linear-to-br from-[hsl(var(--background))] to-[hsl(var(--muted))]" />
       {/* Optional per-card accent background overlay from props */}
       <div className="absolute inset-0 -z-10 mix-blend-overlay opacity-60">{background}</div>
-      <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-4">
+      <div className="pointer-events-none z-10 flex flex-grow transform-gpu flex-col gap-3 p-6 transition-all duration-300 group-hover:-translate-y-2">
         <Icon className="h-12 w-12 origin-left transform-gpu text-foreground/80 transition-all duration-300 ease-in-out group-hover:scale-75" />
-        <h2 className="text-xl font-semibold text-foreground">{name}</h2>
-        <p className="max-w-lg text-muted-foreground">{description}</p>
+        <h2 className="text-xl font-semibold text-foreground leading-tight">{name}</h2>
+        <p className="flex-grow text-muted-foreground line-clamp-3">{description}</p>
       </div>
 
       <div
@@ -69,7 +69,7 @@ const BentoCard = ({
           className="pointer-events-auto flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
           aria-label={`${cta} about ${name}`}
         >
-          {`${cta} about ${name}`}
+          {cta}
           <ArrowRightIcon aria-hidden="true" />
         </Link>
       </div>

@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { posts } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
-import { type ReactElement, Suspense } from "react";
+import { type ReactElement } from "react";
 import { PostsGrid } from "./_components/posts-grid";
 
 // Define the shape of the data we expect from our API
@@ -18,7 +18,7 @@ type DbPost = {
   postsToTags: { tag: { name: string } }[];
 };
 
-export const revalidate = 60;
+export const revalidate = 300;
 
 // This function fetches and transforms the data directly from the DB
 async function getPosts({ page, limit }: { page: number; limit: number }): Promise<
@@ -99,13 +99,13 @@ export default async function BlogPage({
         />
 
         <div className="space-y-8">
-          <Suspense fallback={<p>Loading posts...</p>}>
-            {pageItems.length > 0 ? (
+          {pageItems.length > 0 ? (
+            <div style={{ contentVisibility: "auto", containIntrinsicSize: "1200px 900px" }}>
               <PostsGrid posts={pageItems} />
-            ) : (
-              <p>No posts found. Check back later!</p>
-            )}
-          </Suspense>
+            </div>
+          ) : (
+            <p>No posts found. Check back later!</p>
+          )}
 
           <nav className="flex items-center justify-between">
             {page > 1 ? (

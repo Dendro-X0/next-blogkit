@@ -1,0 +1,361 @@
+{
+  "meta": {
+    "configPath": "E:\\Web Project\\starterkit\\next-blogkit-workspace\\next-blogkit\\apex.config.json",
+    "comboCount": 50,
+    "startedAt": "2026-01-01T03:03:13.337Z",
+    "completedAt": "2026-01-01T03:03:27.441Z",
+    "elapsedMs": 14104
+  },
+  "results": [
+    {
+      "url": "http://localhost:3000/terms",
+      "path": "/terms",
+      "label": "terms",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/terms",
+      "path": "/terms",
+      "label": "terms",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/settings",
+      "path": "/settings",
+      "label": "settings",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/settings",
+      "path": "/settings",
+      "label": "settings",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/profile",
+      "path": "/profile",
+      "label": "profile",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/profile",
+      "path": "/profile",
+      "label": "profile",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/privacy",
+      "path": "/privacy",
+      "label": "privacy",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/privacy",
+      "path": "/privacy",
+      "label": "privacy",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/",
+      "path": "/",
+      "label": "home",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/",
+      "path": "/",
+      "label": "home",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/search",
+      "path": "/search",
+      "label": "search",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/search",
+      "path": "/search",
+      "label": "search",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/contact",
+      "path": "/contact",
+      "label": "contact",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/contact",
+      "path": "/contact",
+      "label": "contact",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/blog",
+      "path": "/blog",
+      "label": "blog",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/blog",
+      "path": "/blog",
+      "label": "blog",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/blog/[slug]",
+      "path": "/blog/[slug]",
+      "label": "[slug]",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/blog/[slug]",
+      "path": "/blog/[slug]",
+      "label": "[slug]",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/register",
+      "path": "/auth/register",
+      "label": "register",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/register",
+      "path": "/auth/register",
+      "label": "register",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/new-password",
+      "path": "/auth/new-password",
+      "label": "new-password",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/new-password",
+      "path": "/auth/new-password",
+      "label": "new-password",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/login",
+      "path": "/auth/login",
+      "label": "login",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/login",
+      "path": "/auth/login",
+      "label": "login",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/forgot-password",
+      "path": "/auth/forgot-password",
+      "label": "forgot-password",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/forgot-password",
+      "path": "/auth/forgot-password",
+      "label": "forgot-password",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/2fa",
+      "path": "/auth/2fa",
+      "label": "2fa",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/auth/2fa",
+      "path": "/auth/2fa",
+      "label": "2fa",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin",
+      "path": "/admin",
+      "label": "admin",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin",
+      "path": "/admin",
+      "label": "admin",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin/users",
+      "path": "/admin/users",
+      "label": "users",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin/users",
+      "path": "/admin/users",
+      "label": "users",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin/posts",
+      "path": "/admin/posts",
+      "label": "posts",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin/posts",
+      "path": "/admin/posts",
+      "label": "posts",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin/posts/[id]/edit",
+      "path": "/admin/posts/[id]/edit",
+      "label": "edit",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin/posts/[id]/edit",
+      "path": "/admin/posts/[id]/edit",
+      "label": "edit",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin/posts/new",
+      "path": "/admin/posts/new",
+      "label": "new",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/admin/posts/new",
+      "path": "/admin/posts/new",
+      "label": "new",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account",
+      "path": "/account",
+      "label": "account",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account",
+      "path": "/account",
+      "label": "account",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/subscriptions",
+      "path": "/account/subscriptions",
+      "label": "subscriptions",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/subscriptions",
+      "path": "/account/subscriptions",
+      "label": "subscriptions",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/settings",
+      "path": "/account/settings",
+      "label": "settings",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/settings",
+      "path": "/account/settings",
+      "label": "settings",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/profile",
+      "path": "/account/profile",
+      "label": "profile",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/profile",
+      "path": "/account/profile",
+      "label": "profile",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/comments",
+      "path": "/account/comments",
+      "label": "comments",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/comments",
+      "path": "/account/comments",
+      "label": "comments",
+      "device": "desktop",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/bookmarks",
+      "path": "/account/bookmarks",
+      "label": "bookmarks",
+      "device": "mobile",
+      "violations": []
+    },
+    {
+      "url": "http://localhost:3000/account/bookmarks",
+      "path": "/account/bookmarks",
+      "label": "bookmarks",
+      "device": "desktop",
+      "violations": []
+    }
+  ]
+}

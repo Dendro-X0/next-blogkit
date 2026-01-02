@@ -90,7 +90,8 @@ export default function SearchPage(): ReactElement {
     const load = async (): Promise<void> => {
       try {
         const res = await fetch(`/api/posts?limit=${FETCH_LIMIT}&page=${page}`, {
-          cache: "no-store",
+          // Allow caching to improve LCP and bfcache friendliness; API can still revalidate downstream.
+          next: { revalidate: 300 },
         });
         if (!res.ok) return;
         const items: ApiPostItem[] = await res.json();
@@ -202,7 +203,11 @@ export default function SearchPage(): ReactElement {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
-          <aside className="lg:w-64 space-y-6" aria-labelledby="filters-heading">
+          <aside
+            className="lg:w-64 space-y-6"
+            aria-labelledby="filters-heading"
+            style={{ contentVisibility: "auto", containIntrinsicSize: "320px 720px" }}
+          >
             <div className="flex items-center justify-between">
               <h2 className="font-semibold text-lg" id="filters-heading">
                 Filters
@@ -333,7 +338,10 @@ export default function SearchPage(): ReactElement {
           </aside>
 
           {/* Results */}
-          <div className="flex-1">
+          <div
+            className="flex-1"
+            style={{ contentVisibility: "auto", containIntrinsicSize: "960px 1400px" }}
+          >
             <div className="flex items-center justify-between mb-6">
               <p className="text-muted-foreground" aria-live="polite">
                 {filteredPosts.length} result{filteredPosts.length !== 1 ? "s" : ""} found

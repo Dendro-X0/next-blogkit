@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://localhost:3000",
+  "query": "",
   "runs": 1,
   "pages": [
     {
@@ -67,6 +68,14 @@
       ]
     },
     {
+      "path": "/blog/[slug]",
+      "label": "[slug]",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
       "path": "/auth/register",
       "label": "register",
       "devices": [
@@ -107,8 +116,128 @@
       ]
     },
     {
-      "path": "/",
-      "label": "/",
+      "path": "/admin",
+      "label": "admin",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/admin/users",
+      "label": "users",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/admin/posts",
+      "label": "posts",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/admin/posts/[id]/edit",
+      "label": "edit",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/admin/posts/new",
+      "label": "new",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/account",
+      "label": "account",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/account/subscriptions",
+      "label": "subscriptions",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/account/settings",
+      "label": "settings",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/account/profile",
+      "label": "profile",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/account/comments",
+      "label": "comments",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/account/bookmarks",
+      "label": "bookmarks",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/blog/podcast-episode-1",
+      "label": "podcast-episode-1",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/blog/design-systems-for-content-sites",
+      "label": "design-systems-for-content-sites",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/blog/monetization-playbook-ads-affiliate",
+      "label": "monetization-playbook-ads-affiliate",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/blog/analytics-first-party-events-kpis",
+      "label": "analytics-first-party-events-kpis",
+      "devices": [
+        "mobile",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/blog/exploring-mdx",
+      "label": "exploring-mdx",
       "devices": [
         "mobile",
         "desktop"

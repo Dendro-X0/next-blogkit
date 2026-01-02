@@ -97,7 +97,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-muted-foreground">
-          <p className="text-center md:text-left">© 2025 BlogKit. All rights reserved.</p>
+          <p className="text-center md:text-left">© 2026 BlogKit. All rights reserved.</p>
           <div className="flex gap-4 text-sm">
             <Link href="/privacy" className="hover:text-foreground">
               Privacy

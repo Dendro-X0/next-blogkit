@@ -88,7 +88,7 @@ export const env = createEnv({
 });
 
 // Production-only verification for critical environment variables
-if (process.env.NODE_ENV === "production") {
+if (typeof window === "undefined" && process.env.NODE_ENV === "production") {
   // Hard requirements for a working build/runtime
   const baseRequired = ["DATABASE_URL"] as const;
   const missingHard: string[] = [];

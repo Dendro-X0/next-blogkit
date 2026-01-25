@@ -30,6 +30,12 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
             active: pathname === "/admin",
         },
         {
+            href: "/admin/analytics",
+            label: "Analytics",
+            icon: BarChart,
+            active: pathname === "/admin/analytics",
+        },
+        {
             href: "/admin/posts",
             label: "Posts",
             icon: FileText,

@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/auth";
 import { getUserRoles } from "@/lib/rbac/queries";
 import { headers as nextHeaders } from "next/headers";
+import { env } from "~/env";
 
 export type SessionWithRoles = Readonly<{
   user: Readonly<{
@@ -17,6 +18,19 @@ export type SessionWithRoles = Readonly<{
  * This avoids repeated role lookups across the app.
  */
 export async function getSessionWithRoles(h?: Headers): Promise<SessionWithRoles> {
+  // bypass for demo/recording
+  if (env.DISABLE_AUTH_GUARD) {
+    return {
+      user: {
+        id: "demo-admin-id",
+        email: "demo@example.com",
+        name: "Demo Admin",
+        image: null,
+        roles: ["admin"],
+      },
+    } as const;
+  }
+
   let hdrs: Headers;
   if (h) {
     hdrs = h;

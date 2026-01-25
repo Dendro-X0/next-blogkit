@@ -11,6 +11,12 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest): Promise<NextResponse> {
   const t0: number = Date.now();
+
+  // local development bypass for demo/recording purposes
+  if (env.DISABLE_AUTH_GUARD) {
+    return NextResponse.next();
+  }
+
   const { nextUrl } = req;
   const session = await auth.api.getSession({ headers: req.headers });
   const isLoggedIn = !!session?.user;

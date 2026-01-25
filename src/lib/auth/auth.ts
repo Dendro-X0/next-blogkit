@@ -34,18 +34,18 @@ export const authOptions = {
     google:
       env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
         ? {
-            clientId: env.GOOGLE_CLIENT_ID,
-            clientSecret: env.GOOGLE_CLIENT_SECRET,
-            scope: ["email", "profile"],
-          }
+          clientId: env.GOOGLE_CLIENT_ID,
+          clientSecret: env.GOOGLE_CLIENT_SECRET,
+          scope: ["email", "profile"],
+        }
         : undefined,
     github:
       env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
         ? {
-            clientId: env.GITHUB_CLIENT_ID,
-            clientSecret: env.GITHUB_CLIENT_SECRET,
-            scope: ["user:email"],
-          }
+          clientId: env.GITHUB_CLIENT_ID,
+          clientSecret: env.GITHUB_CLIENT_SECRET,
+          scope: ["user:email"],
+        }
         : undefined,
   },
   emailAndPassword: {

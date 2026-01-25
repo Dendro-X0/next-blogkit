@@ -21,7 +21,7 @@ export const env = createEnv({
       (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
       z.coerce.number().int().positive().optional(),
     ),
-    SMTP_SECURE: z.coerce.boolean().default(false).optional(),
+    SMTP_SECURE: z.preprocess((v) => v === "true" || v === "1", z.boolean()).default(false),
     SMTP_USER: z.preprocess(
       (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
       z.string().min(1).optional(),
@@ -38,6 +38,7 @@ export const env = createEnv({
     S3_BUCKET_NAME: z.string().min(1).optional(),
     S3_ENDPOINT: z.string().url().optional(),
     S3_PUBLIC_URL: z.string().url().optional(),
+    DISABLE_AUTH_GUARD: z.preprocess((v) => v === "true" || v === "1", z.boolean()).default(false),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
@@ -72,6 +73,7 @@ export const env = createEnv({
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_PUBLIC_URL: process.env.S3_PUBLIC_URL,
     NEXT_PUBLIC_S3_PUBLIC_URL: process.env.NEXT_PUBLIC_S3_PUBLIC_URL,
+    DISABLE_AUTH_GUARD: process.env.DISABLE_AUTH_GUARD,
   },
 });
 

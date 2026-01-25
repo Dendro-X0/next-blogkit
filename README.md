@@ -8,7 +8,7 @@ Modern, production‑ready blog starter built with Next.js 16 and TypeScript—M
 
 - Pro landing page (reference): https://blogkit-pro.vercel.app
 
-![Project Thumbnail](public/next-blogkit_dark.png)
+![BlogKit UI Demo](docs/assets/next-blogkit_1.gif)
 ![Lighthouse Score](public/lighthouse.png)
 
 ## Features
@@ -41,6 +41,9 @@ This repository now includes a `docs/` directory with topic-focused guides:
 - Mobile & Accessibility: [docs/a11y-mobile.md](docs/a11y-mobile.md)
 - Internationalization (optional): [docs/internationalization.md](docs/internationalization.md)
 - Deployment: [docs/deployment.md](docs/deployment.md)
+
+### Technical Structure
+![Project Structure Demo](docs/assets/next-blogkit_filetree_1.gif)
 
 ## Quick Start
 

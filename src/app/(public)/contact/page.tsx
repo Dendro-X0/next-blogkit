@@ -88,229 +88,209 @@ export default function ContactPage(): React.ReactElement {
   return (
     <Suspense fallback={<div className="container mx-auto px-4 py-8">Loading...</div>}>
       {isSubmitted ? (
-        <main className="container mx-auto px-4 py-16" aria-labelledby="contact-success-title">
-          <div className="max-w-2xl mx-auto text-center">
-            <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-6" />
-            <h1 id="contact-success-title" className="text-3xl font-semibold text-foreground mb-4">
-              Message Sent!
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Thank you for reaching out. We&apos;ve received your message and will get back to you
-              within 24 hours.
-            </p>
-            <Button onClick={() => setIsSubmitted(false)}>Send Another Message</Button>
+        <main className="container mx-auto px-4 py-16 min-h-[60vh] flex items-center justify-center" aria-labelledby="contact-success-title">
+          <div className="max-w-md mx-auto text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
+            <div className="h-24 w-24 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto">
+              <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-500" />
+            </div>
+            <div className="space-y-2">
+              <h1 id="contact-success-title" className="text-3xl font-bold tracking-tight">
+                Message Sent!
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Thank you for reaching out. We've received your message and will get back to you shortly.
+              </p>
+            </div>
+            <Button onClick={() => setIsSubmitted(false)} size="lg" className="min-w-[200px]">
+              Send Another
+            </Button>
           </div>
         </main>
       ) : (
-        <main className="container mx-auto px-4 py-8" aria-labelledby="contact-title">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h1 id="contact-title" className="text-4xl font-semibold text-foreground mb-4">
+        <main className="container mx-auto px-4 py-12 lg:py-24" aria-labelledby="contact-title">
+          <div className="max-w-5xl mx-auto space-y-12">
+            <div className="text-center space-y-4">
+              <h1 id="contact-title" className="text-4xl font-bold tracking-tight sm:text-5xl">
                 Get in Touch
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Have a question or want to work together? We&apos;re here to help.
+                Have a question or want to work together? We'd love to hear from you.
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
-              {/* Contact Information */}
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Contact Information</CardTitle>
-                    <CardDescription>
-                      Get in touch with us through any of these channels
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium text-foreground">Email</p>
-                        <p className="text-sm text-muted-foreground">hello@blogplatform.com</p>
+            <div className="grid lg:grid-cols-12 rounded-3xl overflow-hidden border bg-card shadow-xl">
+              {/* Contact Info Sidebar */}
+              <div className="lg:col-span-5 bg-muted/30 p-8 lg:p-12 space-y-10 border-r-0 lg:border-r">
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-semibold">Contact Information</h2>
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Mail className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-medium">Email</p>
+                        <p className="text-muted-foreground break-all">hello@blogplatform.com</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Phone className="h-5 w-5 text-green-600" />
-                      <div>
-                        <p className="font-medium text-foreground">Phone</p>
-                        <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
+                    <div className="flex items-start gap-4">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Phone className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-medium">Phone</p>
+                        <p className="text-muted-foreground">+1 (555) 123-4567</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <MapPin className="h-5 w-5 text-red-600" />
-                      <div>
-                        <p className="font-medium text-foreground">Address</p>
-                        <p className="text-sm text-muted-foreground">
-                          123 Blog Street
-                          <br />
+                    <div className="flex items-start gap-4">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <MapPin className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-medium">Office</p>
+                        <p className="text-muted-foreground">
+                          123 Blog Street<br />
                           San Francisco, CA 94102
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Clock className="h-5 w-5 text-purple-600" />
-                      <div>
-                        <p className="font-medium text-foreground">Business Hours</p>
-                        <p className="text-sm text-muted-foreground">Mon-Fri: 9AM-6PM PST</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>FAQ</CardTitle>
-                    <CardDescription>Common questions we receive</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <p className="font-medium text-sm text-foreground">
-                        How quickly do you respond?
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        We typically respond within 24 hours during business days.
-                      </p>
+                <div className="space-y-6 pt-10 border-t">
+                  <h2 className="text-2xl font-semibold">FAQ</h2>
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <h3 className="font-medium">What is your response time?</h3>
+                      <p className="text-sm text-muted-foreground">We typically respond within 24 hours during business days, often sooner.</p>
                     </div>
-                    <div>
-                      <p className="font-medium text-sm text-foreground">
-                        Do you offer technical support?
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Yes, we provide technical support for all our platform features.
-                      </p>
+                    <div className="space-y-2">
+                      <h3 className="font-medium">Do you offer technical support?</h3>
+                      <p className="text-sm text-muted-foreground">Yes, our team is available to help with any platform-related issues.</p>
                     </div>
-                    <div>
-                      <p className="font-medium text-sm text-foreground">Can I schedule a demo?</p>
-                      <p className="text-sm text-muted-foreground">
-                        Mention it in your message and we&apos;ll set one up.
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </div>
 
               {/* Contact Form */}
-              <div className="lg:col-span-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Send us a Message</CardTitle>
-                    <CardDescription>
-                      Fill out the form below and we&apos;ll get back to you soon
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form
-                      onSubmit={handleSubmit}
-                      className="space-y-6"
-                      aria-busy={isSubmitting}
-                      aria-describedby="form-status"
-                    >
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="name">Name *</Label>
-                          <Input
-                            id="name"
-                            name="name"
-                            autoComplete="name"
-                            value={formData.name}
-                            onChange={(e) => handleInputChange("name", e.target.value)}
-                            placeholder="Your full name"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="email">Email *</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            name="email"
-                            autoComplete="email"
-                            value={formData.email}
-                            onChange={(e) => handleInputChange("email", e.target.value)}
-                            placeholder="your.email@example.com"
-                            required
-                          />
-                        </div>
-                      </div>
+              <div className="lg:col-span-7 bg-background p-8 lg:p-12">
+                <div className="space-y-6 mb-8">
+                  <h2 className="text-2xl font-semibold">Send us a Message</h2>
+                  <p className="text-muted-foreground">
+                    Fill out the form below and we will get back to you as soon as possible.
+                  </p>
+                </div>
 
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="subject">Subject *</Label>
-                          <Input
-                            id="subject"
-                            name="subject"
-                            autoComplete="off"
-                            value={formData.subject}
-                            onChange={(e) => handleInputChange("subject", e.target.value)}
-                            placeholder="What&apos;s this about?"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label id="category-label" htmlFor="category">
-                            Category
-                          </Label>
-                          <Select
-                            value={formData.category}
-                            onValueChange={(value) => handleInputChange("category", value)}
-                          >
-                            <SelectTrigger aria-labelledby="category-label">
-                              <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="general">General Inquiry</SelectItem>
-                              <SelectItem value="support">Technical Support</SelectItem>
-                              <SelectItem value="billing">Billing Question</SelectItem>
-                              <SelectItem value="feature">Feature Request</SelectItem>
-                              <SelectItem value="partnership">Partnership</SelectItem>
-                              <SelectItem value="press">Press Inquiry</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                  aria-busy={isSubmitting}
+                  aria-describedby="form-status"
+                >
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Name</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        autoComplete="name"
+                        value={formData.name}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
+                        placeholder="John Doe"
+                        className="bg-muted/30"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                        value={formData.email}
+                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        placeholder="john@example.com"
+                        className="bg-muted/30"
+                        required
+                      />
+                    </div>
+                  </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="message">Message *</Label>
-                        <Textarea
-                          id="message"
-                          name="message"
-                          autoComplete="off"
-                          value={formData.message}
-                          onChange={(e) => handleInputChange("message", e.target.value)}
-                          placeholder="Tell us more about your inquiry..."
-                          rows={6}
-                          required
-                        />
-                      </div>
-
-                      <p id="form-status" aria-live="polite" className="sr-only">
-                        {isSubmitting ? "Sending your message..." : ""}
-                      </p>
-
-                      <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={isSubmitting}
-                        aria-disabled={isSubmitting}
-                        aria-busy={isSubmitting}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="subject">Subject</Label>
+                      <Input
+                        id="subject"
+                        name="subject"
+                        autoComplete="off"
+                        value={formData.subject}
+                        onChange={(e) => handleInputChange("subject", e.target.value)}
+                        placeholder="How can we help?"
+                        className="bg-muted/30"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label id="category-label" htmlFor="category">
+                        Category
+                      </Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) => handleInputChange("category", value)}
                       >
-                        {isSubmitting ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                            Sending...
-                          </>
-                        ) : (
-                          <>
-                            <Send className="h-4 w-4 mr-2" />
-                            Send Message
-                          </>
-                        )}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
+                        <SelectTrigger aria-labelledby="category-label" className="bg-muted/30 w-full">
+                          <SelectValue placeholder="Select a topic" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="general">General Inquiry</SelectItem>
+                          <SelectItem value="support">Technical Support</SelectItem>
+                          <SelectItem value="billing">Billing Question</SelectItem>
+                          <SelectItem value="feature">Feature Request</SelectItem>
+                          <SelectItem value="partnership">Partnership</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      autoComplete="off"
+                      value={formData.message}
+                      onChange={(e) => handleInputChange("message", e.target.value)}
+                      placeholder="Tell us a bit more..."
+                      rows={5}
+                      className="resize-none bg-muted/30"
+                      required
+                    />
+                  </div>
+
+                  <p id="form-status" aria-live="polite" className="sr-only">
+                    {isSubmitting ? "Sending your message..." : ""}
+                  </p>
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full sm:w-auto min-w-[160px]"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Send Message
+                        <Send className="h-4 w-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </form>
               </div>
             </div>
           </div>

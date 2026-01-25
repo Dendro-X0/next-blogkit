@@ -32,24 +32,24 @@ export function SocialLogin({
           </div>
         </div>
       )}
-      <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-4 animate-in fade-in zoom-in-95 duration-500 delay-100">
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full bg-background/50 hover:bg-background transition-all border-border/50"
           onClick={() => handleSocialLogin("google")}
           disabled={isLoading}
+          aria-label="Continue with Google"
         >
-          <FaGoogle className="h-4 w-4 mr-2" />
-          Continue with Google
+          <FaGoogle className="h-4 w-4" />
         </Button>
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full bg-background/50 hover:bg-background transition-all border-border/50"
           onClick={() => handleSocialLogin("github")}
           disabled={isLoading}
+          aria-label="Continue with GitHub"
         >
-          <FaGithub className="h-4 w-4 mr-2" />
-          Continue with GitHub
+          <FaGithub className="h-4 w-4" />
         </Button>
       </div>
     </>

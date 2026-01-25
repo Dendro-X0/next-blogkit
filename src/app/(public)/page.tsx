@@ -20,6 +20,7 @@ import {
   FaLock,
   FaPalette,
 } from "react-icons/fa6";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export const metadata: Metadata = {
   title: "BlogKit - Build Your Next Blog in Hours, Not Weeks",
@@ -71,39 +72,6 @@ export const metadata: Metadata = {
     },
   },
 };
-
-// Animated section component with scroll-triggered animation
-function AnimatedSection({ children, delay = 0, immediate = false }: { children: React.ReactNode; delay?: number; immediate?: boolean }) {
-  return (
-    <div 
-      className={`${immediate ? 'animate-fade-in-up' : 'scroll-animate'} opacity-0`}
-      style={{ 
-        ...(immediate ? {
-          animationDelay: `${delay}ms`,
-          animationFillMode: 'forwards'
-        } : {
-          '--animation-delay': `${delay}ms`
-        })
-      } as React.CSSProperties}
-    >
-      {children}
-    </div>
-  );
-}
-
-// Animated card component for staggered feature animations
-function AnimatedCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  return (
-    <div 
-      className="scroll-animate opacity-0"
-      style={{ 
-        '--animation-delay': `${delay}ms`
-      } as React.CSSProperties}
-    >
-      {children}
-    </div>
-  );
-}
 
 export default async function HomePage(): Promise<React.ReactElement> {
   const t = await getTranslations("HomePage");
@@ -216,133 +184,135 @@ export default async function HomePage(): Promise<React.ReactElement> {
       <main className="relative">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_80%_at_10%_0%,hsl(var(--primary)/0.12),transparent_60%),radial-gradient(120%_80%_at_90%_20%,hsl(var(--secondary)/0.12),transparent_55%)]" />
         <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
-          <AnimatedSection delay={100} immediate={true}>
+          <ScrollReveal delay={100} threshold={0}>
             <section className="grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div className="max-w-xl">
-              <AnimatedSection delay={200} immediate={true}>
-                <div className="inline-flex items-center gap-2 rounded-full border bg-background/60 px-3 py-1 text-sm text-muted-foreground backdrop-blur">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-primary" />
-                  <span>Next.js 16 blog starter</span>
-                </div>
-              </AnimatedSection>
-              <AnimatedSection delay={300} immediate={true}>
-                <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-                  {t("title")}
-                </h1>
-              </AnimatedSection>
-              <AnimatedSection delay={400} immediate={true}>
-                <p className="mt-4 text-lg text-muted-foreground">{t("subtitle")}</p>
-              </AnimatedSection>
-              <AnimatedSection delay={500} immediate={true}>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Button asChild size="lg">
-                    <Link href="/blog">Explore the blog</Link>
-                  </Button>
-                  <Button asChild variant="outline" size="lg">
-                    <Link href="https://blogkit-pro.vercel.app" target="_blank">
-                      {t("proButton")}
-                    </Link>
-                  </Button>
-                  <Button asChild variant="ghost" size="lg">
-                    <Link href="https://github.com/Dendro-X0/next-blogkit" target="_blank">
-                      <FaGithub className="mr-2 h-5 w-5" />
-                      {t("githubButton")}
-                    </Link>
-                  </Button>
-                </div>
-              </AnimatedSection>
-              <AnimatedSection delay={600} immediate={true}>
+              <div className="max-w-xl">
+                <ScrollReveal delay={200} threshold={0}>
+                  <div className="inline-flex items-center gap-2 rounded-full border bg-background/60 px-3 py-1 text-sm text-muted-foreground backdrop-blur">
+                    <span className="inline-flex h-2 w-2 rounded-full bg-primary" />
+                    <span>Next.js 16 blog starter</span>
+                  </div>
+                </ScrollReveal>
+                <ScrollReveal delay={300} threshold={0}>
+                  <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+                    {t("title")}
+                  </h1>
+                </ScrollReveal>
+                <ScrollReveal delay={400} threshold={0}>
+                  <p className="mt-4 text-lg text-muted-foreground">{t("subtitle")}</p>
+                </ScrollReveal>
+                <ScrollReveal delay={500} threshold={0}>
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    <Button asChild size="lg">
+                      <Link href="/blog">Explore the blog</Link>
+                    </Button>
+                    <Button asChild variant="outline" size="lg">
+                      <Link href="https://blogkit-pro.vercel.app" target="_blank">
+                        {t("proButton")}
+                      </Link>
+                    </Button>
+                    <Button asChild variant="ghost" size="lg">
+                      <Link href="https://github.com/Dendro-X0/next-blogkit" target="_blank">
+                        <FaGithub className="mr-2 h-5 w-5" />
+                        {t("githubButton")}
+                      </Link>
+                    </Button>
+                  </div>
+                </ScrollReveal>
                 <div className="mt-10 grid gap-3 sm:grid-cols-3">
-                  <AnimatedCard delay={700}>
-                    <Card className="py-4">
+                  <ScrollReveal delay={600} threshold={0}>
+                    <Card className="py-4 h-full">
                       <CardContent className="px-5">
                         <div className="text-2xl font-semibold">i18n</div>
                         <div className="text-sm text-muted-foreground">Multi-language ready</div>
                       </CardContent>
                     </Card>
-                  </AnimatedCard>
-                  <AnimatedCard delay={800}>
-                    <Card className="py-4">
+                  </ScrollReveal>
+                  <ScrollReveal delay={700} threshold={0}>
+                    <Card className="py-4 h-full">
                       <CardContent className="px-5">
                         <div className="text-2xl font-semibold">SEO</div>
                         <div className="text-sm text-muted-foreground">Sitemaps + metadata</div>
                       </CardContent>
                     </Card>
-                  </AnimatedCard>
-                  <AnimatedCard delay={900}>
-                    <Card className="py-4">
+                  </ScrollReveal>
+                  <ScrollReveal delay={800} threshold={0}>
+                    <Card className="py-4 h-full">
                       <CardContent className="px-5">
                         <div className="text-2xl font-semibold">MDX</div>
                         <div className="text-sm text-muted-foreground">Docs-like content</div>
                       </CardContent>
                     </Card>
-                  </AnimatedCard>
-                </div>
-              </AnimatedSection>
-            </div>
-            <AnimatedSection delay={400} immediate={true}>
-              <div className="relative">
-                <div className="absolute inset-0 sm:-inset-6 -z-10 rounded-3xl bg-linear-to-b from-muted/50 to-background blur-2xl" />
-                <div className="overflow-hidden rounded-2xl border bg-background/50 shadow-lg">
-                  <Image
-                    src="/next-blogkit_dark.png"
-                    alt="BlogKit UI preview"
-                    width={1200}
-                    height={800}
-                    priority
-                    fetchPriority="high"
-                    className="h-auto w-full object-cover"
-                    sizes="(min-width: 1024px) 560px, 100vw"
-                  />
-                </div>
-                <div className="mt-4 grid grid-cols-4 gap-3">
-                  <AnimatedCard delay={500}>
-                    <div className="col-span-1 overflow-hidden rounded-xl border bg-background/50">
-                      <Image src="/mobile_1.png" alt="Mobile preview 1" width={320} height={640} loading="lazy" className="h-auto w-full object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
-                    </div>
-                  </AnimatedCard>
-                  <AnimatedCard delay={600}>
-                    <div className="col-span-1 overflow-hidden rounded-xl border bg-background/50">
-                      <Image src="/mobile_2.png" alt="Mobile preview 2" width={320} height={640} loading="lazy" className="h-auto w-full object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
-                    </div>
-                  </AnimatedCard>
-                  <AnimatedCard delay={700}>
-                    <div className="col-span-1 overflow-hidden rounded-xl border bg-background/50">
-                      <Image src="/mobile_3.png" alt="Mobile preview 3" width={320} height={640} loading="lazy" className="h-auto w-full object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
-                    </div>
-                  </AnimatedCard>
-                  <AnimatedCard delay={800}>
-                    <div className="col-span-1 overflow-hidden rounded-xl border bg-background/50">
-                      <Image src="/mobile_4.png" alt="Mobile preview 4" width={320} height={640} loading="lazy" className="h-auto w-full object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
-                    </div>
-                  </AnimatedCard>
+                  </ScrollReveal>
                 </div>
               </div>
-            </AnimatedSection>
+              <ScrollReveal delay={400} threshold={0}>
+                <div className="relative">
+                  <div className="absolute inset-0 sm:-inset-6 -z-10 rounded-3xl bg-linear-to-b from-muted/50 to-background blur-2xl" />
+                  <div className="overflow-hidden rounded-2xl border bg-background/50 shadow-lg">
+                    <Image
+                      src="/next-blogkit_dark.png"
+                      alt="BlogKit UI preview"
+                      width={1200}
+                      height={800}
+                      priority
+                      fetchPriority="high"
+                      className="h-auto w-full object-cover"
+                      sizes="(min-width: 1024px) 560px, 100vw"
+                    />
+                  </div>
+                  <div className="mt-4 grid grid-cols-4 gap-3">
+                    <ScrollReveal delay={500} threshold={0}>
+                      <div className="col-span-1 overflow-hidden rounded-xl border bg-background/50">
+                        <Image src="/mobile_1.png" alt="Mobile preview 1" width={320} height={640} loading="lazy" className="h-auto w-full object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
+                      </div>
+                    </ScrollReveal>
+                    <ScrollReveal delay={600} threshold={0}>
+                      <div className="col-span-1 overflow-hidden rounded-xl border bg-background/50">
+                        <Image src="/mobile_2.png" alt="Mobile preview 2" width={320} height={640} loading="lazy" className="h-auto w-full object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
+                      </div>
+                    </ScrollReveal>
+                    <ScrollReveal delay={700} threshold={0}>
+                      <div className="col-span-1 overflow-hidden rounded-xl border bg-background/50">
+                        <Image src="/mobile_3.png" alt="Mobile preview 3" width={320} height={640} loading="lazy" className="h-auto w-full object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
+                      </div>
+                    </ScrollReveal>
+                    <ScrollReveal delay={800} threshold={0}>
+                      <div className="col-span-1 overflow-hidden rounded-xl border bg-background/50">
+                        <Image src="/mobile_4.png" alt="Mobile preview 4" width={320} height={640} loading="lazy" className="h-auto w-full object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
+                      </div>
+                    </ScrollReveal>
+                  </div>
+                </div>
+              </ScrollReveal>
             </section>
-          </AnimatedSection>
-          <AnimatedSection delay={300}>
-            <section className="mt-16 sm:mt-24">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-3xl font-semibold tracking-tight">Core workflows included</h2>
-                <p className="mt-2 text-muted-foreground">A polished foundation for content, marketing, and growth—ready to extend.</p>
+          </ScrollReveal>
+
+          <section className="mt-16 sm:mt-24">
+            <ScrollReveal threshold={0.1}>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-10">
+                <div>
+                  <h2 className="text-3xl font-semibold tracking-tight">Core workflows included</h2>
+                  <p className="mt-2 text-muted-foreground">A polished foundation for content, marketing, and growth—ready to extend.</p>
+                </div>
+                <Button asChild variant="outline">
+                  <Link href="https://next-blogkit.vercel.app/" target="_blank">{t("demoButton")}</Link>
+                </Button>
               </div>
-              <Button asChild variant="outline">
-                <Link href="https://next-blogkit.vercel.app/" target="_blank">{t("demoButton")}</Link>
-              </Button>
-            </div>
-            <div className="mt-10">
-              <BentoGrid>
-                {features.map((feature, index) => (
-                  <AnimatedCard key={feature.name} delay={400 + index * 100}>
-                    <BentoCard {...feature} />
-                  </AnimatedCard>
-                ))}
-              </BentoGrid>
-            </div>
-            </section>
-          </AnimatedSection>
+            </ScrollReveal>
+
+            <BentoGrid>
+              {features.map((feature, index) => (
+                <ScrollReveal
+                  key={feature.name}
+                  delay={index * 50}
+                  threshold={0.1}
+                >
+                  <BentoCard {...feature} />
+                </ScrollReveal>
+              ))}
+            </BentoGrid>
+          </section>
         </div>
       </main>
     </Suspense>

@@ -108,14 +108,7 @@ export default async function RootLayout({
         >
           <NextIntlClientProvider locale={locale} messages={messages}>
             <Suspense fallback={<div className="container mx-auto px-4 py-8">Loading...</div>}>
-              <div className="min-h-screen flex flex-col">
-                <Header />
-                <main id="main-content" className="flex-1">{children}</main>
-                <Footer />
-                {process.env.NODE_ENV === "production" && (
-                  <Analytics />
-                )}
-              </div>
+              {children}
             </Suspense>
             <Toaster richColors closeButton />
           </NextIntlClientProvider>

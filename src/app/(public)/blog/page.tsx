@@ -20,19 +20,10 @@ type DbPost = {
 
 export const revalidate = 300;
 
-// This function fetches and transforms the data directly from the DB
-async function getPosts({ page, limit }: { page: number; limit: number }): Promise<
-  {
-    id: string;
-    title: string;
-    excerpt: string;
-    author: string;
-    publishedAt: string;
-    readTime: string;
-    tags: string[];
-    slug: string;
-  }[]
-> {
+/**
+ * Fetches and transforms posts directly from the database.
+ */
+async function getBlogData({ page, limit }: { page: number; limit: number }) {
   try {
     const rows: DbPost[] = await db.query.posts.findMany({
       where: eq(posts.published, true),
@@ -51,78 +42,110 @@ async function getPosts({ page, limit }: { page: number; limit: number }): Promi
       limit: limit + 1, // fetch one extra to determine if next page exists
       offset: (page - 1) * limit,
     });
-    const sliced: DbPost[] = rows.slice(0, limit);
-    return sliced.map((post) => ({
+
+    const hasNext = rows.length > limit;
+    const sliced = rows.slice(0, limit);
+
+    const items = sliced.map((post) => ({
       id: post.id.toString(),
       title: post.title,
       excerpt: post.excerpt ?? "No excerpt available.",
       author: post.author?.name ?? "Unknown",
-      publishedAt:
-        post.createdAt instanceof Date ? post.createdAt.toISOString() : String(post.createdAt),
+      publishedAt: post.createdAt instanceof Date ? post.createdAt.toISOString() : String(post.createdAt),
       readTime: "5 min read",
       tags: post.postsToTags.map((ptt) => ptt.tag.name),
       slug: post.slug,
     }));
+
+    return { items, hasNext };
   } catch (error) {
-    console.error("[blog] Failed to load posts:", error);
-    return [];
+    console.error("[blog] Failed to load posts from database:", error);
+    return { items: [], hasNext: false };
   }
 }
 
+/**
+ * The main Blog page component.
+ */
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string | string[] }>;
 }): Promise<ReactElement> {
   const sp = await searchParams;
-  const page: number = Math.max(1, Number(sp.page ?? 1));
+  
+  // Safely parse page number, handling potential arrays or invalid strings
+  const rawPage = Array.isArray(sp.page) ? sp.page[0] : sp.page;
+  const pageValue = Number.parseInt(rawPage ?? "1", 10);
+  const page = Number.isNaN(pageValue) ? 1 : Math.max(1, pageValue);
+  
   const LIMIT = 10;
-  const rows = await db.query.posts.findMany({
-    where: eq(posts.published, true),
-    columns: { id: true },
-    orderBy: [desc(posts.createdAt)],
-    limit: LIMIT + 1,
-    offset: (page - 1) * LIMIT,
-  });
-  const hasNext: boolean = rows.length > LIMIT;
-  const pageItems = await getPosts({ page, limit: LIMIT });
 
-  return (
-    <main className="container mx-auto px-4 py-8" aria-labelledby="blog-page-title">
-      <div className="max-w-4xl mx-auto">
-        <h1 id="blog-page-title" className="sr-only">
-          Latest Blog Posts
-        </h1>
-        <PageHeader
-          title="Latest Blog Posts"
-          description="Insights, tutorials, and thoughts on modern web development"
-        />
+  try {
+    const { items: pageItems, hasNext } = await getBlogData({ page, limit: LIMIT });
 
-        <div className="space-y-8">
-          {pageItems.length > 0 ? (
-            <div style={{ contentVisibility: "auto", containIntrinsicSize: "1200px 900px" }}>
-              <PostsGrid posts={pageItems} />
-            </div>
-          ) : (
-            <p>No posts found. Check back later!</p>
-          )}
+    return (
+      <main className="container mx-auto px-4 py-8" aria-labelledby="blog-page-title">
+        <div className="max-w-4xl mx-auto">
+          <h1 id="blog-page-title" className="sr-only">
+            Latest Blog Posts
+          </h1>
+          <PageHeader
+            title="Latest Blog Posts"
+            description="Insights, tutorials, and thoughts on modern web development"
+          />
 
-          <nav className="flex items-center justify-between">
-            {page > 1 ? (
-              <Button asChild variant="outline">
-                <Link href={`/blog?page=${page - 1}`}>Previous</Link>
-              </Button>
+          <div className="space-y-8">
+            {pageItems.length > 0 ? (
+              <div style={{ contentVisibility: "auto", containIntrinsicSize: "1200px 900px" }}>
+                <PostsGrid posts={pageItems} />
+              </div>
             ) : (
-              <span />
+              <p className="text-muted-foreground text-center py-12">
+                No posts found. Check back later!
+              </p>
             )}
-            {hasNext && (
-              <Button asChild variant="outline">
-                <Link href={`/blog?page=${page + 1}`}>Next</Link>
-              </Button>
-            )}
-          </nav>
+
+            <nav className="flex items-center justify-between pt-8 border-t" aria-label="Pagination">
+              {page > 1 ? (
+                <Button asChild variant="outline">
+                  <Link href={`/blog?page=${page - 1}`} prefetch>
+                    Previous
+                  </Link>
+                </Button>
+              ) : (
+                <div />
+              )}
+              <div className="text-sm text-muted-foreground font-medium">
+                Page {page}
+              </div>
+              {hasNext ? (
+                <Button asChild variant="outline">
+                  <Link href={`/blog?page=${page + 1}`} prefetch>
+                    Next
+                  </Link>
+                </Button>
+              ) : (
+                <div />
+              )}
+            </nav>
+          </div>
         </div>
-      </div>
-    </main>
-  );
+      </main>
+    );
+  } catch (error) {
+    console.error("[BlogPage] Critical rendering error:", error);
+    // Return a fallback UI instead of crashing the entire page
+    return (
+      <main className="container mx-auto px-4 py-24 text-center">
+        <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
+        <p className="text-muted-foreground mb-8">
+          We encountered an error while loading the blog posts. Please try again later.
+        </p>
+        <Button asChild>
+          <Link href="/blog">Refresh Page</Link>
+        </Button>
+      </main>
+    );
+  }
 }

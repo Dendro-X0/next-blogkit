@@ -188,18 +188,69 @@ export default function SearchPage(): ReactElement {
         </div>
 
         {/* Search Bar */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" aria-hidden="true" />
+        <div className="relative mb-8">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" aria-hidden="true" />
           <Input
             placeholder="Search posts, tags, or topics..."
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
-            className="pl-10 h-12 text-lg"
+            className="pl-12 h-14 text-lg bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary/50 transition-all rounded-xl shadow-xs"
             name="q"
             autoComplete="search"
             aria-label="Search posts"
           />
         </div>
+
+        {/* Active Filters Row */}
+        {hasActiveFilters && (
+          <div className="flex flex-wrap items-center gap-2 mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
+            <span className="text-sm font-medium text-muted-foreground mr-2 flex items-center gap-1.5">
+              <Filter className="h-3.5 w-3.5" />
+              Active Filters:
+            </span>
+            {selectedCategories.map(cat => (
+              <Badge key={cat} variant="secondary" className="pl-2 pr-1 h-8 gap-1.5 bg-primary/10 text-primary border-none">
+                {cat}
+                <Button
+                  variant="ghost" size="icon" className="h-5 w-5 rounded-full hover:bg-primary/20"
+                  onClick={() => setSelectedCategories(selectedCategories.filter(c => c !== cat))}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            ))}
+            {selectedAuthors.map(auth => (
+              <Badge key={auth} variant="secondary" className="pl-2 pr-1 h-8 gap-1.5 bg-secondary/20 text-secondary-foreground border-none">
+                {auth}
+                <Button
+                  variant="ghost" size="icon" className="h-5 w-5 rounded-full hover:bg-secondary/30"
+                  onClick={() => setSelectedAuthors(selectedAuthors.filter(a => a !== auth))}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            ))}
+            {selectedTags.map(tag => (
+              <Badge key={tag} variant="secondary" className="pl-2 pr-1 h-8 gap-1.5 bg-muted text-muted-foreground border-none">
+                {tag}
+                <Button
+                  variant="ghost" size="icon" className="h-5 w-5 rounded-full hover:bg-foreground/10"
+                  onClick={() => setSelectedTags(selectedTags.filter(t => t !== tag))}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            ))}
+            <Button
+              variant="link"
+              size="sm"
+              onClick={clearAllFilters}
+              className="text-muted-foreground hover:text-destructive h-8 px-2"
+            >
+              Clear all
+            </Button>
+          </div>
+        )}
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}

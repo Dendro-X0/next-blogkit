@@ -146,7 +146,7 @@ h4:hover .hash-link::before {
   :root {
     --prose-max-w: 75ch;
     --prose-font-size: 1.0625rem; /* ~17px base inside prose */
-    --prose-leading: 1.85;
+    --prose-leading: 1.7;
     --prose-muted: oklch(0.556 0 0);
     --prose-border: var(--border);
     --prose-quote: oklch(0.708 0 0 / 40%);
@@ -168,11 +168,12 @@ h4:hover .hash-link::before {
     font-size: var(--prose-font-size);
     line-height: var(--prose-leading);
     color: var(--foreground);
+    letter-spacing: -0.011em;
   }
 
   .prose :where(p, ul, ol, blockquote, pre, table){
-    margin-top: 1.1em;
-    margin-bottom: 1.1em;
+    margin-top: 0.85em;
+    margin-bottom: 0.85em;
   }
   .prose > :first-child { margin-top: 0; }
   .prose > :last-child { margin-bottom: 0; }

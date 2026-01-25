@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.5] - 2026-01-24
+
+### Added
+- Comprehensive skeleton loading system across all public routes for a smoother perceived performance.
+  - Custom loaders for Blog (grid), Post (article), Search, Contact, and Auth forms.
+  - `src/components/blog/blog-skeletons.tsx`
+  - `src/components/ui/search-skeletons.tsx`
+  - `src/components/ui/contact-skeleton.tsx`
+  - `src/components/auth/auth-skeleton.tsx`
+- Interactive active filter chips in the Search page to allow users to quickly view and clear selected categories, authors, and tags.
+- Dedicated standalone layout for Auth pages to remove global navigation and focus on the authentication flow.
+- "Back to home" navigation in the Auth layout with hover animations.
+
+### Changed
+- Major redesign of the Contact page featuring a symmetrical two-column layout with integrated FAQ and improved spacing.
+- Refined Blog Post Cards with glassmorphism effects (`backdrop-blur-xs`), subtle lift-on-hover animations, and improved tag visibility.
+- Optimized global prose typography: reduced line-height to `1.7` and tightened vertical rhythm for better readability.
+- Re-implemented the Header with scroll-dependent styling; bottom border and background blur now only appear after scrolling.
+- Restructured route groups: separated `(auth)` from `(public)` to allow for distinct layout shells.
+
+### Fixed
+- Select component width issues in forms by enforcing `w-full` on triggers.
+- Syntax error in `Skeleton` component JSX attribute spreading.
+- Inconsistent grid layouts between blog lists and their corresponding skeleton loaders.
+
 ## [1.3.3] - 2025-12-29
 
 ### Added

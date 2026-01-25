@@ -37,6 +37,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth/auth-client";
+import { cn } from "@/lib/utils/utils";
 
 interface HeaderUser {
   readonly id: string;
@@ -63,7 +64,18 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
   const isLoading = isPending && !initialUser;
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [platformHint, setPlatformHint] = useState<string>("Ctrl K");
+  const [isScrolled, setIsScrolled] = useState(false);
   const firstMobileLinkRef = useRef<HTMLAnchorElement | null>(null);
+
+  // Track scroll position to toggle header border
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial check
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Keyboard shortcuts: '/' focuses search; Ctrl/Cmd+K focuses search.
   useEffect((): () => void => {
@@ -134,7 +146,14 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 safe-top">
+    <header
+      className={cn(
+        "sticky top-0 z-40 w-full transition-all duration-300 safe-top",
+        isScrolled
+          ? "border-b bg-background/95 backdrop-blur-md shadow-sm supports-backdrop-filter:bg-background/60"
+          : "border-b-transparent bg-transparent"
+      )}
+    >
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
@@ -148,9 +167,8 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    pathname === item.href ? "text-primary" : "text-muted-foreground"
-                  }`}
+                  className={`text-sm font-medium transition-colors hover:text-primary ${pathname === item.href ? "text-primary" : "text-muted-foreground"
+                    }`}
                   aria-current={pathname === item.href ? "page" : undefined}
                 >
                   {item.name}
@@ -301,9 +319,8 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                         <Link
                           href={item.href}
                           onClick={() => setIsOpen(false)}
-                          className={`flex items-center gap-3 text-xl font-medium transition-colors hover:text-primary py-3 ${
-                            pathname === item.href ? "text-primary" : "text-muted-foreground"
-                          }`}
+                          className={`flex items-center gap-3 text-xl font-medium transition-colors hover:text-primary py-3 ${pathname === item.href ? "text-primary" : "text-muted-foreground"
+                            }`}
                           aria-current={pathname === item.href ? "page" : undefined}
                           ref={idx === 0 ? firstMobileLinkRef : undefined}
                         >
@@ -317,9 +334,8 @@ export function HeaderClient({ isAdmin, initialUser }: HeaderClientProps) {
                         <Link
                           href="/admin"
                           onClick={() => setIsOpen(false)}
-                          className={`flex items-center gap-3 text-xl font-medium transition-colors hover:text-primary py-3 ${
-                            pathname === "/admin" ? "text-primary" : "text-muted-foreground"
-                          }`}
+                          className={`flex items-center gap-3 text-xl font-medium transition-colors hover:text-primary py-3 ${pathname === "/admin" ? "text-primary" : "text-muted-foreground"
+                            }`}
                           aria-current={pathname === "/admin" ? "page" : undefined}
                         >
                           <UserCog className="h-5 w-5" aria-hidden="true" />

@@ -13,7 +13,7 @@ export async function Header(): Promise<ReactElement> {
     .filter(Boolean);
   const email = user?.email?.toLowerCase() ?? null;
   const isAllowlisted = allowlist.length > 0 && !!email && allowlist.includes(email);
-  const isAdmin = Boolean(user?.roles.includes("admin")) || isAllowlisted;
+  const isAdmin = Boolean(user?.roles?.includes("admin")) || isAllowlisted;
   const initialUser = user
     ? { id: user.id, email: user.email ?? null, name: user.name ?? null, image: user.image ?? null }
     : null;

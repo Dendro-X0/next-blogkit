@@ -4,7 +4,17 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.preprocess((v) => {
+      if (typeof v !== "string") return v;
+      let cleaned = v.trim();
+      // Remove accidental "DATABASE_URL=" prefix
+      if (cleaned.startsWith("DATABASE_URL=")) {
+        cleaned = cleaned.slice("DATABASE_URL=".length);
+      }
+      // Remove wrapping quotes
+      cleaned = cleaned.replace(/^['"]|['"]$/g, "");
+      return cleaned.trim();
+    }, z.string().url()),
     REDIS_URL: z.string().url().optional(),
     ADMIN_EMAILS: z.string().optional(),
     GITHUB_CLIENT_ID: z.string().min(1).optional(),

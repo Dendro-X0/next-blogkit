@@ -1,63 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
-import { db } from "@/lib/db";
-import { posts } from "@/lib/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { getCmsAdapter } from "@/lib/cms";
 import Link from "next/link";
 import { type ReactElement } from "react";
 import { PostsGrid } from "./_components/posts-grid";
 
-// Define the shape of the data we expect from our API
-type DbPost = {
-  id: number;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  createdAt: Date;
-  author?: { name: string | null } | null;
-  postsToTags: { tag: { name: string } }[];
-};
-
 export const revalidate = 300;
 
-/**
- * Fetches and transforms posts directly from the database.
- */
 async function getBlogData({ page, limit }: { page: number; limit: number }) {
   try {
-    const rows: DbPost[] = await db.query.posts.findMany({
-      where: eq(posts.published, true),
-      columns: {
-        id: true,
-        title: true,
-        slug: true,
-        excerpt: true,
-        createdAt: true,
-      },
-      with: {
-        author: { columns: { name: true } },
-        postsToTags: { with: { tag: { columns: { name: true } } } },
-      },
-      orderBy: [desc(posts.createdAt)],
-      limit: limit + 1, // fetch one extra to determine if next page exists
-      offset: (page - 1) * limit,
-    });
-
-    const hasNext = rows.length > limit;
-    const sliced = rows.slice(0, limit);
-
-    const items = sliced.map((post) => ({
-      id: post.id.toString(),
-      title: post.title,
-      excerpt: post.excerpt ?? "No excerpt available.",
-      author: post.author?.name ?? "Unknown",
-      publishedAt: post.createdAt instanceof Date ? post.createdAt.toISOString() : String(post.createdAt),
-      readTime: "5 min read",
-      tags: post.postsToTags.map((ptt) => ptt.tag.name),
-      slug: post.slug,
-    }));
-
-    return { items, hasNext };
+    const cms = getCmsAdapter();
+    const res = await cms.listPosts({ page, limit, includeDrafts: false });
+    return {
+      items: res.items.map((post) => ({
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt ?? "No excerpt available.",
+        author: post.author?.name ?? "Unknown",
+        publishedAt: post.publishedAt ?? post.createdAt,
+        readTime: "5 min read",
+        tags: post.tags.map((t) => t.name),
+        slug: post.slug,
+      })),
+      hasNext: res.hasNext,
+    };
   } catch (error) {
     console.error("[blog] Failed to load posts from database:", error);
     return { items: [], hasNext: false };

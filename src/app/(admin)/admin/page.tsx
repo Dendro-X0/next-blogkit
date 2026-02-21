@@ -11,6 +11,7 @@ import type { ReactElement } from "react";
 import { getSessionWithRoles } from "@/lib/auth/session";
 import { headers } from "next/headers";
 import { env } from "~/env";
+import { getCmsAdapter } from "@/lib/cms";
 import { DashboardStats } from "./_components/dashboard-stats";
 import { QuickActions } from "./_components/quick-actions";
 import { RecentPosts } from "./_components/recent-posts";
@@ -39,6 +40,19 @@ type RecentPostItem = {
 
 async function getRecentPosts(): Promise<RecentPostItem[]> {
   const RECENT_LIMIT = 5 as const;
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    const result = await cms.listPosts({ page: 1, limit: RECENT_LIMIT, includeDrafts: true });
+    return result.items.map((p) => ({
+      id: p.id,
+      slug: p.slug,
+      title: p.title,
+      status: p.status,
+      comments: 0,
+      publishedAt: p.publishedAt,
+    }));
+  }
+
   const rows = await db.query.posts.findMany({
     columns: {
       id: true,
@@ -73,12 +87,14 @@ async function getRecentPosts(): Promise<RecentPostItem[]> {
 }
 
 async function getDashboardStats(): Promise<DashboardStatsValues> {
-  const [postRow] = await db.select({ total: count() }).from(posts);
+  const cms = getCmsAdapter();
+  const totalPosts =
+    cms.provider === "native" ? Number((await db.select({ total: count() }).from(posts))[0]?.total ?? 0) : 0;
   const [userRow] = await db.select({ total: count() }).from(user);
   const [commentRow] = await db.select({ total: count() }).from(comments);
 
   return {
-    totalPosts: Number(postRow?.total ?? 0),
+    totalPosts,
     totalUsers: Number(userRow?.total ?? 0),
     totalComments: Number(commentRow?.total ?? 0),
   };

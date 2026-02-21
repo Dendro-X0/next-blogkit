@@ -4,8 +4,16 @@ import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/db";
 import { reviews, type reviewStatusEnum, user } from "@/lib/db/schema";
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { getCmsAdapter } from "@/lib/cms";
 
 export async function GET(request: Request) {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    const res: NextResponse = NextResponse.json({ items: [], total: 0, page: 1, pageSize: 10 });
+    res.headers.set("Cache-Control", "private, no-store");
+    return res;
+  }
+
   const { searchParams } = new URL(request.url);
   const postId = searchParams.get("postId");
   const mine = searchParams.get("mine") === "1" || searchParams.get("mine") === "true";
@@ -85,6 +93,14 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const cms = getCmsAdapter();
+    if (cms.provider !== "native") {
+      return NextResponse.json(
+        { error: "Comments are only available for native CMS" },
+        { status: 400 },
+      );
+    }
+
     const headers = new Headers();
     const session = await auth.api.getSession({ headers });
     if (!session?.user?.id) {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { posts, postsToTags, tags as tagsTable } from "@/lib/db/schema";
 import { and, desc, eq, inArray, ne } from "drizzle-orm";
+import { getCmsAdapter } from "@/lib/cms";
 
 interface RelatedPost {
   id: string;
@@ -26,6 +27,11 @@ interface RelatedPostsProps {
  * Falls back to recent published posts when no tags are provided.
  */
 export async function RelatedPosts({ currentPostId, tags }: RelatedPostsProps) {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    return null;
+  }
+
   const currentIdNum: number = Number(currentPostId);
   const tagFilter: readonly string[] = Array.isArray(tags) ? tags.filter((t) => !!t) : [];
 

@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { categories, posts, postsToTags, tags, user } from "@/lib/db/schema";
-import { and, asc, desc, eq, ilike, inArray, or, type SQL } from "drizzle-orm";
+import { getCmsAdapter } from "@/lib/cms";
 
 // Query params
 // q: string
@@ -46,104 +44,30 @@ export async function GET(request: Request): Promise<NextResponse> {
           .filter(Boolean)
       : [];
 
-    const whereClauses: SQL<unknown>[] = [eq(posts.published, true)];
-
-    if (qRaw) {
-      const q = `%${qRaw}%`;
-      const titleLike = ilike(posts.title, q) as SQL<unknown>;
-      const excerptLike = ilike(posts.excerpt, q) as SQL<unknown>;
-      whereClauses.push(or(titleLike, excerptLike) as SQL<unknown>);
-    }
-    if (categoriesList.length > 0) {
-      whereClauses.push(inArray(categories.name, categoriesList));
-    }
-    if (authorsList.length > 0) {
-      whereClauses.push(inArray(user.name, authorsList));
-    }
-    if (tagsList.length > 0) {
-      // Match any of the provided tags
-      whereClauses.push(inArray(tags.name, tagsList));
-    }
-
-    const orderBy =
-      sort === "oldest"
-        ? asc(posts.createdAt)
-        : sort === "title"
-          ? asc(posts.title)
-          : desc(posts.createdAt);
-
-    // We fetch limit+1 to determine if there is a next page. We'll group rows by post id.
-    const rows = await db
-      .select({
-        id: posts.id,
-        title: posts.title,
-        slug: posts.slug,
-        excerpt: posts.excerpt,
-        createdAt: posts.createdAt,
-        authorName: user.name,
-        categoryName: categories.name,
-        tagName: tags.name,
-      })
-      .from(posts)
-      .leftJoin(user, eq(posts.authorId, user.id))
-      .leftJoin(categories, eq(posts.categoryId, categories.id))
-      .leftJoin(postsToTags, eq(postsToTags.postId, posts.id))
-      .leftJoin(tags, eq(postsToTags.tagId, tags.id))
-      .where(and(...whereClauses))
-      .orderBy(orderBy)
-      .limit(limit + 1)
-      .offset(offset);
-
-    // Group by post id and aggregate tags
-    const map = new Map<
-      number,
-      {
-        id: number;
-        title: string;
-        slug: string;
-        excerpt: string | null;
-        createdAt: Date | string;
-        authorName: string | null;
-        categoryName: string | null;
-        tags: string[];
-      }
-    >();
-    for (const r of rows) {
-      const key = r.id;
-      if (!map.has(key)) {
-        map.set(key, {
-          id: r.id,
-          title: r.title,
-          slug: r.slug,
-          excerpt: r.excerpt ?? null,
-          createdAt: r.createdAt,
-          authorName: r.authorName ?? null,
-          categoryName: r.categoryName ?? null,
-          tags: r.tagName ? [r.tagName] : [],
-        });
-      } else if (r.tagName) {
-        const item = map.get(key)!;
-        if (!item.tags.includes(r.tagName)) item.tags.push(r.tagName);
-      }
-    }
-
-    const itemsArr = Array.from(map.values());
-    const hasNext = itemsArr.length > limit;
-    const pageItems = itemsArr.slice(0, limit);
-
-    return NextResponse.json({
+    const cms = getCmsAdapter();
+    const result = await cms.searchPosts({
+      q: qRaw || undefined,
+      tags: tagsList,
+      categories: categoriesList,
+      authors: authorsList,
+      sort: (sort === "oldest" || sort === "title" || sort === "newest" ? (sort as "newest" | "oldest" | "title") : "newest"),
       page,
       limit,
-      hasNext,
-      items: pageItems.map((p) => ({
+    });
+
+    return NextResponse.json({
+      page: result.page,
+      limit: result.limit,
+      hasNext: result.hasNext,
+      items: result.items.map((p) => ({
         id: p.id,
         title: p.title,
         slug: p.slug,
         excerpt: p.excerpt,
         createdAt: p.createdAt,
-        authorName: p.authorName,
-        categoryName: p.categoryName,
-        tags: p.tags,
+        authorName: p.author?.name ?? null,
+        categoryName: p.category?.name ?? null,
+        tags: p.tags.map((t) => t.name),
       })),
     });
   } catch (error) {

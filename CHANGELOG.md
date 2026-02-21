@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.6] - 2026-02-21
+
+### Added
+- Pluggable CMS adapter with provider selection via `CMS_PROVIDER`.
+  - Providers: `native`, `wordpress`, `sanity`.
+  - Public routes (blog, post page, search, RSS, sitemap) and admin post APIs now fetch content through the adapter.
+- Environment variables for external CMS providers.
+  - WordPress: `WORDPRESS_URL`, `WORDPRESS_USERNAME`, `WORDPRESS_APP_PASSWORD`.
+  - Sanity: `SANITY_PROJECT_ID`, `SANITY_DATASET`, `SANITY_API_VERSION`, `SANITY_TOKEN`, `SANITY_USE_CDN`.
+
+### Notes
+- For v1, WordPress post bodies are treated as HTML (sanitized) and Sanity post bodies are treated as Markdown (no MDX shortcode support).
+- Native-only features (comments, reactions, bookmarks, related posts) are gated to `CMS_PROVIDER=native`.
+
 ## [1.3.5] - 2026-01-24
 
 ### Added

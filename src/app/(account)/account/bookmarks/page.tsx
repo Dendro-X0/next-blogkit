@@ -7,11 +7,21 @@ import { eq, desc } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { ReactElement } from "react";
 import { RemoveBookmarkButton } from "../_components/remove-bookmark-button";
+import { getCmsAdapter } from "@/lib/cms";
 
 /**
  * Lists the current user's bookmarked posts.
  */
 export default async function AccountBookmarksPage(): Promise<ReactElement> {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    return (
+      <main>
+        <p className="text-muted-foreground">Bookmarks are only available for the native CMS.</p>
+      </main>
+    );
+  }
+
   const headersList = await headers();
   const session = await auth.api.getSession({ headers: headersList });
   if (!session?.user?.id) {

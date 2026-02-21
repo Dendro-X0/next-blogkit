@@ -20,7 +20,7 @@ interface PostForTable {
 }
 
 interface FetchedPost {
-  id: number;
+  id: string;
   title: string;
   published: boolean;
   createdAt: string;
@@ -46,7 +46,7 @@ export default function PostsManagement() {
         const data: FetchedPost[] = await res.json();
         const transformedPosts = data.map(
           (post): PostForTable => ({
-            id: post.id.toString(),
+            id: post.id,
             title: post.title,
             status: post.published ? "published" : "draft",
             author: post.authorName || "Unknown",

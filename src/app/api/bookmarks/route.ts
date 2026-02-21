@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/db";
 import { bookmarks, posts } from "@/lib/db/schema";
 import { and, eq, desc } from "drizzle-orm";
+import { getCmsAdapter } from "@/lib/cms";
 
 interface JsonBody {
   readonly postId?: number;
@@ -14,6 +15,11 @@ interface JsonBody {
  * - Otherwise: returns current user's bookmarks with basic post data
  */
 export async function GET(request: Request) {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    return NextResponse.json({ items: [], exists: false });
+  }
+
   const url: URL = new URL(request.url);
   const postIdParam: string | null = url.searchParams.get("postId");
   const headers: Headers = new Headers();
@@ -53,6 +59,11 @@ export async function GET(request: Request) {
  * Adds a bookmark for the current user.
  */
 export async function POST(request: Request) {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    return NextResponse.json({ error: "Bookmarks are only available for native CMS" }, { status: 400 });
+  }
+
   const headers: Headers = new Headers();
   const session = await auth.api.getSession({ headers });
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -79,6 +90,11 @@ export async function POST(request: Request) {
  * Removes a bookmark for the current user.
  */
 export async function DELETE(request: Request) {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    return NextResponse.json({ error: "Bookmarks are only available for native CMS" }, { status: 400 });
+  }
+
   const headers: Headers = new Headers();
   const session = await auth.api.getSession({ headers });
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

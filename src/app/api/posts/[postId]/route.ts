@@ -2,11 +2,29 @@ import { auth } from "@/lib/auth/auth";
 import { cache } from "@/lib/cache/cache";
 import { redis } from "@/lib/cache/redis";
 import { db } from "@/lib/db";
-import { posts, postsToTags, tags } from "@/lib/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { posts } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { env } from "~/env";
 import { getUserRoles } from "@/lib/rbac/queries";
+import { getCmsAdapter } from "@/lib/cms";
+
+function isNativeNumericId(id: string): boolean {
+  return /^\d+$/.test(id);
+}
+
+async function isAllowedForExternalCms(userId: string, email?: string | null): Promise<boolean> {
+  const allowlist: string[] = (env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  const normalizedEmail = email?.toLowerCase();
+  const isAllowlisted =
+    !!normalizedEmail && allowlist.length > 0 && allowlist.includes(normalizedEmail);
+  const roleSlugs = await getUserRoles(userId);
+  const hasRole = roleSlugs.includes("admin") || roleSlugs.includes("editor");
+  return isAllowlisted || hasRole;
+}
 
 export async function PUT(request: Request, { params }: { params: Promise<{ postId: string }> }) {
   try {
@@ -17,88 +35,68 @@ export async function PUT(request: Request, { params }: { params: Promise<{ post
 
     const { postId } = await params;
     const body = await request.json();
-    const { tags: tagNames, ...postData } = body;
 
-    if (!postId || Number.isNaN(parseInt(postId, 10))) {
+    if (!postId) {
       return NextResponse.json({ message: "Invalid post ID" }, { status: 400 });
     }
 
-    const postToUpdate = await db.query.posts.findFirst({
-      where: eq(posts.id, parseInt(postId, 10)),
-    });
+    const cms = getCmsAdapter();
+    const includeDrafts = true;
 
-    if (!postToUpdate) {
-      return NextResponse.json({ message: "Post not found" }, { status: 404 });
-    }
-
-    // Authorization: owner OR allowlisted admin OR role-based admin/editor
-    const owns = postToUpdate.authorId === session.user.id;
-    let allowed = owns;
-    if (!allowed) {
-      const allowlist: string[] = (env.ADMIN_EMAILS ?? "")
-        .split(",")
-        .map((s) => s.trim().toLowerCase())
-        .filter(Boolean);
-      const email = session.user.email?.toLowerCase();
-      const isAllowlisted = !!email && allowlist.length > 0 && allowlist.includes(email);
-      const roleSlugs = await getUserRoles(session.user.id);
-      const hasRole = roleSlugs.includes("admin") || roleSlugs.includes("editor");
-      allowed = isAllowlisted || hasRole;
-    }
-    if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-
-    const updatedPost = await db.transaction(async (tx) => {
-      const updateData: Partial<typeof posts.$inferInsert> = { ...postData };
-      updateData.updatedAt = new Date();
-
-      await tx
-        .update(posts)
-        .set(updateData)
-        .where(eq(posts.id, parseInt(postId, 10)));
-
-      if (tagNames && Array.isArray(tagNames)) {
-        await tx.delete(postsToTags).where(eq(postsToTags.postId, parseInt(postId, 10)));
-
-        if (tagNames.length > 0) {
-          const cleanTagNames = tagNames.filter(
-            (t): t is string => typeof t === "string" && t.trim() !== "",
-          );
-
-          if (cleanTagNames.length > 0) {
-            const existingTags = await tx.query.tags.findMany({
-              where: inArray(tags.name, cleanTagNames),
-            });
-
-            const existingTagNames = existingTags.map((t) => t.name);
-            const newTagNames = cleanTagNames.filter((t) => !existingTagNames.includes(t));
-
-            let newTagIds: { id: number }[] = [];
-            if (newTagNames.length > 0) {
-              newTagIds = await tx
-                .insert(tags)
-                .values(newTagNames.map((name) => ({ name })))
-                .returning({ id: tags.id });
-            }
-
-            const allTagIds = [...existingTags.map((t) => t.id), ...newTagIds.map((t) => t.id)];
-
-            await tx.insert(postsToTags).values(
-              allTagIds.map((tagId) => ({
-                postId: parseInt(postId, 10),
-                tagId: tagId,
-              })),
-            );
-          }
-        }
-      }
-
-      return tx.query.posts.findFirst({
-        where: eq(posts.id, parseInt(postId, 10)),
+    if (isNativeNumericId(postId) && cms.provider === "native") {
+      const postToUpdate = await db.query.posts.findFirst({
+        where: eq(posts.id, Number.parseInt(postId, 10)),
       });
+      if (!postToUpdate) return NextResponse.json({ message: "Post not found" }, { status: 404 });
+
+      const owns = postToUpdate.authorId === session.user.id;
+      let allowed = owns;
+      if (!allowed) {
+        allowed = await isAllowedForExternalCms(session.user.id, session.user.email);
+      }
+      if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    } else {
+      const allowed = await isAllowedForExternalCms(session.user.id, session.user.email);
+      if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
+    const {
+      title,
+      slug,
+      excerpt,
+      content,
+      imageUrl,
+      categoryId,
+      published,
+      tags: tagNames,
+      allowComments,
+      seoTitle,
+      seoDescription,
+      format,
+      videoUrl,
+      audioUrl,
+      galleryImages,
+    } = body;
+
+    const updatedPost = await cms.updatePost(postId, {
+      title,
+      slug,
+      excerpt,
+      body: content ? { format: cms.provider === "wordpress" ? "html" : cms.provider === "sanity" ? "markdown" : "mdx", value: content } : undefined,
+      heroImageUrl: imageUrl,
+      categoryId: categoryId !== undefined ? (categoryId ? String(categoryId) : null) : undefined,
+      tagNames: Array.isArray(tagNames) ? tagNames : tagNames === undefined ? undefined : [],
+      allowComments,
+      seoTitle,
+      seoDescription,
+      status: published === undefined ? undefined : published ? "published" : "draft",
+      format,
+      videoUrl,
+      audioUrl,
+      galleryImages,
     });
 
-    // Invalidate cache
-    if (redis) {
+    if (redis && cms.provider === "native" && isNativeNumericId(postId)) {
       await redis.del(`post:${postId}`);
       await redis.del("posts:all:with-drafts");
       await redis.del("posts:all:published-only");
@@ -123,38 +121,29 @@ export async function DELETE(
 
     const { postId } = await params;
 
-    if (!postId || Number.isNaN(parseInt(postId, 10))) {
+    if (!postId) {
       return NextResponse.json({ message: "Invalid post ID" }, { status: 400 });
     }
 
-    const postToDelete = await db.query.posts.findFirst({
-      where: eq(posts.id, parseInt(postId, 10)),
-    });
+    const cms = getCmsAdapter();
 
-    if (!postToDelete) {
-      return NextResponse.json({ message: "Post not found" }, { status: 404 });
+    if (isNativeNumericId(postId) && cms.provider === "native") {
+      const postToDelete = await db.query.posts.findFirst({
+        where: eq(posts.id, Number.parseInt(postId, 10)),
+      });
+      if (!postToDelete) return NextResponse.json({ message: "Post not found" }, { status: 404 });
+      const owns = postToDelete.authorId === session.user.id;
+      let allowed = owns;
+      if (!allowed) allowed = await isAllowedForExternalCms(session.user.id, session.user.email);
+      if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    } else {
+      const allowed = await isAllowedForExternalCms(session.user.id, session.user.email);
+      if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    // Authorization: owner OR allowlisted admin OR role-based admin/editor
-    const owns = postToDelete.authorId === session.user.id;
-    let allowed = owns;
-    if (!allowed) {
-      const allowlist: string[] = (env.ADMIN_EMAILS ?? "")
-        .split(",")
-        .map((s) => s.trim().toLowerCase())
-        .filter(Boolean);
-      const email = session.user.email?.toLowerCase();
-      const isAllowlisted = !!email && allowlist.length > 0 && allowlist.includes(email);
-      const roleSlugs = await getUserRoles(session.user.id);
-      const hasRole = roleSlugs.includes("admin") || roleSlugs.includes("editor");
-      allowed = isAllowlisted || hasRole;
-    }
-    if (!allowed) return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    await cms.deletePost(postId);
 
-    await db.delete(posts).where(eq(posts.id, parseInt(postId, 10)));
-
-    // Invalidate cache
-    if (redis) {
+    if (redis && cms.provider === "native" && isNativeNumericId(postId)) {
       await redis.del(`post:${postId}`);
       await redis.del("posts:all:with-drafts");
       await redis.del("posts:all:published-only");
@@ -171,44 +160,37 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pos
   try {
     const { postId } = await params;
 
-    if (!postId || Number.isNaN(parseInt(postId, 10))) {
+    if (!postId) {
       return NextResponse.json({ message: "Invalid post ID" }, { status: 400 });
     }
 
-    const cacheKey = `post:${postId}`;
+    const cms = getCmsAdapter();
+    const cacheKey = `cms:${cms.provider}:post:${postId}`;
+
     const post = await cache(
-      { key: cacheKey, ttl: 60 * 5 }, // Cache for 5 minutes
-      () =>
-        db.query.posts.findFirst({
-          where: eq(posts.id, parseInt(postId, 10)),
-          with: {
-            category: {
-              columns: {
-                id: true,
-                name: true,
-              },
-            },
-            postsToTags: {
-              with: {
-                tag: {
-                  columns: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        }),
+      { key: cacheKey, ttl: 60 * 5 },
+      () => cms.getPostById(postId, { includeDrafts: true }),
     );
 
-    if (!post) {
-      return NextResponse.json({ message: "Post not found" }, { status: 404 });
-    }
+    if (!post) return NextResponse.json({ message: "Post not found" }, { status: 404 });
 
-    const { postsToTags, ...rest } = post;
     const responseData = {
-      ...rest,
-      tags: postsToTags.map((pt) => pt.tag.name),
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      content: post.body.value,
+      excerpt: post.excerpt,
+      imageUrl: post.heroImageUrl,
+      published: post.status === "published",
+      allowComments: post.allowComments,
+      seoTitle: post.seoTitle,
+      seoDescription: post.seoDescription,
+      category: post.category ? { id: post.category.id, name: post.category.name } : null,
+      tags: post.tags.map((t) => t.name),
+      format: post.format,
+      videoUrl: post.videoUrl,
+      audioUrl: post.audioUrl,
+      galleryImages: post.galleryImages,
     };
 
     const res: NextResponse = NextResponse.json(responseData);

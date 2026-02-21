@@ -7,11 +7,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { env } from "~/env";
 import { type PostData, PostEditor } from "../../_components/post-editor";
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
 }
@@ -51,7 +50,7 @@ export default function NewPostPage() {
         excerpt: data.excerpt,
         content: data.content,
         imageUrl: data.featuredImage, // This is now the S3 key
-        categoryId: data.category ? parseInt(data.category, 10) : null,
+        categoryId: data.category ? data.category : null,
         published: status === "published",
         tags: data.tags,
         allowComments: data.allowComments,
@@ -118,7 +117,6 @@ export default function NewPostPage() {
               mode="create"
               isLoading={isLoading}
               categories={categories}
-              s3PublicUrl={env.NEXT_PUBLIC_S3_PUBLIC_URL}
             />
           )}
         </div>

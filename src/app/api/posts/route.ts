@@ -1,20 +1,14 @@
 import { auth } from "@/lib/auth/auth";
-import { cache } from "@/lib/cache/cache";
-import { db } from "@/lib/db";
-import { posts, postsToTags, tags } from "@/lib/db/schema";
-import { desc, eq, inArray } from "drizzle-orm";
+import { getCmsAdapter } from "@/lib/cms";
 import { NextResponse } from "next/server";
 
-type DbTransactionCallback = Parameters<typeof db.transaction>[0];
-type DbTransaction = Parameters<DbTransactionCallback>[0];
-
 type PostsApiListItem = {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   excerpt: string | null;
-  createdAt: Date;
-  updatedAt: Date | null;
+  createdAt: string;
+  updatedAt: string | null;
   published: boolean;
   authorName: string;
   categoryName: string;
@@ -29,6 +23,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
+    const cms = getCmsAdapter();
     const body = await request.json();
     const {
       title,
@@ -44,6 +39,7 @@ export async function POST(request: Request) {
       seoDescription,
       format,
       videoUrl,
+      audioUrl,
       galleryImages,
     } = body;
 
@@ -54,53 +50,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const authorId = session.user.id;
-
-    const newPost = await db.transaction(async (tx: DbTransaction) => {
-      const [createdPost] = await tx
-        .insert(posts)
-        .values({
-          title,
-          content,
-          slug,
-          excerpt,
-          imageUrl,
-          authorId,
-          categoryId,
-          published: published || false,
-          allowComments,
-          seoTitle,
-          seoDescription,
-          format,
-          videoUrl,
-          galleryImages,
-        })
-        .returning();
-
-      if (tagNames && tagNames.length > 0) {
-        const existingTags = await tx.select().from(tags).where(inArray(tags.name, tagNames));
-
-        const existingTagNames = existingTags.map((t: { name: string }) => t.name);
-        const newTagNames = tagNames.filter((name: string) => !existingTagNames.includes(name));
-
-        let newTags: { id: number; name: string }[] = [];
-        if (newTagNames.length > 0) {
-          newTags = await tx
-            .insert(tags)
-            .values(newTagNames.map((name: string) => ({ name })))
-            .returning();
-        }
-
-        const allTags = [...existingTags, ...newTags];
-        await tx.insert(postsToTags).values(
-          allTags.map((tag) => ({
-            postId: createdPost.id,
-            tagId: tag.id,
-          })),
-        );
-      }
-
-      return createdPost;
+    const status = published ? "published" : "draft";
+    const bodyFormat = cms.provider === "wordpress" ? "html" : cms.provider === "sanity" ? "markdown" : "mdx";
+    const newPost = await cms.createPost({
+      authorId: session.user.id,
+      title,
+      slug,
+      excerpt: excerpt ?? null,
+      body: { format: bodyFormat, value: content },
+      status,
+      categoryId: categoryId ? String(categoryId) : null,
+      tagNames: Array.isArray(tagNames) ? tagNames : [],
+      heroImageUrl: imageUrl ?? null,
+      seoTitle: seoTitle ?? null,
+      seoDescription: seoDescription ?? null,
+      allowComments: allowComments ?? true,
+      format: format ?? "standard",
+      videoUrl: videoUrl ?? null,
+      audioUrl: audioUrl ?? null,
+      galleryImages: galleryImages ?? null,
     });
 
     return NextResponse.json(newPost, { status: 201 });
@@ -112,74 +80,27 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
+    const cms = getCmsAdapter();
     const { searchParams } = new URL(request.url);
     const includeDrafts = searchParams.get("include_drafts") === "true";
     const pageParam = Number(searchParams.get("page") ?? 1);
     const limitParam = Number(searchParams.get("limit") ?? 10);
     const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
     const limit = Number.isFinite(limitParam) ? Math.min(Math.max(limitParam, 1), 50) : 10;
-    const offset = (page - 1) * limit;
+    const result = await cms.listPosts({ page, limit, includeDrafts });
 
-    const whereConditions = includeDrafts ? undefined : eq(posts.published, true);
-
-    const cacheKey = `posts:all:${includeDrafts ? "with-drafts" : "published-only"}:p=${page}:l=${limit}`;
-
-    const fetchedPosts = await cache(
-      { key: cacheKey, ttl: 60 * 5 }, // Cache for 5 minutes
-      () =>
-        db.query.posts.findMany({
-          where: whereConditions,
-          columns: {
-            id: true,
-            title: true,
-            slug: true,
-            excerpt: true,
-            createdAt: true,
-            updatedAt: true,
-            published: true,
-          },
-          with: {
-            author: {
-              columns: {
-                name: true,
-              },
-            },
-            category: {
-              columns: {
-                name: true,
-              },
-            },
-            comments: {
-              columns: { id: true },
-            },
-            postsToTags: {
-              with: {
-                tag: {
-                  columns: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-          orderBy: [desc(posts.createdAt)],
-          limit,
-          offset,
-        }),
-    );
-
-    const responseData: PostsApiListItem[] = fetchedPosts.map((post) => ({
+    const responseData: PostsApiListItem[] = result.items.map((post) => ({
       id: post.id,
       title: post.title,
       slug: post.slug,
       excerpt: post.excerpt,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
-      published: post.published,
+      published: post.status === "published",
       authorName: post.author?.name ?? "Unknown",
       categoryName: post.category?.name ?? "Uncategorized",
-      commentsCount: post.comments.length,
-      tags: post.postsToTags.map((ptt) => ptt.tag.name),
+      commentsCount: 0,
+      tags: post.tags.map((t) => t.name),
     }));
 
     const res: NextResponse = NextResponse.json(responseData);

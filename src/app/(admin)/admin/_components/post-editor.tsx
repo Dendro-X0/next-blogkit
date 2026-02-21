@@ -53,7 +53,7 @@ export interface PostData {
 }
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
 }

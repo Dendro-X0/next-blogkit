@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 import { env } from "~/env";
 import { BarChart3, Users, FileText, MessageSquare, TrendingUp, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { getCmsAdapter } from "@/lib/cms";
 
 export default async function AdminAnalyticsPage(): Promise<ReactElement> {
     const hdrs = await headers();
@@ -28,44 +29,57 @@ export default async function AdminAnalyticsPage(): Promise<ReactElement> {
         redirect("/");
     }
 
+    const cms = getCmsAdapter();
+
     // Fetch Stats
-    const statsRes = await Promise.all([
-        db.select({ count: count() }).from(posts),
+    const [
+        totalUsersRow,
+        totalCommentsRow,
+    ] = await Promise.all([
         db.select({ count: count() }).from(user),
         db.select({ count: count() }).from(comments),
-        db.select({ count: count() }).from(categories),
     ]);
 
-    const totalPosts = statsRes[0][0].count;
-    const totalUsers = statsRes[1][0].count;
-    const totalComments = statsRes[2][0].count;
-    const totalCategories = statsRes[3][0].count;
+    const totalUsers = totalUsersRow[0].count;
+    const totalComments = totalCommentsRow[0].count;
 
-    // Most commented posts
-    const topPosts = await db
-        .select({
-            id: posts.id,
-            title: posts.title,
-            commentCount: count(comments.id),
-        })
-        .from(posts)
-        .leftJoin(comments, eq(posts.id, comments.postId))
-        .groupBy(posts.id)
-        .orderBy(desc(count(comments.id)))
-        .limit(5);
+    const totalCategories =
+        cms.provider === "native"
+            ? (await db.select({ count: count() }).from(categories))[0].count
+            : (await cms.listCategories()).length;
 
-    // Users with most posts
-    const topAuthors = await db
-        .select({
-            id: user.id,
-            name: user.name,
-            postCount: count(posts.id),
-        })
-        .from(user)
-        .leftJoin(posts, eq(user.id, posts.authorId))
-        .groupBy(user.id)
-        .orderBy(desc(count(posts.id)))
-        .limit(5);
+    const totalPosts =
+        cms.provider === "native" ? (await db.select({ count: count() }).from(posts))[0].count : 0;
+
+    const topPosts =
+        cms.provider === "native"
+            ? await db
+                .select({
+                    id: posts.id,
+                    title: posts.title,
+                    commentCount: count(comments.id),
+                })
+                .from(posts)
+                .leftJoin(comments, eq(posts.id, comments.postId))
+                .groupBy(posts.id)
+                .orderBy(desc(count(comments.id)))
+                .limit(5)
+            : [];
+
+    const topAuthors =
+        cms.provider === "native"
+            ? await db
+                .select({
+                    id: user.id,
+                    name: user.name,
+                    postCount: count(posts.id),
+                })
+                .from(user)
+                .leftJoin(posts, eq(user.id, posts.authorId))
+                .groupBy(user.id)
+                .orderBy(desc(count(posts.id)))
+                .limit(5)
+            : [];
 
     return (
         <div className="container mx-auto px-4 py-8">

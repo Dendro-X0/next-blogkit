@@ -5,9 +5,6 @@ import { SocialShare } from "@/components/blog/social-share";
 import { Callout } from "@/components/mdx/callout";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
-import { db } from "@/lib/db";
-import { posts } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -16,9 +13,13 @@ import { Suspense } from "react";
 import type { BlogPosting, WithContext } from "schema-dts";
 import { getAbsoluteUrl } from "@/lib/url";
 import { PostHeaderActions } from "../_components/post-header-actions";
+import { PostHeader } from "../_components/post-header";
 import { ReadingIndicator } from "@/components/blog/reading-indicator";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getCmsAdapter } from "@/lib/cms";
+import ReactMarkdown from "react-markdown";
+import { renderSafeHtml } from "@/lib/cms/render";
 
 // Define the shape of the detailed post data from our API
 interface Review {
@@ -31,58 +32,15 @@ interface Review {
   };
 }
 
-interface ApiPostDetail {
-  id: number;
-  title: string;
-  content: string;
-  createdAt: string;
-  author: { name: string | null };
-  tags: string[];
-  reviews: Review[];
-  format: "standard" | "video" | "gallery" | "audio";
-  videoUrl?: string | null;
-  audioUrl?: string | null;
-  galleryImages?: string[] | null;
+function cmsProviderIsNative(postId: string): boolean {
+  // Native-only features depend on numeric post IDs in the local DB.
+  return /^\d+$/.test(postId);
 }
 
-async function getPost(slug: string): Promise<ApiPostDetail | null> {
+async function getPost(slug: string) {
   try {
-    const row = await db.query.posts.findFirst({
-      where: eq(posts.slug, slug),
-      columns: {
-        id: true,
-        title: true,
-        content: true,
-        createdAt: true,
-        format: true,
-        videoUrl: true,
-        audioUrl: true,
-        galleryImages: true,
-      },
-      with: {
-        author: { columns: { name: true } },
-        postsToTags: { with: { tag: { columns: { name: true } } } },
-      },
-    });
-
-    if (!row) {
-      return null;
-    }
-
-    return {
-      id: row.id,
-      title: row.title,
-      content: row.content,
-      createdAt:
-        row.createdAt instanceof Date ? row.createdAt.toISOString() : String(row.createdAt),
-      author: { name: row.author?.name ?? null },
-      tags: row.postsToTags.map((pt) => pt.tag.name),
-      reviews: [],
-      format: row.format,
-      videoUrl: row.videoUrl ?? null,
-      audioUrl: row.audioUrl ?? null,
-      galleryImages: row.galleryImages ?? null,
-    };
+    const cms = getCmsAdapter();
+    return await cms.getPostBySlug(slug, { includeDrafts: false });
   } catch (error) {
     console.error(`Error fetching post by slug ${slug}:`, error);
     return null;
@@ -105,27 +63,27 @@ export default async function BlogPostPage({
 
     const postForHeader = {
       title: post.title,
-      author: post.author.name || "Unknown Author",
-      publishedAt: post.createdAt,
+      author: post.author?.name || "Unknown Author",
+      publishedAt: post.publishedAt ?? post.createdAt,
       readTime: (() => {
-        const text = (post.content || "").replace(/<[^>]+>/g, " ");
+        const text = (post.body.value || "").replace(/<[^>]+>/g, " ");
         const words = text.trim().split(/\s+/).filter(Boolean).length;
         const minutes = Math.max(1, Math.round(words / 200));
         return `${minutes} min read`;
       })(),
-      tags: post.tags,
+      tags: post.tags.map((t) => t.name),
     };
 
     const jsonLd: WithContext<BlogPosting> = {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       headline: post.title,
-      description: post.content.substring(0, 150),
-      datePublished: post.createdAt,
-      dateModified: post.createdAt, // Assuming no separate update date for now
+      description: post.body.value.substring(0, 150),
+      datePublished: post.publishedAt ?? post.createdAt,
+      dateModified: post.updatedAt ?? post.publishedAt ?? post.createdAt,
       author: {
         "@type": "Person",
-        name: post.author.name || "Unknown Author",
+        name: post.author?.name || "Unknown Author",
       },
       mainEntityOfPage: {
         "@type": "WebPage",
@@ -141,18 +99,32 @@ export default async function BlogPostPage({
           <h1 id="post-title" className="sr-only">
             {post.title}
           </h1>
-          <PostHeaderActions post={postForHeader} postId={post.id} />
+          {cmsProviderIsNative(post.id) ? (
+            <PostHeaderActions post={postForHeader} postId={Number.parseInt(post.id, 10)} />
+          ) : (
+            <PostHeader post={postForHeader} />
+          )}
 
-          <div className="mb-4">
-            <Reactions postId={post.id} />
-          </div>
+          {cmsProviderIsNative(post.id) ? (
+            <div className="mb-4">
+              <Reactions postId={Number.parseInt(post.id, 10)} />
+            </div>
+          ) : null}
 
           <Separator className="mb-8" />
 
           <div className="prose mb-12" id="post-content">
-            {post.format === "standard" && (
-              <MDXRemote source={post.content} components={{ Callout }} />
-            )}
+            {post.format === "standard" && post.body.format === "mdx" ? (
+              <MDXRemote source={post.body.value} components={{ Callout }} />
+            ) : null}
+
+            {post.format === "standard" && post.body.format === "markdown" ? (
+              <ReactMarkdown>{post.body.value}</ReactMarkdown>
+            ) : null}
+
+            {post.format === "standard" && post.body.format === "html" ? (
+              <div dangerouslySetInnerHTML={renderSafeHtml(post.body.value)} />
+            ) : null}
 
             {post.format === "audio" && post.audioUrl && (
               <div className="w-full">
@@ -206,7 +178,9 @@ export default async function BlogPostPage({
               </div>
             }
           >
-            <CommentSection postId={post.id} />
+            {cmsProviderIsNative(post.id) ? (
+              <CommentSection postId={Number.parseInt(post.id, 10)} />
+            ) : null}
           </Suspense>
 
           <div className="mt-16">
@@ -217,7 +191,12 @@ export default async function BlogPostPage({
                 </div>
               }
             >
-              <RelatedPosts currentPostId={post.id.toString()} tags={post.tags} />
+              {cmsProviderIsNative(post.id) ? (
+                <RelatedPosts
+                  currentPostId={post.id.toString()}
+                  tags={post.tags.map((t) => t.name)}
+                />
+              ) : null}
             </Suspense>
           </div>
         </article>

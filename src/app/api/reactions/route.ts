@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { postReactions } from "@/lib/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { getCmsAdapter } from "@/lib/cms";
 
 /**
  * Supported reaction types. Must stay in sync with reaction_type enum.
@@ -22,6 +23,13 @@ async function getSessionUserId(): Promise<string | null> {
 }
 
 export async function GET(request: Request) {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    const res: NextResponse = NextResponse.json({ counts: emptyCounts(), userTypes: [] });
+    res.headers.set("Cache-Control", "private, no-store");
+    return res;
+  }
+
   const { searchParams } = new URL(request.url);
   const postId = searchParams.get("postId");
   if (!postId) return NextResponse.json({ error: "postId is required" }, { status: 400 });
@@ -60,6 +68,11 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    return NextResponse.json({ error: "Reactions are only available for native CMS" }, { status: 400 });
+  }
+
   const { postId, type } = (await request.json()) as { postId?: number; type?: ReactionType };
   if (postId == null || type == null)
     return NextResponse.json({ error: "postId and type are required" }, { status: 400 });

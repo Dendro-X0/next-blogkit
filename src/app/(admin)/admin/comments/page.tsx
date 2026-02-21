@@ -9,6 +9,7 @@ import { getSessionWithRoles } from "@/lib/auth/session";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { env } from "~/env";
+import { getCmsAdapter } from "@/lib/cms";
 
 export default async function AdminCommentsPage(): Promise<ReactElement> {
     const hdrs = await headers();
@@ -24,6 +25,20 @@ export default async function AdminCommentsPage(): Promise<ReactElement> {
 
     if (!isAdmin) {
         redirect("/");
+    }
+
+    const cms = getCmsAdapter();
+    if (cms.provider !== "native") {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <div className="max-w-6xl mx-auto">
+                    <PageHeader
+                        title="Comments"
+                        description="Comments are only available for the native CMS provider"
+                    />
+                </div>
+            </div>
+        );
     }
 
     const rows = await db

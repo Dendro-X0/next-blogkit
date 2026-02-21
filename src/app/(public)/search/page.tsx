@@ -34,12 +34,12 @@ type SortBy = "newest" | "oldest" | "title";
 
 // API response item for /api/posts
 type ApiPostItem = {
-  readonly id: number;
+  readonly id: string;
   readonly title: string;
   readonly slug: string;
   readonly excerpt: string | null;
   readonly createdAt: string;
-  readonly updatedAt: string;
+  readonly updatedAt: string | null;
   readonly published: boolean;
   readonly authorName: string;
   readonly categoryName: string;
@@ -50,7 +50,7 @@ const DEFAULT_READ_TIME = "5 min read" as const;
 
 function mapApiPost(item: ApiPostItem): Post {
   return {
-    id: String(item.id),
+    id: item.id,
     title: item.title,
     excerpt: item.excerpt ?? "No excerpt available.",
     author: item.authorName ?? "Unknown",

@@ -8,6 +8,18 @@ The Admin area lives at `/admin` under `src/app/(admin)/admin/`.
 - To restrict to specific users, set `ADMIN_EMAILS` in `.env` with a comma‑separated list.
 - RBAC is planned but not required for this starter.
 
+## CMS Provider
+
+The Admin UI writes posts through the CMS adapter selected by `CMS_PROVIDER`.
+
+- `CMS_PROVIDER=native`
+  - Posts are stored in the local database.
+  - Native-only features like comments, reactions, bookmarks, and “related posts” are available.
+- `CMS_PROVIDER=wordpress`
+  - Admin create/edit/delete requires `WORDPRESS_USERNAME` + `WORDPRESS_APP_PASSWORD`.
+- `CMS_PROVIDER=sanity`
+  - Admin create/edit/delete requires `SANITY_TOKEN`.
+
 ## Features
 
 - Posts: create, edit, schedule, publish, archive

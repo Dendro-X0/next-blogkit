@@ -7,8 +7,18 @@ import { and, desc, eq, isNull } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { ReactElement } from "react";
 import { DeleteCommentButton } from "./_components/delete-comment-button";
+import { getCmsAdapter } from "@/lib/cms";
 
 export default async function AccountCommentsPage(): Promise<ReactElement> {
+  const cms = getCmsAdapter();
+  if (cms.provider !== "native") {
+    return (
+      <main>
+        <p className="text-muted-foreground">Comments are only available for the native CMS.</p>
+      </main>
+    );
+  }
+
   const headersList = await headers();
   const session = await auth.api.getSession({ headers: headersList });
   if (!session?.user?.id) {

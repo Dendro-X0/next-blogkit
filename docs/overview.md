@@ -1,6 +1,6 @@
 # Modern Blog Starter Kit — Overview
 
-This repository is a production‑ready blog platform built on Next.js 16. It includes a full content pipeline (MDX rendering with shortcodes), rich admin tools, monetization primitives, authentication, S3 uploads, analytics, and strong defaults for performance and accessibility.
+This repository is a production‑ready blog platform built on Next.js 16. It includes a full content pipeline, rich admin tools, monetization primitives, authentication, S3 uploads, analytics, and strong defaults for performance and accessibility.
 
 Use this guide to understand what’s included and how the parts fit together. For setup and environment configuration, see docs/configuration.md.
 
@@ -8,13 +8,23 @@ Use this guide to understand what’s included and how the parts fit together. F
 
 - Framework: Next.js 16 (App Router), TypeScript
 - Styling & UI: Tailwind CSS v4, shadcn/ui
-- Content: MDX rendering, automated Table of Contents, audio posts
+- Content: CMS adapter (`native`, `wordpress`, `sanity`), automated Table of Contents, audio posts
 - Admin: Posts, categories, tags, affiliate links, ads
 - Auth: Better Auth with optional OAuth providers (GitHub, Google)
 - Storage: Cloudinary uploads by default; S3‑compatible storage optional (AWS S3, R2, MinIO)
 - Email: Resend or SMTP (local MailHog) for newsletters/transactional mail
 - Analytics: Vercel Analytics, Speed Insights, + first‑party events and KPIs dashboard
 - SEO: Optimized images, dynamic sitemap, RSS
+
+## CMS Adapter
+
+Content is sourced through a CMS adapter selected by `CMS_PROVIDER`:
+
+- `native`: local database content (MDX)
+- `wordpress`: WordPress REST API content (HTML)
+- `sanity`: Sanity content (Markdown)
+
+In v1, WordPress HTML and Sanity Markdown are rendered without MDX shortcode support.
 
 ## High‑Level Architecture
 

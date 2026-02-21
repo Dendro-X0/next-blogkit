@@ -17,7 +17,7 @@ Modern, production‑ready blog starter built with Next.js 16 and TypeScript—M
 - **Authentication**: Better Auth (GitHub & Google providers; optional and auto-disabled if not configured)
 - **Database**: PostgreSQL with Drizzle ORM
 - **Styling**: Tailwind CSS v4 with Shadcn UI
-- **Content**: MDX, advanced post formats (audio), and automated Table of Contents.
+- **Content**: Pluggable CMS adapter (`native`, `wordpress`, `sanity`), advanced post formats (audio), and automated Table of Contents.
 - **Admin Panel**: Manage posts, categories, tags, affiliate links, and advertisements.
 - **Monetization**: Affiliate dashboard and Ad management system.
 - **Performance & SEO**: Advanced caching, Cloudinary image optimization, and a dynamic sitemap.
@@ -56,6 +56,8 @@ pnpm install
 pnpm run db:migrate
 pnpm run dev
 ```
+
+To switch CMS providers (WordPress / Sanity), set `CMS_PROVIDER` and the provider-specific env vars (see docs/configuration.md).
 
 More topics: architecture, content authoring (MDX), admin, storage, analytics, A11y/mobile, i18n — see the Documentation links above.
 

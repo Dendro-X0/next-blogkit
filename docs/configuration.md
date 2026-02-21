@@ -7,6 +7,34 @@ This page summarizes environment variables and toggles. Most providers are optio
 - `NEXT_PUBLIC_APP_URL` — public base URL used in feeds and canonical URLs
 - `DATABASE_URL` — PostgreSQL connection string
 
+## CMS (Content Provider)
+
+You can switch where posts/categories/tags come from by setting `CMS_PROVIDER`.
+
+- `CMS_PROVIDER=native` (default)
+  - Content is stored in the local database (Drizzle/Postgres)
+  - Native-only features are enabled (comments, reactions, bookmarks, related posts)
+- `CMS_PROVIDER=wordpress`
+  - Content is fetched from WordPress REST API
+  - Post body is treated as HTML (rendered safely)
+- `CMS_PROVIDER=sanity`
+  - Content is fetched from Sanity
+  - Post body is treated as Markdown
+
+### WordPress (when `CMS_PROVIDER=wordpress`)
+
+- `WORDPRESS_URL` — base URL of your WP site (no trailing slash), e.g. `https://example.com`
+- `WORDPRESS_USERNAME` — required for write operations (Admin create/edit/delete)
+- `WORDPRESS_APP_PASSWORD` — required for write operations (Admin create/edit/delete)
+
+### Sanity (when `CMS_PROVIDER=sanity`)
+
+- `SANITY_PROJECT_ID`
+- `SANITY_DATASET`
+- `SANITY_API_VERSION`
+- `SANITY_TOKEN` — required for write operations (Admin create/edit/delete)
+- `SANITY_USE_CDN` — optional boolean
+
 ## Authentication (optional)
 
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`

@@ -11,14 +11,14 @@ import { env } from "~/env";
 import { type PostData, PostEditor } from "../../../_components/post-editor";
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
 }
 
 // This should reflect the data structure returned by your GET /api/posts/[id] endpoint
 interface FetchedPostData {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   content: string;
@@ -28,7 +28,7 @@ interface FetchedPostData {
   allowComments: boolean;
   seoTitle: string | null;
   seoDescription: string | null;
-  category: { id: number; name: string } | null;
+  category: { id: string; name: string } | null;
   tags: string[];
 }
 
@@ -64,7 +64,7 @@ export default function EditPostPage() {
           content: postData.content,
           status: postData.published ? "published" : "draft",
           tags: postData.tags,
-          category: postData.category?.id.toString(),
+          category: postData.category?.id ?? "",
           excerpt: postData.excerpt ?? "",
           featuredImage: postData.imageUrl ?? "",
           allowComments: postData.allowComments,
@@ -93,7 +93,7 @@ export default function EditPostPage() {
         excerpt: data.excerpt,
         content: data.content,
         imageUrl: data.featuredImage, // This is now the S3 key
-        categoryId: data.category ? parseInt(data.category, 10) : null,
+        categoryId: data.category ? data.category : null,
         published: status === "published",
         tags: data.tags,
         allowComments: data.allowComments,

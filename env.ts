@@ -49,6 +49,20 @@ export const env = createEnv({
     S3_ENDPOINT: z.string().url().optional(),
     S3_PUBLIC_URL: z.string().url().optional(),
     DISABLE_AUTH_GUARD: z.preprocess((v) => v === "true" || v === "1", z.boolean()).default(false),
+
+    CMS_PROVIDER: z.enum(["native", "wordpress", "sanity"]).default("native"),
+
+    // WordPress CMS
+    WORDPRESS_URL: z.string().url().optional(),
+    WORDPRESS_USERNAME: z.string().min(1).optional(),
+    WORDPRESS_APP_PASSWORD: z.string().min(1).optional(),
+
+    // Sanity CMS
+    SANITY_PROJECT_ID: z.string().min(1).optional(),
+    SANITY_DATASET: z.string().min(1).optional(),
+    SANITY_API_VERSION: z.string().min(1).optional(),
+    SANITY_TOKEN: z.string().min(1).optional(),
+    SANITY_USE_CDN: z.preprocess((v) => v === "true" || v === "1", z.boolean()).default(true),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
@@ -84,6 +98,20 @@ export const env = createEnv({
     S3_PUBLIC_URL: process.env.S3_PUBLIC_URL,
     NEXT_PUBLIC_S3_PUBLIC_URL: process.env.NEXT_PUBLIC_S3_PUBLIC_URL,
     DISABLE_AUTH_GUARD: process.env.DISABLE_AUTH_GUARD,
+
+    CMS_PROVIDER: process.env.CMS_PROVIDER,
+
+    // WordPress
+    WORDPRESS_URL: process.env.WORDPRESS_URL,
+    WORDPRESS_USERNAME: process.env.WORDPRESS_USERNAME,
+    WORDPRESS_APP_PASSWORD: process.env.WORDPRESS_APP_PASSWORD,
+
+    // Sanity
+    SANITY_PROJECT_ID: process.env.SANITY_PROJECT_ID,
+    SANITY_DATASET: process.env.SANITY_DATASET,
+    SANITY_API_VERSION: process.env.SANITY_API_VERSION,
+    SANITY_TOKEN: process.env.SANITY_TOKEN,
+    SANITY_USE_CDN: process.env.SANITY_USE_CDN,
   },
 });
 

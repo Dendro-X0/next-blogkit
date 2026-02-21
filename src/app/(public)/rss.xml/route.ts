@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { posts } from "@/lib/db/schema";
+import { getCmsAdapter } from "@/lib/cms";
 import RSS from "rss";
 import { getAbsoluteUrl, getSiteUrl } from "@/lib/url";
 
@@ -13,14 +12,15 @@ export async function GET() {
   });
 
   try {
-    const allPosts = await db.select().from(posts).orderBy(posts.createdAt);
+    const cms = getCmsAdapter();
+    const allPosts = await cms.getRssEntries();
     for (const post of allPosts) {
       feed.item({
         title: post.title,
-        description: post.content.substring(0, 250),
+        description: post.description,
         url: getAbsoluteUrl(`/blog/${post.slug}`),
         guid: post.id.toString(),
-        date: post.createdAt,
+        date: post.date,
       });
     }
   } catch (error) {
